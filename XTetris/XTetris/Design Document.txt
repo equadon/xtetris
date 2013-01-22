@@ -1,5 +1,10 @@
 ﻿# XNA Tetris
 
+## Project Plan
+
+Part 1: Drawable tetrominoes of all shapes
+Part 2: Move/rotate for tetromino
+
 ## Requirements
 
 Matrix: 10x20

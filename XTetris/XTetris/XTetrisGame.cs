@@ -12,15 +12,18 @@ namespace XTetris
     /// </summary>
     public class XTetrisGame : Microsoft.Xna.Framework.Game
     {
-        public const int ScreenWidth = 1024;
-        public const int ScreenHeight = 768;
+        public const int ScreenWidth = 600;
+        public const int ScreenHeight = 800;
 
         private readonly GraphicsDeviceManager _graphics;
         private readonly GameStateManager _stateManager;
 
         public SpriteBatch SpriteBatch { get; private set; }
 
-        public GamePlayScreen GamePlayScreen { get; private set; }
+        public Rectangle ScreenRectangle { get; private set; }
+
+        // Game states
+        public GamePlayState GamePlayState { get; private set; }
 
         public GameStateManager StateManager
         {
@@ -44,9 +47,9 @@ namespace XTetris
             _stateManager = new GameStateManager(this);
             Components.Add(StateManager);
 
-            GamePlayScreen = new GamePlayScreen(this, StateManager);
+            GamePlayState = new GamePlayState(this, StateManager);
 
-            StateManager.ChangeState(GamePlayScreen);
+            StateManager.ChangeState(GamePlayState);
         }
 
         /// <summary>
@@ -57,6 +60,8 @@ namespace XTetris
         /// </summary>
         protected override void Initialize()
         {
+            ScreenRectangle = new Rectangle(0, 0, ScreenWidth, ScreenHeight);
+
             base.Initialize();
         }
 

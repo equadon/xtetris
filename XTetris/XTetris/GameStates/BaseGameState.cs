@@ -1,6 +1,7 @@
 ﻿using System;
-
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 using XTetris.Engine;
 
@@ -20,6 +21,16 @@ namespace XTetris.GameStates
 
         protected TimeSpan TransitionTimer { get; set; }
         protected TimeSpan TransitionInterval { get; set; }
+
+        protected SpriteBatch SpriteBatch
+        {
+            get { return ((XTetrisGame)Game).SpriteBatch; }
+        }
+
+        protected ContentManager Content
+        {
+            get { return Game.Content; }
+        }
 
         #endregion
 

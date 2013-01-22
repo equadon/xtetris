@@ -76,15 +76,16 @@
     <Compile Include="Engine\GameStateManager.cs" />
     <Compile Include="Engine\InputHandler.cs" />
     <Compile Include="GameStates\BaseGameState.cs" />
-    <Compile Include="GameStates\GamePlayScreen.cs" />
+    <Compile Include="GameStates\GamePlayState.cs" />
     <Compile Include="Mino.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Tetromino.cs" />
-    <Compile Include="Tetrominoes\ITetromino.cs" />
+    <Compile Include="Tetrominoes\TTetromino.cs" />
     <Compile Include="XTetrisGame.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Design Document.txt" />
     <Content Include="Game.ico" />
     <Content Include="GameThumbnail.png">
       <XnaPlatformSpecific>true</XnaPlatformSpecific>
