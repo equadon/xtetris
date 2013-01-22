@@ -3,14 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace XTetris
 {
-    public class Mino
+    public class Block
     {
-        private Texture2D _texture;
         private Vector2 _position;
 
         #region Properties
 
-        public Tetromino Parent { get; private set; }
+        public Shape Parent { get; private set; }
         public Color Color { get; private set; }
 
         public Vector2 Position
@@ -29,31 +28,25 @@ namespace XTetris
             }
         }
 
-        public Rectangle Bounds
+        public Texture2D Texture
         {
-            get { return new Rectangle((int)Position.X * Width, (int)Position.Y * Height, Width, Height); }
-        }
-
-        public Vector2 Origin
-        {
-            get { return new Vector2(_texture.Width/2f, _texture.Height/2f); }
+            get { return Parent.Texture; }
         }
 
         public int Width
         {
-            get { return _texture.Width; }
+            get { return Texture.Width; }
         }
 
         public int Height
         {
-            get { return _texture.Height; }
+            get { return Texture.Height; }
         }
 
         #endregion
 
-        public Mino(Texture2D texture, Tetromino parent, Color color, int row, int col)
+        public Block(Shape parent, Color color, int row, int col)
         {
-            _texture = texture;
             Color = color;
             Parent = parent;
             Position = new Vector2(col, row);
@@ -61,7 +54,7 @@ namespace XTetris
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, AbsolutePosition, Color);
+            spriteBatch.Draw(Texture, AbsolutePosition, Color);
         }
     }
 }

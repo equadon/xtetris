@@ -9,7 +9,7 @@ namespace XTetris.GameStates
 {
     public class GamePlayState : BaseGameState
     {
-        public static Texture2D MinoTexture { get; private set; }
+        public static Texture2D BlockTexture { get; private set; }
 
         public Player Player { get; private set; }
 
@@ -27,9 +27,10 @@ namespace XTetris.GameStates
 
         protected override void LoadContent()
         {
-            MinoTexture = Content.Load<Texture2D>(@"Textures\mino");
+            BlockTexture = Content.Load<Texture2D>(@"Textures\mino");
 
-            Player.ActiveTetromino = new TTetromino(MinoTexture, TetrisGame.TTetrominoColor);
+            Player.ActiveTetromino = new TShape(BlockTexture, TetrisGame.TTetrominoColor);
+            Player.ActiveTetromino.Position = new Vector2(200, 200);
 
             base.LoadContent();
         }

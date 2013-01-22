@@ -12,13 +12,9 @@ namespace XTetris
 {
     public class Player
     {
-        private const double DefaultSpeedDown = 0.6d;
-
-        private double _moveDelay = DefaultSpeedDown;
-
         #region Properties
 
-        public Tetromino ActiveTetromino { get; set; }
+        public Shape ActiveTetromino { get; set; }
 
         public bool HasActiveTetromino
         {
@@ -36,22 +32,17 @@ namespace XTetris
             if (!HasActiveTetromino)
                 return;
 
-            _moveDelay -= gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (_moveDelay <= 0d)
-            {
-                ActiveTetromino.MoveDown();
-                _moveDelay = DefaultSpeedDown;
-            }
-
             if (InputHandler.KeyPressed(Keys.Right))
                 ActiveTetromino.MoveRight();
 
             if (InputHandler.KeyPressed(Keys.Left))
                 ActiveTetromino.MoveLeft();
 
-            // Update active tetromino
-            ActiveTetromino.Update(gameTime);
+            if (InputHandler.KeyPressed(Keys.Up) || InputHandler.KeyPressed(Keys.X))
+                ActiveTetromino.RotateRight();
+
+            if (InputHandler.KeyPressed(Keys.LeftControl) || InputHandler.KeyPressed(Keys.RightControl) || InputHandler.KeyPressed(Keys.Z))
+                ActiveTetromino.RotateLeft();
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)

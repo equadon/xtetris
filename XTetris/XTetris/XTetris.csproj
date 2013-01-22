@@ -77,12 +77,12 @@
     <Compile Include="Engine\InputHandler.cs" />
     <Compile Include="GameStates\BaseGameState.cs" />
     <Compile Include="GameStates\GamePlayState.cs" />
-    <Compile Include="Mino.cs" />
+    <Compile Include="Block.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Tetromino.cs" />
-    <Compile Include="Tetrominoes\TTetromino.cs" />
+    <Compile Include="Shape.cs" />
+    <Compile Include="Shapes\TShape.cs" />
     <Compile Include="TetrisGame.cs" />
   </ItemGroup>
   <ItemGroup>
