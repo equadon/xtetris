@@ -1,0 +1,51 @@
+﻿# XNA Tetris
+
+## Requirements
+
+Matrix: 10x20
+
+Rotation:
+	http://tetris.wikia.com/wiki/SRS
+
+HoldQueue:
+	* one Tetromino can be held in queue
+	* can be used once per spawn
+	* when adding a new Tetromino to the queue, the old one will spawn
+
+NextQueue:
+	* shows the 5 next Tetrominos that will spawn
+	* next in queue will spawn once the active Tetromino has locked down
+
+LockDown:
+	* happens once the Tetromino has landed and can no longer move
+	* a tetromino can move a brief period after it landed (which can be used to perform t-spins
+
+Twist:
+	http://tetris.wikia.com/wiki/Twist
+
+Score System:
+	* http://www.tetrisfriends.com/help/tips_appendix.php#scoringchart
+
+Default Hotkeys (can be changed in options):
+	Left/Right: left/right arrows
+	HardDrop: space
+	SoftDrop: down
+	RotateLeft: control/z
+	RotateRight: up/x
+	Hold: shift/c
+	Pause: escape
+
+Tetrominoes (inherits Mino):
+	ITetromino
+	OTetromino
+	TTetromino
+	JTetromino
+	LTetromino
+	STetromino
+	ZTetromino
+
+Menu:
+	* New Game
+	* Load Game
+	* Options
+	* Exit
