@@ -9,6 +9,10 @@ namespace XTetris
     {
         #region Properties & Fields
 
+        private float ShapeMoveSpeed = 0.8f;
+
+        public double ShapeMoveDelay { get; private set; }
+
         private Vector2 _position;
         private Rectangle _screenRectangle;
 
@@ -44,12 +48,22 @@ namespace XTetris
             ScreenRectangle = new Rectangle(TetrisGame.BoardPadding/2, TetrisGame.BoardPadding/2, TetrisGame.BlockSize * 10, TetrisGame.BlockSize * 20);
 
             SpawnShape();
+
+            ShapeMoveDelay = ShapeMoveSpeed;
         }
 
         public void Update(GameTime gameTime)
         {
+            ShapeMoveDelay -= gameTime.ElapsedGameTime.TotalSeconds;
+
             if (InputHandler.KeyPressed(Keys.Enter))
                 SpawnShape();
+
+            if (ShapeMoveDelay <= 0d)
+            {
+                ActiveShape.MoveDown();
+                ShapeMoveDelay = ShapeMoveSpeed;
+            }
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -89,8 +103,9 @@ namespace XTetris
         private void SpawnShape()
         {
             ActiveShape = ShapesFactory.CreateRandom(this);
+
             ActiveShape.Position = new Vector2(
-                TetrisGame.BoardPadding/2f + ScreenRectangle.Width/2f - ActiveShape.Bounds.Width/2f - ActiveShape.Bounds.X,
+                TetrisGame.BoardPadding / 2f + ScreenRectangle.Width / 2f - ActiveShape.Bounds.Width / 2f - ActiveShape.Bounds.X,
                 ActiveShape.Position.Y + TetrisGame.BoardPadding/2f - TetrisGame.BlockSize);
         }
     }
