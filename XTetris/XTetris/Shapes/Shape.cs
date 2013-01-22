@@ -107,7 +107,17 @@ namespace XTetris
 
         protected int[,] InvertRotation(int[,] rotation)
         {
-            return rotation;
+            var inverted = new int[rotation.GetUpperBound(0) + 1, rotation.GetUpperBound(1) + 1];
+
+            int rows = rotation.GetUpperBound(0);
+            int cols = rotation.GetUpperBound(1);
+
+            for (int row = 0; row <= rows; row++)
+                for (int col = 0; col <= cols; col++)
+                    if (rotation[row, col] == 1)
+                        inverted[rows - row, cols - col] = 1;
+
+            return inverted;
         }
     }
 }
