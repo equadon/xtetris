@@ -41,7 +41,9 @@ namespace XTetris
             if (InputHandler.KeyPressed(Keys.Up) || InputHandler.KeyPressed(Keys.X))
                 ActiveTetromino.RotateRight();
 
-            if (InputHandler.KeyPressed(Keys.LeftControl) || InputHandler.KeyPressed(Keys.RightControl) || InputHandler.KeyPressed(Keys.Z))
+            if (InputHandler.KeyPressed(Keys.LeftControl) ||
+                InputHandler.KeyPressed(Keys.RightControl) ||
+                InputHandler.KeyPressed(Keys.Z))
                 ActiveTetromino.RotateLeft();
         }
 

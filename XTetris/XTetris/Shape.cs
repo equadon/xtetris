@@ -63,14 +63,17 @@ namespace XTetris
 
         public void MoveLeft()
         {
+            _position.X -= Texture.Width;
         }
 
         public void MoveRight()
         {
+            _position.X += Texture.Width;
         }
 
         public void MoveDown()
         {
+            _position.Y += Texture.Height;
         }
 
         public void RotateRight()
