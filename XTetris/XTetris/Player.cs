@@ -5,8 +5,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 using XTetris.Engine;
-using XTetris.Tetrominoes;
+using XTetris.Shapes;
 
 namespace XTetris
 {
@@ -14,11 +15,11 @@ namespace XTetris
     {
         #region Properties
 
-        public Shape ActiveTetromino { get; set; }
+        public Shape ActiveShape { get; set; }
 
         public bool HasActiveTetromino
         {
-            get { return ActiveTetromino != null; }
+            get { return ActiveShape != null; }
         }
 
         #endregion
@@ -33,24 +34,27 @@ namespace XTetris
                 return;
 
             if (InputHandler.KeyPressed(Keys.Right))
-                ActiveTetromino.MoveRight();
+                ActiveShape.MoveRight();
 
             if (InputHandler.KeyPressed(Keys.Left))
-                ActiveTetromino.MoveLeft();
+                ActiveShape.MoveLeft();
 
             if (InputHandler.KeyPressed(Keys.Up) || InputHandler.KeyPressed(Keys.X))
-                ActiveTetromino.RotateRight();
+                ActiveShape.RotateRight();
+
+            if (InputHandler.KeyPressed(Keys.Down))
+                ActiveShape.MoveDown();
 
             if (InputHandler.KeyPressed(Keys.LeftControl) ||
                 InputHandler.KeyPressed(Keys.RightControl) ||
                 InputHandler.KeyPressed(Keys.Z))
-                ActiveTetromino.RotateLeft();
+                ActiveShape.RotateLeft();
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if (HasActiveTetromino)
-                ActiveTetromino.Draw(gameTime, spriteBatch);
+                ActiveShape.Draw(gameTime, spriteBatch);
         }
     }
 }

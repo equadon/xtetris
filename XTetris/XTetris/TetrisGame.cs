@@ -22,9 +22,6 @@ namespace XTetris
 
         public Rectangle ScreenRectangle { get; private set; }
 
-        // Tetromino Colors
-        public static readonly Color TTetrominoColor = new Color(170, 0, 255);
-
         // Game states
         public GamePlayState GamePlayState { get; private set; }
 

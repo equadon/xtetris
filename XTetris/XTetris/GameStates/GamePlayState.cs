@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using XTetris.Engine;
-using XTetris.Tetrominoes;
+using XTetris.Shapes;
 
 namespace XTetris.GameStates
 {
@@ -27,16 +27,19 @@ namespace XTetris.GameStates
 
         protected override void LoadContent()
         {
-            BlockTexture = Content.Load<Texture2D>(@"Textures\mino");
+            BlockTexture = Content.Load<Texture2D>(@"Textures\block");
 
-            Player.ActiveTetromino = new TShape(BlockTexture, TetrisGame.TTetrominoColor);
-            Player.ActiveTetromino.Position = new Vector2(200, 200);
+            Player.ActiveShape = ShapesFactory.CreateRandom(BlockTexture, ShapeTypes.T);
+            Player.ActiveShape.Position = new Vector2(200, 200);
 
             base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
+            if (InputHandler.KeyPressed(Keys.Enter))
+                Player.ActiveShape = ShapesFactory.CreateRandom(BlockTexture, ShapeTypes.T);
+
             Player.Update(gameTime);
 
             base.Update(gameTime);
