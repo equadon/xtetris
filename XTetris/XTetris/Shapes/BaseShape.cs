@@ -230,7 +230,7 @@ namespace XTetris
 
             for (int row = blocks.GetUpperBound(0); row >= 0; row--)
             {
-                for (int col = 0; col < blocks.GetUpperBound(1); col++)
+                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
                 {
                     if (blocks[row, col] != null)
                     {
