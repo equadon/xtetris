@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+
+using XTetris.Engine;
+using XTetris.GameStates;
 
 namespace XTetris
 {
@@ -16,13 +12,41 @@ namespace XTetris
     /// </summary>
     public class XTetrisGame : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager _graphics;
-        SpriteBatch _spriteBatch;
+        public const int ScreenWidth = 1024;
+        public const int ScreenHeight = 768;
+
+        private readonly GraphicsDeviceManager _graphics;
+        private readonly GameStateManager _stateManager;
+
+        public SpriteBatch SpriteBatch { get; private set; }
+
+        public GamePlayScreen GamePlayScreen { get; private set; }
+
+        public GameStateManager StateManager
+        {
+            get { return _stateManager; }
+        }
 
         public XTetrisGame()
         {
             _graphics = new GraphicsDeviceManager(this);
+            _graphics.PreferredBackBufferWidth = ScreenWidth;
+            _graphics.PreferredBackBufferHeight = ScreenHeight;
+
             Content.RootDirectory = "Content";
+
+            IsMouseVisible = true;
+
+            Window.Title = "Tetris";
+
+            Components.Add(new InputHandler(this));
+
+            _stateManager = new GameStateManager(this);
+            Components.Add(StateManager);
+
+            GamePlayScreen = new GamePlayScreen(this, StateManager);
+
+            StateManager.ChangeState(GamePlayScreen);
         }
 
         /// <summary>
@@ -43,7 +67,7 @@ namespace XTetris
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         /// <summary>
