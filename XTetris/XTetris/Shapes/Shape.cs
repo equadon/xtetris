@@ -86,13 +86,15 @@ namespace XTetris
         {
             _rotations = new List<Block[,]>();
 
-            // Add two inverted rotations
-            List<int[,]> invertedRotations = new List<int[,]>();
-            foreach (var rotation in rotations)
-                invertedRotations.Add(InvertRotation(rotation));
+            // Append inverted rotations unless all 4 are already specified
+            if (rotations.Count != 4)
+            {
+                List<int[,]> invertedRotations = new List<int[,]>();
+                foreach (var rotation in rotations)
+                    invertedRotations.Add(InvertRotation(rotation));
 
-            // Append inverted rotations
-            rotations.AddRange(invertedRotations);
+                rotations.AddRange(invertedRotations);
+            }
 
             foreach (int[,] rotation in rotations)
             {
