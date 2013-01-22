@@ -1,16 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace XTetris.Engine
 {
+    public enum MouseButton { Left, Middle, Right }
+
     public class InputHandler : GameComponent
     {
         #region Properties
@@ -86,6 +81,58 @@ namespace XTetris.Engine
         public static bool KeyDown(Keys key)
         {
             return KeyboardState.IsKeyDown(key);
+        }
+
+        #endregion
+
+        #region Mouse Methods
+
+        public static bool ButtonReleased(MouseButton button)
+        {
+            switch (button)
+            {
+                case MouseButton.Left:
+                    return MouseState.LeftButton == ButtonState.Released &&
+                           LastMouseState.LeftButton == ButtonState.Pressed;
+                case MouseButton.Middle:
+                    return MouseState.MiddleButton == ButtonState.Released &&
+                           LastMouseState.MiddleButton == ButtonState.Pressed;
+                case MouseButton.Right:
+                    return MouseState.RightButton == ButtonState.Released &&
+                           LastMouseState.RightButton == ButtonState.Pressed;
+            }
+            return false;
+        }
+
+        public static bool ButtonPressed(MouseButton button)
+        {
+            switch (button)
+            {
+                case MouseButton.Left:
+                    return MouseState.LeftButton == ButtonState.Pressed &&
+                           LastMouseState.LeftButton == ButtonState.Released;
+                case MouseButton.Middle:
+                    return MouseState.MiddleButton == ButtonState.Pressed &&
+                           LastMouseState.MiddleButton == ButtonState.Released;
+                case MouseButton.Right:
+                    return MouseState.RightButton == ButtonState.Pressed &&
+                           LastMouseState.RightButton == ButtonState.Released;
+            }
+            return false;
+        }
+
+        public static bool ButtonDown(MouseButton button)
+        {
+            switch (button)
+            {
+                case MouseButton.Left:
+                    return MouseState.LeftButton == ButtonState.Pressed;
+                case MouseButton.Middle:
+                    return MouseState.MiddleButton == ButtonState.Pressed;
+                case MouseButton.Right:
+                    return MouseState.RightButton == ButtonState.Pressed;
+            }
+            return false;
         }
 
         #endregion
