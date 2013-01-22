@@ -81,6 +81,9 @@
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Shapes\ZShape.cs" />
+    <Compile Include="Shapes\SShape.cs" />
+    <Compile Include="Shapes\OShape.cs" />
     <Compile Include="Shapes\LShape.cs" />
     <Compile Include="Shapes\JShape.cs" />
     <Compile Include="Shapes\Shape.cs" />

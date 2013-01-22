@@ -29,7 +29,7 @@ namespace XTetris.GameStates
         {
             BlockTexture = Content.Load<Texture2D>(@"Textures\block");
 
-            Player.ActiveShape = ShapesFactory.CreateRandom(BlockTexture, ShapeTypes.T);
+            Player.ActiveShape = ShapesFactory.CreateRandom(BlockTexture);
             Player.ActiveShape.Position = new Vector2(200, 200);
 
             base.LoadContent();
@@ -38,7 +38,7 @@ namespace XTetris.GameStates
         public override void Update(GameTime gameTime)
         {
             if (InputHandler.KeyPressed(Keys.Enter))
-                Player.ActiveShape = ShapesFactory.CreateRandom(BlockTexture, ShapeTypes.T);
+                Player.ActiveShape = ShapesFactory.CreateRandom(BlockTexture);
 
             Player.Update(gameTime);
 

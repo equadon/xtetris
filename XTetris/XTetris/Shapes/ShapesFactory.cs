@@ -25,10 +25,18 @@ namespace XTetris.Shapes
                     return new IShape(blockTexture);
                 case ShapeTypes.J:
                     return new JShape(blockTexture);
+                case ShapeTypes.L:
+                    return new LShape(blockTexture);
+                case ShapeTypes.O:
+                    return new OShape(blockTexture);
+                case ShapeTypes.S:
+                    return new SShape(blockTexture);
                 case ShapeTypes.T:
                     return new TShape(blockTexture);
+                case ShapeTypes.Z:
+                    return new ZShape(blockTexture);
                 default:
-                    return new JShape(blockTexture);
+                    return null;
             }
         }
     }
