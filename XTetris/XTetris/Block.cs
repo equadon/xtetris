@@ -9,7 +9,7 @@ namespace XTetris
 
         #region Properties
 
-        public Shape Parent { get; private set; }
+        public BaseShape Parent { get; private set; }
         public Color Color { get; private set; }
 
         public Vector2 Position
@@ -45,7 +45,7 @@ namespace XTetris
 
         #endregion
 
-        public Block(Shape parent, Color color, int row, int col)
+        public Block(BaseShape parent, Color color, int row, int col)
         {
             Color = color;
             Parent = parent;

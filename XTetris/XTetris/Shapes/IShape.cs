@@ -4,10 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace XTetris.Shapes
 {
-    public class IShape : Shape
+    public class IShape : BaseShape
     {
-        public IShape(Texture2D texture)
-            : base(texture)
+        public IShape(Texture2D texture, Board board)
+            : base(texture, board)
         {
             Color = new Color(0, 255, 255);
 

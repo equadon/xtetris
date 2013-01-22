@@ -9,8 +9,13 @@ namespace XTetris.GameStates
 {
     public class GamePlayState : BaseGameState
     {
-        public static Texture2D BlockTexture { get; private set; }
+        private const int BlockWidth = 30;
+        private const int BlockHeight = 30;
 
+        public Texture2D BlockTexture { get; private set; }
+        public Texture2D FillTexture { get; private set; }
+
+        public Board Board { get; private set; }
         public Player Player { get; private set; }
 
         public GamePlayState(Game game, GameStateManager manager)
@@ -20,26 +25,23 @@ namespace XTetris.GameStates
 
         public override void Initialize()
         {
-            Player = new Player();
-
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             BlockTexture = Content.Load<Texture2D>(@"Textures\block");
+            FillTexture = Content.Load<Texture2D>(@"Textures\fill");
 
-            Player.ActiveShape = ShapesFactory.CreateRandom(BlockTexture);
-            Player.ActiveShape.Position = new Vector2(200, 200);
+            Board = new Board(FillTexture, BlockWidth, BlockHeight);
+            Player = new Player(Board);
 
             base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (InputHandler.KeyPressed(Keys.Enter))
-                Player.ActiveShape = ShapesFactory.CreateRandom(BlockTexture);
-
+            Board.Update(gameTime);
             Player.Update(gameTime);
 
             base.Update(gameTime);
@@ -49,7 +51,7 @@ namespace XTetris.GameStates
         {
             SpriteBatch.Begin();
 
-            Player.Draw(gameTime, SpriteBatch);
+            Board.Draw(gameTime, SpriteBatch);
 
             base.Draw(gameTime);
 

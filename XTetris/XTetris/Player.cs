@@ -15,46 +15,33 @@ namespace XTetris
     {
         #region Properties
 
-        public Shape ActiveShape { get; set; }
-
-        public bool HasActiveTetromino
-        {
-            get { return ActiveShape != null; }
-        }
+        public Board Board { get; private set; }
 
         #endregion
 
-        public Player()
+        public Player(Board board)
         {
+            Board = board;
         }
 
         public void Update(GameTime gameTime)
         {
-            if (!HasActiveTetromino)
-                return;
-
             if (InputHandler.KeyPressed(Keys.Right))
-                ActiveShape.MoveRight();
+                Board.ActiveShape.MoveRight();
 
             if (InputHandler.KeyPressed(Keys.Left))
-                ActiveShape.MoveLeft();
+                Board.ActiveShape.MoveLeft();
 
             if (InputHandler.KeyPressed(Keys.Up) || InputHandler.KeyPressed(Keys.X))
-                ActiveShape.RotateRight();
+                Board.ActiveShape.RotateRight();
 
             if (InputHandler.KeyPressed(Keys.Down))
-                ActiveShape.MoveDown();
+                Board.ActiveShape.MoveDown();
 
             if (InputHandler.KeyPressed(Keys.LeftControl) ||
                 InputHandler.KeyPressed(Keys.RightControl) ||
                 InputHandler.KeyPressed(Keys.Z))
-                ActiveShape.RotateLeft();
-        }
-
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            if (HasActiveTetromino)
-                ActiveShape.Draw(gameTime, spriteBatch);
+                Board.ActiveShape.RotateLeft();
         }
     }
 }

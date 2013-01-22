@@ -72,6 +72,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Board.cs" />
     <Compile Include="Engine\GameState.cs" />
     <Compile Include="Engine\GameStateManager.cs" />
     <Compile Include="Engine\InputHandler.cs" />
@@ -86,9 +87,9 @@
     <Compile Include="Shapes\OShape.cs" />
     <Compile Include="Shapes\LShape.cs" />
     <Compile Include="Shapes\JShape.cs" />
-    <Compile Include="Shapes\Shape.cs" />
+    <Compile Include="Shapes\BaseShape.cs" />
     <Compile Include="Shapes\IShape.cs" />
-    <Compile Include="Shapes\ShapesFactory.cs" />
+    <Compile Include="Engine\ShapesFactory.cs" />
     <Compile Include="Shapes\TShape.cs" />
     <Compile Include="TetrisGame.cs" />
   </ItemGroup>

@@ -5,10 +5,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace XTetris.Shapes
 {
-    public class TShape : Shape
+    public class TShape : BaseShape
     {
-        public TShape(Texture2D texture)
-            : base(texture)
+        public TShape(Texture2D texture, Board board)
+            : base(texture, board)
         {
             Color = new Color(153, 0, 255);
 

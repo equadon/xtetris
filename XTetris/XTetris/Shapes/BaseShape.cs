@@ -9,7 +9,7 @@ namespace XTetris
 {
     public enum Direction { West, East, North, South }
 
-    public abstract class Shape
+    public abstract class BaseShape
     {
         private Vector2 _position;
 
@@ -19,6 +19,7 @@ namespace XTetris
 
         public Texture2D Texture { get; private set; }
         public Color Color { get; protected set; }
+        public Board Board { get; private set; }
 
         public Direction CurrentRotation { get; private set; }
 
@@ -30,9 +31,10 @@ namespace XTetris
 
         #endregion
 
-        public Shape(Texture2D texture)
+        public BaseShape(Texture2D texture, Board board)
         {
             Texture = texture;
+            Board = board;
             CurrentRotation = Direction.West;
         }
 

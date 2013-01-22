@@ -14,7 +14,7 @@ namespace XTetris.Shapes
             _random = new Random();
         }
 
-        public static Shape CreateRandom(Texture2D blockTexture, ShapeTypes shapeType = ShapeTypes.None)
+        public static BaseShape CreateRandom(Texture2D blockTexture, Board board, ShapeTypes shapeType = ShapeTypes.None)
         {
             if (shapeType == ShapeTypes.None)
                 shapeType = (ShapeTypes) _random.Next(7);
@@ -22,19 +22,19 @@ namespace XTetris.Shapes
             switch (shapeType)
             {
                 case ShapeTypes.I:
-                    return new IShape(blockTexture);
+                    return new IShape(blockTexture, board);
                 case ShapeTypes.J:
-                    return new JShape(blockTexture);
+                    return new JShape(blockTexture, board);
                 case ShapeTypes.L:
-                    return new LShape(blockTexture);
+                    return new LShape(blockTexture, board);
                 case ShapeTypes.O:
-                    return new OShape(blockTexture);
+                    return new OShape(blockTexture, board);
                 case ShapeTypes.S:
-                    return new SShape(blockTexture);
+                    return new SShape(blockTexture, board);
                 case ShapeTypes.T:
-                    return new TShape(blockTexture);
+                    return new TShape(blockTexture, board);
                 case ShapeTypes.Z:
-                    return new ZShape(blockTexture);
+                    return new ZShape(blockTexture, board);
                 default:
                     return null;
             }
