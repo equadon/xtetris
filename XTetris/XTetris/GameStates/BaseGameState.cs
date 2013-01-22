@@ -24,7 +24,7 @@ namespace XTetris.GameStates
 
         protected SpriteBatch SpriteBatch
         {
-            get { return ((XTetrisGame)Game).SpriteBatch; }
+            get { return ((TetrisGame)Game).SpriteBatch; }
         }
 
         protected ContentManager Content

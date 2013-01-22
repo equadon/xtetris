@@ -9,9 +9,9 @@ namespace XTetris.GameStates
 {
     public class GamePlayState : BaseGameState
     {
-        private TTetromino _t;
+        public static Texture2D MinoTexture { get; private set; }
 
-        private readonly Color TTetrominoColor = Color.Purple;
+        public Player Player { get; private set; }
 
         public GamePlayState(Game game, GameStateManager manager)
             : base(game, manager)
@@ -20,20 +20,23 @@ namespace XTetris.GameStates
 
         public override void Initialize()
         {
+            Player = new Player();
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            Texture2D texture = Content.Load<Texture2D>(@"Textures\mino");
-            _t = new TTetromino(texture, TTetrominoColor);
+            MinoTexture = Content.Load<Texture2D>(@"Textures\mino");
+
+            Player.ActiveTetromino = new TTetromino(MinoTexture, TetrisGame.TTetrominoColor);
 
             base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
-            _t.Update(gameTime);
+            Player.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -42,7 +45,7 @@ namespace XTetris.GameStates
         {
             SpriteBatch.Begin();
 
-            _t.Draw(gameTime, SpriteBatch);
+            Player.Draw(gameTime, SpriteBatch);
 
             base.Draw(gameTime);
 

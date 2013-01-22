@@ -87,7 +87,7 @@ namespace XTetris.Engine
 
         #region Mouse Methods
 
-        public static bool ButtonReleased(MouseButton button)
+        public static bool MouseReleased(MouseButton button)
         {
             switch (button)
             {
@@ -104,7 +104,7 @@ namespace XTetris.Engine
             return false;
         }
 
-        public static bool ButtonPressed(MouseButton button)
+        public static bool MousePressed(MouseButton button)
         {
             switch (button)
             {
@@ -121,7 +121,7 @@ namespace XTetris.Engine
             return false;
         }
 
-        public static bool ButtonDown(MouseButton button)
+        public static bool MouseDown(MouseButton button)
         {
             switch (button)
             {

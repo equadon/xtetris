@@ -19,9 +19,24 @@ namespace XTetris
             set { _position = value; }
         }
 
+        public Vector2 AbsolutePosition
+        {
+            get
+            {
+                return new Vector2(
+                    Parent.Position.X + Position.X * Width,
+                    Parent.Position.Y + Position.Y * Height);
+            }
+        }
+
         public Rectangle Bounds
         {
             get { return new Rectangle((int)Position.X * Width, (int)Position.Y * Height, Width, Height); }
+        }
+
+        public Vector2 Origin
+        {
+            get { return new Vector2(_texture.Width/2f, _texture.Height/2f); }
         }
 
         public int Width
@@ -44,13 +59,9 @@ namespace XTetris
             Position = new Vector2(col, row);
         }
 
-        public void Update(GameTime gameTime)
-        {
-        }
-
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Bounds, Color);
+            spriteBatch.Draw(_texture, AbsolutePosition, Color);
         }
     }
 }

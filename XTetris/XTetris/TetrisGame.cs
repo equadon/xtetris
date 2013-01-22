@@ -10,7 +10,7 @@ namespace XTetris
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class XTetrisGame : Microsoft.Xna.Framework.Game
+    public class TetrisGame : Microsoft.Xna.Framework.Game
     {
         public const int ScreenWidth = 600;
         public const int ScreenHeight = 800;
@@ -22,6 +22,9 @@ namespace XTetris
 
         public Rectangle ScreenRectangle { get; private set; }
 
+        // Tetromino Colors
+        public static readonly Color TTetrominoColor = new Color(170, 0, 255);
+
         // Game states
         public GamePlayState GamePlayState { get; private set; }
 
@@ -30,7 +33,7 @@ namespace XTetris
             get { return _stateManager; }
         }
 
-        public XTetrisGame()
+        public TetrisGame()
         {
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = ScreenWidth;
