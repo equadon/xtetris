@@ -30,7 +30,11 @@ namespace XTetris
         public Vector2 Position
         {
             get { return _position; }
-            set { _position = value; }
+            set
+            {
+                _position.X = value.X - value.X % TetrisGame.BlockSize;
+                _position.Y = value.Y - value.Y % TetrisGame.BlockSize;
+            }
         }
 
         public Rectangle Bounds
