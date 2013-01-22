@@ -9,10 +9,7 @@ namespace XTetris.GameStates
 {
     public class GamePlayState : BaseGameState
     {
-        private const int BlockWidth = 30;
-        private const int BlockHeight = 30;
-
-        public Texture2D BlockTexture { get; private set; }
+        public static Texture2D BlockTexture { get; private set; }
         public Texture2D FillTexture { get; private set; }
 
         public Board Board { get; private set; }
@@ -33,7 +30,7 @@ namespace XTetris.GameStates
             BlockTexture = Content.Load<Texture2D>(@"Textures\block");
             FillTexture = Content.Load<Texture2D>(@"Textures\fill");
 
-            Board = new Board(FillTexture, BlockWidth, BlockHeight);
+            Board = new Board(FillTexture);
             Player = new Player(Board);
 
             base.LoadContent();

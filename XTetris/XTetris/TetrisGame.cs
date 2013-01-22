@@ -12,8 +12,14 @@ namespace XTetris
     /// </summary>
     public class TetrisGame : Microsoft.Xna.Framework.Game
     {
-        public const int ScreenWidth = 600;
-        public const int ScreenHeight = 800;
+        public const int BlockSize = 30;
+        public const int BoardPadding = 0;
+
+        public const int BlocksWide = 10;
+        public const int BlocksHigh = 20;
+
+        public const int ScreenWidth = BlockSize * BlocksWide + BoardPadding;
+        public const int ScreenHeight = BlockSize * BlocksHigh + BoardPadding;
 
         private readonly GraphicsDeviceManager _graphics;
         private readonly GameStateManager _stateManager;

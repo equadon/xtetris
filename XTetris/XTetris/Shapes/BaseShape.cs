@@ -29,6 +29,19 @@ namespace XTetris
             set { _position = value; }
         }
 
+        public Vector2 Origin
+        {
+            get
+            {
+                if (_rotations == null)
+                    return Vector2.Zero;
+
+                return new Vector2(
+                    ((_rotations[0].GetUpperBound(1) + 1) * TetrisGame.BlockSize) / 2f,
+                    ((_rotations[0].GetUpperBound(0) + 1) * TetrisGame.BlockSize) / 2f);
+            }
+        }
+
         #endregion
 
         public BaseShape(Texture2D texture, Board board)

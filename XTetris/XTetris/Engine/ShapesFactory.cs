@@ -1,7 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace XTetris.Shapes
+using XTetris.Shapes;
+
+namespace XTetris.Engine
 {
     public enum ShapeTypes { I, J, L, O, S, T, Z, None }
 
@@ -14,8 +16,9 @@ namespace XTetris.Shapes
             _random = new Random();
         }
 
-        public static BaseShape CreateRandom(Texture2D blockTexture, Board board, ShapeTypes shapeType = ShapeTypes.None)
+        public static BaseShape CreateRandom(Board board, ShapeTypes shapeType = ShapeTypes.None)
         {
+            Texture2D blockTexture = XTetris.GameStates.GamePlayState.BlockTexture;
             if (shapeType == ShapeTypes.None)
                 shapeType = (ShapeTypes) _random.Next(7);
 
