@@ -10,6 +10,7 @@ namespace XTetris.GameStates
     public class GamePlayState : BaseGameState
     {
         public static Texture2D BlockTexture { get; private set; }
+        public static SpriteFont DebugFont { get; private set; }
         public Texture2D FillTexture { get; private set; }
 
         public Board Board { get; private set; }
@@ -29,6 +30,8 @@ namespace XTetris.GameStates
         {
             BlockTexture = Content.Load<Texture2D>(@"Textures\block");
             FillTexture = Content.Load<Texture2D>(@"Textures\fill");
+
+            DebugFont = Content.Load<SpriteFont>(@"Fonts\Debug");
 
             Board = new Board(FillTexture);
             Player = new Player(Board);

@@ -5,7 +5,7 @@ using XTetris.Shapes;
 
 namespace XTetris.Engine
 {
-    public enum ShapeTypes { I, J, L, O, S, T, Z, None }
+    public enum ShapeTypes { I, J, L, O, S, T, Z, Random }
 
     public static class ShapesFactory
     {
@@ -16,10 +16,10 @@ namespace XTetris.Engine
             _random = new Random();
         }
 
-        public static BaseShape CreateRandom(Board board, ShapeTypes shapeType = ShapeTypes.None)
+        public static BaseShape CreateRandom(Board board, ShapeTypes shapeType = ShapeTypes.Random)
         {
             Texture2D blockTexture = XTetris.GameStates.GamePlayState.BlockTexture;
-            if (shapeType == ShapeTypes.None)
+            if (shapeType == ShapeTypes.Random)
                 shapeType = (ShapeTypes) _random.Next(7);
 
             switch (shapeType)

@@ -7,11 +7,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace XTetris
 {
-    public enum Direction { West, East, North, South }
+    public enum Direction { North, East, South, West, Random }
 
     public abstract class BaseShape
     {
+        private Random _random;
         private Vector2 _position;
+        protected Rectangle _bounds;
+
+        public  Vector2 LowestBlock { get; protected set; }
 
         protected List<Block[,]> _rotations;
 
@@ -29,6 +33,19 @@ namespace XTetris
             set { _position = value; }
         }
 
+        public Rectangle Bounds
+        {
+            get
+            {
+                return new Rectangle(
+                    _bounds.X,
+                    _bounds.Y,
+                    _bounds.Width,
+                    _bounds.Height);
+            }
+            set { _bounds = value; }
+        }
+
         public Vector2 Origin
         {
             get
@@ -44,11 +61,16 @@ namespace XTetris
 
         #endregion
 
-        public BaseShape(Texture2D texture, Board board)
+        public BaseShape(Texture2D texture, Board board, Direction direction = Direction.Random)
         {
+            _random = new Random();
+
             Texture = texture;
             Board = board;
-            CurrentRotation = Direction.West;
+
+            if (direction == Direction.Random)
+                direction = (Direction) _random.Next(4);
+            CurrentRotation = direction;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -77,6 +99,11 @@ namespace XTetris
             _position.Y += Texture.Height;
         }
 
+        public void MoveUp()
+        {
+            _position.Y -= Texture.Height;
+        }
+
         public void RotateRight()
         {
             int pos = (int) CurrentRotation;
@@ -84,6 +111,8 @@ namespace XTetris
             if (pos > 3)
                 pos = 0;
             CurrentRotation = (Direction) pos;
+
+            CalculateLowestBlock();
         }
 
         public void RotateLeft()
@@ -93,6 +122,8 @@ namespace XTetris
             if (pos < 0)
                 pos = 3;
             CurrentRotation = (Direction) pos;
+
+            CalculateLowestBlock();
         }
 
         #endregion
@@ -120,6 +151,8 @@ namespace XTetris
                             blocks[row, col] = new Block(this, Color, row, col);
                 _rotations.Add(blocks);
             }
+
+            CalculateBounds();
         }
 
         protected int[,] InvertRotation(int[,] rotation)
@@ -135,6 +168,77 @@ namespace XTetris
                         inverted[rows - row, cols - col] = 1;
 
             return inverted;
+        }
+
+        // Calculate width & height based on block positions
+        protected void CalculateBounds()
+        {
+            int width = 0;
+            int height = 0;
+
+            int blockSize = TetrisGame.BlockSize;
+
+            Block[,] blocks = _rotations[(int)CurrentRotation];
+
+            int minW = blocks.GetUpperBound(1) + 1;
+            int maxW = -1;
+
+            int minH = blocks.GetUpperBound(0) + 1;
+            int maxH = -1;
+
+            for (int row = 0; row <= blocks.GetUpperBound(0); row++)
+            {
+                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+                {
+                    if (blocks[row, col] != null)
+                    {
+                        if (minW > col)
+                            minW = col;
+                        if (maxW < col)
+                            maxW = col;
+
+                        if (minH > row)
+                            minH = row;
+                        if (maxH < row)
+                        {
+                            maxH = row;
+                        }
+                    }
+                }
+
+                if ((maxW - minW + 1) > width)
+                    width = maxW - minW + 1;
+
+                if ((maxH - minH + 1) > height)
+                    height = maxH - minH + 1;
+            }
+
+            CalculateLowestBlock();
+
+            _position.Y -= LowestBlock.Y;
+
+            _bounds.Width = width * blockSize;
+            _bounds.Height = height * blockSize;
+
+            _bounds.X = minW * blockSize;
+            _bounds.Y = minH * blockSize;
+        }
+
+        protected void CalculateLowestBlock()
+        {
+            Block[,] blocks = _rotations[(int)CurrentRotation];
+
+            for (int row = blocks.GetUpperBound(0); row >= 0; row--)
+            {
+                for (int col = 0; col < blocks.GetUpperBound(1); col++)
+                {
+                    if (blocks[row, col] != null)
+                    {
+                        LowestBlock = new Vector2(col * TetrisGame.BlockSize, row * TetrisGame.BlockSize);
+                        return;
+                    }
+                }
+            }
         }
     }
 }

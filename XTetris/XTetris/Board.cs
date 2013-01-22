@@ -57,6 +57,30 @@ namespace XTetris
             // Draw board
             spriteBatch.Draw(Texture, ScreenRectangle, _backgroundColor);
 
+            // Debug text
+            string text = "ActiveShape Bounds:\n-----------------" +
+                          "\nX = " + ActiveShape.Bounds.X +
+                          "\nY = " + ActiveShape.Bounds.Y +
+                          "\nTop = " + ActiveShape.Bounds.Top +
+                          "\nLeft = " + ActiveShape.Bounds.Left +
+                          "\nBottom = " + ActiveShape.Bounds.Bottom +
+                          "\nRight = " + ActiveShape.Bounds.Right +
+                          "\nSize = " + ActiveShape.Bounds.Width + "x" + ActiveShape.Bounds.Height +
+                          "\nLowest Block Pos = " + ActiveShape.LowestBlock.X + "," + ActiveShape.LowestBlock.Y + 
+                          "\nPos.X = " + ActiveShape.Position.X +
+                          "\nPos.Y = " + ActiveShape.Position.Y + 
+                          "\nRotation: " + ActiveShape.CurrentRotation.ToString();
+
+            Vector2 textSize = XTetris.GameStates.GamePlayState.DebugFont.MeasureString(text);
+
+            spriteBatch.DrawString(
+                XTetris.GameStates.GamePlayState.DebugFont,
+                text,
+                new Vector2(
+                    TetrisGame.BoardPadding + ScreenRectangle.Width - TetrisGame.BoardPadding / 2f - textSize.X - 5,
+                    TetrisGame.BoardPadding + ScreenRectangle.Height - TetrisGame.BoardPadding / 2f - textSize.Y),
+                Color.Black);
+
             // Draw active shape
             if (HasActiveShape)
                 ActiveShape.Draw(gameTime, spriteBatch);
@@ -66,8 +90,8 @@ namespace XTetris
         {
             ActiveShape = ShapesFactory.CreateRandom(this);
             ActiveShape.Position = new Vector2(
-                ScreenRectangle.Width/2f - ScreenRectangle.X/2f - ActiveShape.Origin.X + TetrisGame.BlockSize/2f,
-                TetrisGame.BoardPadding/2f - ActiveShape.Origin.Y - TetrisGame.BlockSize/2f);
+                TetrisGame.BoardPadding/2f + ScreenRectangle.Width/2f - ActiveShape.Bounds.Width/2f - ActiveShape.Bounds.X,
+                ActiveShape.Position.Y + TetrisGame.BoardPadding/2f - TetrisGame.BlockSize);
         }
     }
 }
