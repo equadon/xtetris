@@ -103,11 +103,6 @@ namespace XTetris
             _position.Y += Texture.Height;
         }
 
-        public void MoveUp()
-        {
-            _position.Y -= Texture.Height;
-        }
-
         public void RotateRight()
         {
             int pos = (int) CurrentRotation;
@@ -116,7 +111,7 @@ namespace XTetris
                 pos = 0;
             CurrentRotation = (Direction) pos;
 
-            CalculateLowestBlock();
+            CalculateBounds(true);
         }
 
         public void RotateLeft()
@@ -127,7 +122,7 @@ namespace XTetris
                 pos = 3;
             CurrentRotation = (Direction) pos;
 
-            CalculateLowestBlock();
+            CalculateBounds(true);
         }
 
         #endregion
@@ -175,7 +170,7 @@ namespace XTetris
         }
 
         // Calculate width & height based on block positions
-        protected void CalculateBounds()
+        protected void CalculateBounds(bool rotating = false)
         {
             int width = 0;
             int height = 0;
@@ -219,7 +214,8 @@ namespace XTetris
 
             CalculateLowestBlock();
 
-            _position.Y -= LowestBlock.Y;
+            if (!rotating)
+                _position.Y -= LowestBlock.Y;
 
             _bounds.Width = width * blockSize;
             _bounds.Height = height * blockSize;

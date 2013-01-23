@@ -13,7 +13,7 @@ namespace XTetris
     public class TetrisGame : Microsoft.Xna.Framework.Game
     {
         public const int BlockSize = 30;
-        public const int BoardPadding = BlockSize * 6;
+        public const int BoardPadding = 0;
 
         public const int BlocksWide = 10;
         public const int BlocksHigh = 20;

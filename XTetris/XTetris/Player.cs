@@ -32,15 +32,11 @@ namespace XTetris
             if (InputHandler.KeyPressed(Keys.Left))
                 Board.ActiveShape.MoveLeft();
 
-            //if (InputHandler.KeyPressed(Keys.Up) || InputHandler.KeyPressed(Keys.X))
-            if (InputHandler.KeyPressed(Keys.X))
+            if (InputHandler.KeyPressed(Keys.Up) || InputHandler.KeyPressed(Keys.X))
                 Board.ActiveShape.RotateRight();
 
             if (InputHandler.KeyPressed(Keys.Down))
                 Board.ActiveShape.MoveDown();
-
-            if (InputHandler.KeyPressed(Keys.Up))
-                Board.ActiveShape.MoveUp();
 
             if (InputHandler.KeyPressed(Keys.LeftControl) ||
                 InputHandler.KeyPressed(Keys.RightControl) ||

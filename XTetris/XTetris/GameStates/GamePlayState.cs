@@ -41,8 +41,8 @@ namespace XTetris.GameStates
 
         public override void Update(GameTime gameTime)
         {
-            Board.Update(gameTime);
             Player.Update(gameTime);
+            Board.Update(gameTime);
 
             base.Update(gameTime);
         }

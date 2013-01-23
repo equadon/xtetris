@@ -9,12 +9,17 @@ namespace XTetris
     {
         #region Properties & Fields
 
-        private float ShapeMoveSpeed = 0.8f;
+        private const float StartingShapeSpeed = 0.8f;
+
+        private float _shapeSpeedIncrease = 0.1f;
+        private int _level = 1;
 
         public double ShapeMoveDelay { get; private set; }
 
         private Vector2 _position;
         private Rectangle _screenRectangle;
+
+        public bool StopMove { get; private set; }
 
         private readonly Color _backgroundColor = new Color(255, 255, 255);
 
@@ -49,12 +54,16 @@ namespace XTetris
 
             SpawnShape();
 
-            ShapeMoveDelay = ShapeMoveSpeed;
+            ShapeMoveDelay = StartingShapeSpeed + _level * _shapeSpeedIncrease;
         }
 
         public void Update(GameTime gameTime)
         {
-            ShapeMoveDelay -= gameTime.ElapsedGameTime.TotalSeconds;
+            if (InputHandler.KeyPressed(Keys.Space))
+                StopMove = !StopMove;
+
+            if (!StopMove)
+                ShapeMoveDelay -= gameTime.ElapsedGameTime.TotalSeconds;
 
             if (InputHandler.KeyPressed(Keys.Enter))
                 SpawnShape();
@@ -62,8 +71,10 @@ namespace XTetris
             if (ShapeMoveDelay <= 0d)
             {
                 ActiveShape.MoveDown();
-                ShapeMoveDelay = ShapeMoveSpeed;
+                ShapeMoveDelay = StartingShapeSpeed + _level * _shapeSpeedIncrease;
             }
+
+            CheckCollisionWithWalls();
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -71,42 +82,56 @@ namespace XTetris
             // Draw board
             spriteBatch.Draw(Texture, ScreenRectangle, _backgroundColor);
 
-            // Debug text
-            string text = "ActiveShape Bounds:\n-----------------" +
-                          "\nX = " + ActiveShape.Bounds.X +
-                          "\nY = " + ActiveShape.Bounds.Y +
-                          "\nTop = " + ActiveShape.Bounds.Top +
-                          "\nLeft = " + ActiveShape.Bounds.Left +
-                          "\nBottom = " + ActiveShape.Bounds.Bottom +
-                          "\nRight = " + ActiveShape.Bounds.Right +
-                          "\nSize = " + ActiveShape.Bounds.Width + "x" + ActiveShape.Bounds.Height +
-                          "\nLowest Block Pos = " + ActiveShape.LowestBlock.X + "," + ActiveShape.LowestBlock.Y + 
-                          "\nPos.X = " + ActiveShape.Position.X +
-                          "\nPos.Y = " + ActiveShape.Position.Y + 
-                          "\nRotation: " + ActiveShape.CurrentRotation.ToString();
-
-            Vector2 textSize = XTetris.GameStates.GamePlayState.DebugFont.MeasureString(text);
-
-            spriteBatch.DrawString(
-                XTetris.GameStates.GamePlayState.DebugFont,
-                text,
-                new Vector2(
-                    TetrisGame.BoardPadding + ScreenRectangle.Width - TetrisGame.BoardPadding / 2f - textSize.X - 5,
-                    TetrisGame.BoardPadding + ScreenRectangle.Height - TetrisGame.BoardPadding / 2f - textSize.Y),
-                Color.Black);
-
             // Draw active shape
             if (HasActiveShape)
                 ActiveShape.Draw(gameTime, spriteBatch);
+
+            string text = "Pos: (" + ActiveShape.Position.X + "," + ActiveShape.Position.Y + ")" +
+                          "\nRect: (" + ActiveShape.Bounds.X + "," + ActiveShape.Bounds.Y + ")" +
+                          "\n   Size: " + ActiveShape.Bounds.Width + "x" + ActiveShape.Bounds.Height +
+                          "\n   Left/right: " + ActiveShape.Bounds.Left + "/" + ActiveShape.Bounds.Right +
+                          "\n   Top/bottom: " + ActiveShape.Bounds.Top + "/" + ActiveShape.Bounds.Bottom;
+
+            spriteBatch.DrawString(XTetris.GameStates.GamePlayState.DebugFont,
+                text,
+                new Vector2(0, 200),
+                Color.Black);
         }
 
-        private void SpawnShape()
+        public void SpawnShape()
         {
             ActiveShape = ShapesFactory.CreateRandom(this);
 
             ActiveShape.Position = new Vector2(
                 TetrisGame.BoardPadding / 2f + ScreenRectangle.Width / 2f - ActiveShape.Bounds.Width / 2f - ActiveShape.Bounds.X,
-                ActiveShape.Position.Y + TetrisGame.BoardPadding/2f - TetrisGame.BlockSize);
+                ActiveShape.Position.Y + TetrisGame.BoardPadding / 2f - TetrisGame.BlockSize);
         }
+
+        #region Collision Methods
+
+        public void CheckCollisionWithWalls()
+        {
+            // Left wall
+            if (IsCollidingWithWall(ActiveShape))
+            {
+                ActiveShape.Position = new Vector2(
+                    0 - ActiveShape.Bounds.X,
+                    ActiveShape.Position.Y);
+            }
+        }
+
+        /// <summary>
+        /// Used to check if new rotation collides with wall.
+        /// </summary>
+        /// <returns>Returns true if shape is colliding with wall.</returns>
+        public bool IsCollidingWithWall(BaseShape shape)
+        {
+            // Left wall
+            if (shape.Position.X + shape.Bounds.X < 0)
+                return true;
+            return false;
+        }
+
+        #endregion
     }
 }
