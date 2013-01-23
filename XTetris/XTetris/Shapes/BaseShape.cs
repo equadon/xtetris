@@ -67,7 +67,43 @@ namespace XTetris.Shapes
             }
         }
 
+        public void Rotate(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Left:
+                    break;
+
+                case Direction.Right:
+                    break;
+            }
+        }
+
         #endregion
+
+        /// <summary>
+        /// Save shape to board.
+        /// </summary>
+        public void Save()
+        {
+            var blocks = Rotations[(int)Direction];
+
+            for (int row = 0; row <= blocks.GetUpperBound(0); row++)
+            {
+                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+                {
+                    var block = blocks[row, col];
+                    if (block != null)
+                    {
+                        int x = (int) block.BoardPosition.X;
+                        int y = (int)block.BoardPosition.Y;
+                        if (Board.Cells[y, x] != null)
+                            throw new Exception("This cell should be empty!");
+                        Board.Cells[y, x] = block;
+                    }
+                }
+            }
+        }
 
         #region Generate Blocks
 
@@ -91,7 +127,7 @@ namespace XTetris.Shapes
                 for (int row = 0; row <= rotation.GetUpperBound(0); row++)
                     for (int col = 0; col <= rotation.GetUpperBound(1); col++)
                         if (rotation[row, col] == 1)
-                            blocks[row, col] = new Block(this, new Vector2(col, row));
+                            blocks[row, col] = new Block(this, Color, new Vector2(col, row));
                 Rotations.Add(blocks);
             }
         }

@@ -63,23 +63,29 @@ namespace XTetris
             // Fill queue with shapes
             ShapesQueue = new Queue<BaseShape>();
 
-            ActiveShape = ShapesFactory.CreateShape(this, (ShapeTypes)_random.Next(7));
-
             for (int i = 0; i < MaxShapesInQueue; i++)
             {
                 ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
             }
-        }
 
-        #region XNA Draw & Update
+            SpawnShape();
+        }
 
         public void Update(GameTime gameTime)
         {
+            if (InputHandler.KeyPressed(Keys.Enter))
+            {
+                ActiveShape.Save();
+                SpawnShape();
+            }
+
             // Handle player input
             Player.Update(gameTime);
 
             CheckCollisions();
         }
+
+        #region Draw Methods
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
@@ -124,7 +130,7 @@ namespace XTetris
                             new Vector2(
                                 Bounds.Left + block.BoardPosition.X * TetrisGame.BlockSize,
                                 Bounds.Top + block.BoardPosition.Y * TetrisGame.BlockSize),
-                            ActiveShape.Color);
+                            block.Color);
                     }
                 }
             }
@@ -136,22 +142,17 @@ namespace XTetris
             {
                 for (int col = 0; col <= Cells.GetUpperBound(1); col++)
                 {
-                    Block cell = Cells[row, col];
-                    Texture2D cellTexture;
-
-                    if (cell == null)
-                    {
-                        cellTexture = GameState.EmptyBlockTexture;
-                    }
-                    else
-                    {
-                        cellTexture = GameState.BlockTexture;
-                    }
+                    Block block = Cells[row, col];
 
                     Vector2 cellPos = new Vector2(
                         Bounds.Left + col * TetrisGame.BlockSize,
                         Bounds.Top + row * TetrisGame.BlockSize);
-                    spriteBatch.Draw(cellTexture, cellPos, Color.White);
+
+                    // Draw empty cell for now to fix the white corners
+                    spriteBatch.Draw(GameState.EmptyBlockTexture, cellPos, Color.White);
+
+                    if (block != null)
+                        spriteBatch.Draw(GameState.BlockTexture, cellPos, block.Color);
                 }
             }
         }
@@ -169,17 +170,6 @@ namespace XTetris
                     var block = blocks[row, col];
                     if (block != null)
                     {
-                        // Other blocks
-                        if (Cells[(int)block.BoardPosition.Y, (int)block.BoardPosition.X] != null)
-                        {
-                            Vector2 newPos = ActiveShape.Position;
-                            if ((int)ActiveShape.Position.X != (int)ActiveShape.PreviousPosition.X)
-                                newPos.X = ActiveShape.PreviousPosition.X;
-                            if ((int)ActiveShape.Position.Y != (int)ActiveShape.PreviousPosition.Y)
-                                newPos.Y = ActiveShape.PreviousPosition.Y;
-                            ActiveShape.Position = newPos;
-                        }
-
                         // Left + right wall
                         if (block.BoardPosition.X < 0)
                             ActiveShape.Move(Direction.Right);
@@ -191,16 +181,29 @@ namespace XTetris
                             ActiveShape.Move(Direction.Down);
                         else if (block.BoardPosition.Y >= TetrisGame.BlocksHigh)
                             ActiveShape.Move(Direction.Up);
+
+                        // Other blocks
+                        if (Cells[(int)block.BoardPosition.Y, (int)block.BoardPosition.X] != null)
+                        {
+                            Vector2 newPos = ActiveShape.Position;
+                            if ((int)ActiveShape.Position.X != (int)ActiveShape.PreviousPosition.X)
+                                newPos.X = ActiveShape.PreviousPosition.X;
+                            if ((int)ActiveShape.Position.Y != (int)ActiveShape.PreviousPosition.Y)
+                                newPos.Y = ActiveShape.PreviousPosition.Y;
+                            ActiveShape.Position = newPos;
+                        }
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Spawns the next shape in queue on the board.
+        /// Spawns the next shape in queue.
         /// </summary>
         public void SpawnShape()
         {
+            ActiveShape = ShapesQueue.Dequeue();
+            ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes)_random.Next(7)));
         }
     }
 }

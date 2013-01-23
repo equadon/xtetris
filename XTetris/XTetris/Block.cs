@@ -12,6 +12,7 @@ namespace XTetris
         #region Properties
 
         public BaseShape ParentShape { get; private set; }
+        public Color Color { get; private set; }
 
         public Vector2 Position
         {
@@ -24,9 +25,10 @@ namespace XTetris
             get { return ParentShape.Position + Position; }
         }
 
-        public Block(BaseShape parentShape, Vector2 position)
+        public Block(BaseShape parentShape, Color color, Vector2 position)
         {
             ParentShape = parentShape;
+            Color = color;
             Position = position;
         }
 
