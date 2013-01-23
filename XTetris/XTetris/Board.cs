@@ -7,21 +7,19 @@ namespace XTetris
 {
     public class Board
     {
-        #region Properties & Fields
-
         private const float StartingShapeSpeed = 0.8f;
 
         private float _shapeSpeedIncrease = 0.1f;
         private int _level = 1;
 
-        public double ShapeMoveDelay { get; private set; }
-
         private Vector2 _position;
         private Rectangle _screenRectangle;
 
-        public bool StopMove { get; private set; }
-
         private readonly Color _backgroundColor = new Color(255, 255, 255);
+
+        public double ShapeMoveDelay { get; private set; }
+
+        public bool StopMove { get; private set; }
 
         public BaseShape ActiveShape { get; private set; }
 
@@ -49,7 +47,10 @@ namespace XTetris
             get { return TetrisGame.BlocksWide * TetrisGame.BlockSize; }
         }
 
-        #endregion
+        public static int BoardHeight
+        {
+            get { return TetrisGame.BlocksHigh * TetrisGame.BlockSize; }
+        }
 
         public Board(Texture2D texture)
         {
@@ -131,9 +132,16 @@ namespace XTetris
                     TetrisGame.BoardPadding / 2f + BoardWidth - ActiveShape.Bounds.Right,
                     ActiveShape.Position.Y);
             }
+
+            // Bottom
+            if (IsCollidingWithBottom(ActiveShape))
+            {
+                ActiveShape.Position = new Vector2(
+                    ActiveShape.Position.X,
+                    TetrisGame.BoardPadding/2f + BoardHeight - ActiveShape.Bounds.Bottom);
+            }
         }
 
-        /// <returns>Returns true if shape is colliding with wall.</returns>
         public static bool IsCollidingWithLeftWall(BaseShape shape)
         {
             if (shape.Position.X + shape.Bounds.Left < TetrisGame.BoardPadding / 2f)
@@ -141,10 +149,16 @@ namespace XTetris
             return false;
         }
 
-        /// <returns>Returns true if shape is colliding with wall.</returns>
         public static bool IsCollidingWithRightWall(BaseShape shape)
         {
             if (shape.Position.X + shape.Bounds.Right > TetrisGame.BoardPadding / 2f + Board.BoardWidth)
+                return true;
+            return false;
+        }
+
+        public static bool IsCollidingWithBottom(BaseShape shape)
+        {
+            if (TetrisGame.BoardPadding/2f + shape.Position.Y > TetrisGame.BoardPadding/2f + BoardHeight - shape.Bounds.Bottom)
                 return true;
             return false;
         }

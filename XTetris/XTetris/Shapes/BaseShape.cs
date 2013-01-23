@@ -137,7 +137,8 @@ namespace XTetris
         {
             // Check collision with walls
             if (Board.IsCollidingWithLeftWall(this) ||
-                Board.IsCollidingWithRightWall(this))
+                Board.IsCollidingWithRightWall(this) ||
+                Board.IsCollidingWithBottom(this))
                 return true;
             return false;
         }
