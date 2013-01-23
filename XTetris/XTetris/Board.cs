@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using Microsoft.Xna.Framework.Input;
 using XTetris.Engine;
 using XTetris.GameStates;
 using XTetris.Shapes;
@@ -169,6 +169,17 @@ namespace XTetris
                     var block = blocks[row, col];
                     if (block != null)
                     {
+                        // Other blocks
+                        if (Cells[(int)block.BoardPosition.Y, (int)block.BoardPosition.X] != null)
+                        {
+                            Vector2 newPos = ActiveShape.Position;
+                            if ((int)ActiveShape.Position.X != (int)ActiveShape.PreviousPosition.X)
+                                newPos.X = ActiveShape.PreviousPosition.X;
+                            if ((int)ActiveShape.Position.Y != (int)ActiveShape.PreviousPosition.Y)
+                                newPos.Y = ActiveShape.PreviousPosition.Y;
+                            ActiveShape.Position = newPos;
+                        }
+
                         // Left + right wall
                         if (block.BoardPosition.X < 0)
                             ActiveShape.Move(Direction.Right);
