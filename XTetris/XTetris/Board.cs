@@ -77,6 +77,8 @@ namespace XTetris
         {
             // Handle player input
             Player.Update(gameTime);
+
+            CheckCollisions();
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -155,6 +157,27 @@ namespace XTetris
         }
 
         #endregion
+
+        private void CheckCollisions()
+        {
+            var blocks = ActiveShape.Rotations[(int) ActiveShape.Direction];
+
+            for (int row = 0; row <= blocks.GetUpperBound(0); row++)
+            {
+                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+                {
+                    var block = blocks[row, col];
+                    if (block != null)
+                    {
+                        // Left wall
+                        if (block.BoardPosition.X < 0)
+                            ActiveShape.Move(Direction.Right);
+                        else if (block.BoardPosition.X >= TetrisGame.BlocksWide)
+                            ActiveShape.Move(Direction.Left);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Spawns the next shape in queue on the board.
