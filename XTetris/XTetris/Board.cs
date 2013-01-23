@@ -99,6 +99,7 @@ namespace XTetris
 
             // Print debug info
             string text = "Active Shape: (" + ActiveShape.Position.X + "," + ActiveShape.Position.Y + ")" +
+                          "\n    Direction: " + ActiveShape.Direction +
                           "\n\nElapsed: " + gameTime.TotalGameTime.ToString() +
                           "\n\nBoard: " +
                           "\n    size: " + Width + "x" + Height +

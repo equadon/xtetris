@@ -5,20 +5,13 @@ using XTetris.Shapes;
 
 namespace XTetris
 {
-    public enum ShapeTypes { I, J, L, O, S, T, Z, Random }
+    public enum ShapeTypes { I, J, L, O, S, T, Z }
 }
 
 namespace XTetris.Engine
 {
     public static class ShapesFactory
     {
-        private static readonly Random _random;
-
-        static ShapesFactory()
-        {
-            _random = new Random();
-        }
-
         public static BaseShape CreateShape(Board board, ShapeTypes shapeType)
         {
             var blockTexture = board.GameState.BlockTexture;

@@ -25,15 +25,19 @@ namespace XTetris
         {
             if (InputHandler.KeyPressed(Keys.Left))
                 Board.ActiveShape.Move(Direction.Left);
-
-            if (InputHandler.KeyPressed(Keys.Right))
+            else if (InputHandler.KeyPressed(Keys.Right))
                 Board.ActiveShape.Move(Direction.Right);
-
-            if (InputHandler.KeyPressed(Keys.Up))
-                Board.ActiveShape.Move(Direction.Up);
 
             if (InputHandler.KeyPressed(Keys.Down))
                 Board.ActiveShape.Move(Direction.Down);
+
+            if (InputHandler.KeyPressed(Keys.LeftControl) || InputHandler.KeyPressed(Keys.LeftControl) ||
+                InputHandler.KeyPressed(Keys.Z))
+                Board.ActiveShape.Rotate(Direction.Left);
+
+            if (InputHandler.KeyPressed(Keys.Up) ||
+                InputHandler.KeyPressed(Keys.X))
+                Board.ActiveShape.Rotate(Direction.Right);
         }
     }
 }

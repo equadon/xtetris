@@ -72,11 +72,31 @@ namespace XTetris.Shapes
             switch (direction)
             {
                 case Direction.Left:
+                    Direction = PreviousDirection();
                     break;
 
                 case Direction.Right:
+                    Direction = NextDirection();
                     break;
             }
+        }
+
+        private Direction NextDirection()
+        {
+            int dir = (int) Direction;
+            dir++;
+            if (dir > 3)
+                dir = 0;
+            return (Direction) dir;
+        }
+
+        private Direction PreviousDirection()
+        {
+            int dir = (int)Direction;
+            dir--;
+            if (dir < 0)
+                dir = 3;
+            return (Direction)dir;
         }
 
         #endregion
