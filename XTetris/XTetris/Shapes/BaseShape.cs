@@ -17,7 +17,7 @@ namespace XTetris
 
         public  Vector2 LowestBlock { get; protected set; }
 
-        protected List<Block[,]> _rotations;
+        public List<Block[,]> Rotations { get; private set; }
 
         #region Properties
 
@@ -54,12 +54,12 @@ namespace XTetris
         {
             get
             {
-                if (_rotations == null)
+                if (Rotations == null)
                     return Vector2.Zero;
 
                 return new Vector2(
-                    ((_rotations[0].GetUpperBound(1) + 1) * TetrisGame.BlockSize) / 2f,
-                    ((_rotations[0].GetUpperBound(0) + 1) * TetrisGame.BlockSize) / 2f);
+                    ((Rotations[0].GetUpperBound(1) + 1) * TetrisGame.BlockSize) / 2f,
+                    ((Rotations[0].GetUpperBound(0) + 1) * TetrisGame.BlockSize) / 2f);
             }
         }
 
@@ -79,7 +79,7 @@ namespace XTetris
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            Block[,] blocks = _rotations[(int) CurrentRotation];
+            Block[,] blocks = Rotations[(int) CurrentRotation];
             for (int row = 0; row < blocks.GetUpperBound(0) + 1; row++)
                 for (int col = 0; col < blocks.GetUpperBound(1) + 1; col++)
                     if (blocks[row, col] != null)
@@ -163,7 +163,7 @@ namespace XTetris
 
         protected void GenerateBlocks(List<int[,]> rotations)
         {
-            _rotations = new List<Block[,]>();
+            Rotations = new List<Block[,]>();
 
             // Append inverted rotations unless all 4 are already specified
             if (rotations.Count != 4)
@@ -182,7 +182,7 @@ namespace XTetris
                     for (int col = 0; col < rotation.GetUpperBound(1) + 1; col++)
                         if (rotation[row, col] == 1)
                             blocks[row, col] = new Block(this, Color, row, col);
-                _rotations.Add(blocks);
+                Rotations.Add(blocks);
             }
 
             CalculateBounds();
@@ -211,7 +211,7 @@ namespace XTetris
 
             int blockSize = TetrisGame.BlockSize;
 
-            Block[,] blocks = _rotations[(int)CurrentRotation];
+            Block[,] blocks = Rotations[(int)CurrentRotation];
 
             int minW = blocks.GetUpperBound(1) + 1;
             int maxW = -1;
@@ -260,7 +260,7 @@ namespace XTetris
 
         protected void CalculateLowestBlock()
         {
-            Block[,] blocks = _rotations[(int)CurrentRotation];
+            Block[,] blocks = Rotations[(int)CurrentRotation];
 
             for (int row = blocks.GetUpperBound(0); row >= 0; row--)
             {

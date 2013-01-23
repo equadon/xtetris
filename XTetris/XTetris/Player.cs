@@ -26,22 +26,25 @@ namespace XTetris
 
         public void Update(GameTime gameTime)
         {
-            if (InputHandler.KeyPressed(Keys.Right))
-                Board.ActiveShape.MoveRight();
+            if (Board.HasActiveShape)
+            {
+                if (InputHandler.KeyPressed(Keys.Right))
+                    Board.ActiveShape.MoveRight();
 
-            if (InputHandler.KeyPressed(Keys.Left))
-                Board.ActiveShape.MoveLeft();
+                if (InputHandler.KeyPressed(Keys.Left))
+                    Board.ActiveShape.MoveLeft();
 
-            if (InputHandler.KeyPressed(Keys.Up) || InputHandler.KeyPressed(Keys.X))
-                Board.ActiveShape.RotateRight();
+                if (InputHandler.KeyPressed(Keys.Up) || InputHandler.KeyPressed(Keys.X))
+                    Board.ActiveShape.RotateRight();
 
-            if (InputHandler.KeyPressed(Keys.Down))
-                Board.ActiveShape.MoveDown();
+                if (InputHandler.KeyPressed(Keys.Down))
+                    Board.ActiveShape.MoveDown();
 
-            if (InputHandler.KeyPressed(Keys.LeftControl) ||
-                InputHandler.KeyPressed(Keys.RightControl) ||
-                InputHandler.KeyPressed(Keys.Z))
-                Board.ActiveShape.RotateLeft();
+                if (InputHandler.KeyPressed(Keys.LeftControl) ||
+                    InputHandler.KeyPressed(Keys.RightControl) ||
+                    InputHandler.KeyPressed(Keys.Z))
+                    Board.ActiveShape.RotateLeft();
+            }
         }
     }
 }
