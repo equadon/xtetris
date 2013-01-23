@@ -43,7 +43,7 @@ namespace XTetris.Shapes
             Direction = Direction.Right;
             Color = color;
 
-            Position = new Vector2(3, 0);
+            Position = new Vector2(3, 1);
 
             LastPosition = Position;
             LastDirection = Direction;
@@ -145,6 +145,8 @@ namespace XTetris.Shapes
                     }
                 }
             }
+
+            Board.ActiveShape = null;
         }
 
         #region Generate Blocks
