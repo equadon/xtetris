@@ -62,6 +62,11 @@ namespace XTetris
             get { return TetrisGame.BlocksHigh * TetrisGame.BlockSize; }
         }
 
+        public float Delay
+        {
+            get { return StartingShapeSpeed + _level * _shapeSpeedIncrease; }
+        }
+
         #endregion
 
         public Board(Texture2D texture)
@@ -82,13 +87,10 @@ namespace XTetris
             if (!StopMove)
                 ShapeMoveDelay -= gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (InputHandler.KeyPressed(Keys.Enter))
-                SpawnShape();
-
             if (HasActiveShape && ShapeMoveDelay <= 0d)
             {
                 ActiveShape.MoveDown();
-                ShapeMoveDelay = StartingShapeSpeed + _level * _shapeSpeedIncrease;
+                ShapeMoveDelay = Delay;
             }
 
             CheckCollisions();
@@ -138,7 +140,7 @@ namespace XTetris
 
             ActiveShape.Position = new Vector2(
                 TetrisGame.BoardPadding / 2f + ScreenRectangle.Width / 2f - ActiveShape.Bounds.Width / 2f - ActiveShape.Bounds.X,
-                ActiveShape.Position.Y + TetrisGame.BoardPadding / 2f - TetrisGame.BlockSize);
+                ActiveShape.Position.Y + TetrisGame.BoardPadding / 2f);
 
             ActiveShape.PreviousPosition = ActiveShape.Position;
         }
@@ -154,7 +156,6 @@ namespace XTetris
             if (IsCollidingWithLeftWall(ActiveShape) ||
                 IsCollidingWithRightWall(ActiveShape))
             {
-                //ActiveShape.Position = new Vector2(ActiveShape.Position.X + TetrisGame.BlockSize, ActiveShape.Position.Y);
                 ActiveShape.Position = ActiveShape.PreviousPosition;
             }
 
@@ -162,14 +163,16 @@ namespace XTetris
             if ((int)ActiveShape.Position.Y - (int)ActiveShape.PreviousPosition.Y == 0 &&
                 IsCollidingWithCell(ActiveShape))
             {
-                ActiveShape.Position = ActiveShape.PreviousPosition;
+                ActiveShape.Position = new Vector2(ActiveShape.PreviousPosition.X, ActiveShape.Position.Y);
             }
-            else if ((int)ActiveShape.Position.Y != (int)ActiveShape.PreviousPosition.Y &&
+            if ((int)ActiveShape.Position.Y != (int)ActiveShape.PreviousPosition.Y &&
                 IsCollidingWithCell(ActiveShape))
             {
                 ActiveShape.Position = ActiveShape.PreviousPosition;
 
                 StoreActiveShape();
+
+                ShapeMoveDelay = Delay;
             }
 
             // Bottom
@@ -181,6 +184,8 @@ namespace XTetris
 
                 // Store active shape in Cells
                 StoreActiveShape();
+
+                ShapeMoveDelay = Delay;
             }
         }
 
