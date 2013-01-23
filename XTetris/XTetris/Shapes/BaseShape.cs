@@ -20,11 +20,13 @@ namespace XTetris.Shapes
 
         public Board Board { get; private set; }
         public Texture2D Texture { get; private set; }
-        public Direction Direction { get; private set; }
 
         public List<Block[,]> Rotations { get; private set; }
 
-        public Vector2 PreviousPosition { get; private set; }
+        public Direction Direction { get; set; }
+
+        public Vector2 LastPosition { get; set; }
+        public Direction LastDirection { get; set; }
 
         public Vector2 Position
         {
@@ -42,13 +44,16 @@ namespace XTetris.Shapes
             Color = color;
 
             Position = new Vector2(3, 0);
+
+            LastPosition = Position;
+            LastDirection = Direction;
         }
 
         #region Move & Rotate
 
         public void Move(Direction direction)
         {
-            PreviousPosition = Position;
+            LastPosition = Position;
 
             switch (direction)
             {
@@ -69,6 +74,8 @@ namespace XTetris.Shapes
 
         public void Rotate(Direction direction)
         {
+            LastDirection = Direction;
+
             switch (direction)
             {
                 case Direction.Left:
@@ -100,6 +107,21 @@ namespace XTetris.Shapes
         }
 
         #endregion
+
+        public void ResetPosition()
+        {
+            Vector2 newPos = Position;
+
+            if ((int) Position.X != (int) LastPosition.X)
+                newPos.X = LastPosition.X;
+            if ((int) Position.Y != (int) LastPosition.Y)
+                newPos.Y = LastPosition.Y;
+
+            Position = newPos;
+            LastPosition = Position;
+
+            Direction = LastDirection;
+        }
 
         /// <summary>
         /// Save shape to board.

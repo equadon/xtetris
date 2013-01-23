@@ -15,14 +15,19 @@ namespace XTetris
 
         public int Score { get; private set; }
 
+        public bool Rotated { get; private set; }
+
         public Player(Board board)
         {
             Board = board;
             Score = 0;
+            Rotated = false;
         }
 
         public void Update(GameTime gameTime)
         {
+            Rotated = false;
+
             if (InputHandler.KeyPressed(Keys.Left))
                 Board.ActiveShape.Move(Direction.Left);
             else if (InputHandler.KeyPressed(Keys.Right))
@@ -33,11 +38,17 @@ namespace XTetris
 
             if (InputHandler.KeyPressed(Keys.LeftControl) || InputHandler.KeyPressed(Keys.LeftControl) ||
                 InputHandler.KeyPressed(Keys.Z))
+            {
                 Board.ActiveShape.Rotate(Direction.Left);
+                Rotated = true;
+            }
 
             if (InputHandler.KeyPressed(Keys.Up) ||
                 InputHandler.KeyPressed(Keys.X))
+            {
                 Board.ActiveShape.Rotate(Direction.Right);
+                Rotated = true;
+            }
         }
     }
 }

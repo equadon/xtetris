@@ -127,6 +127,14 @@ namespace XTetris
                                 Bounds.Left + block.BoardPosition.X * TetrisGame.BlockSize,
                                 Bounds.Top + block.BoardPosition.Y * TetrisGame.BlockSize),
                             block.Color);
+
+                        //// Debug block positions
+                        //string text = block.BoardPosition.Y + "," + block.BoardPosition.X;
+                        //var pos = new Vector2(
+                        //    Bounds.Left + block.BoardPosition.X * 30 + 5,
+                        //    Bounds.Top + block.BoardPosition.Y * 30 + 5);
+
+                        //spriteBatch.DrawString(GameState.DebugFont, text, pos, Color.Red, 0f, Vector2.Zero, 0.6f, SpriteEffects.None, 0f);
                     }
                 }
             }
@@ -170,29 +178,51 @@ namespace XTetris
                     {
                         // Left + right wall
                         if (block.BoardPosition.X < 0)
-                            ActiveShape.Move(Direction.Right);
+                        {
+                            if (Player.Rotated)
+                                ActiveShape.Direction = ActiveShape.LastDirection;
+                            else
+                                ActiveShape.Move(Direction.Right);
+                            return;
+                        }
                         else if (block.BoardPosition.X >= TetrisGame.BlocksWide)
-                            ActiveShape.Move(Direction.Left);
+                        {
+                            if (Player.Rotated)
+                                ActiveShape.Direction = ActiveShape.LastDirection;
+                            else
+                                ActiveShape.Move(Direction.Left);
+                            return;
+                        }
 
                         // Top + bottom wall
                         if (block.BoardPosition.Y < 0)
-                            ActiveShape.Move(Direction.Down);
+                        {
+                            if (Player.Rotated)
+                                ActiveShape.Direction = ActiveShape.LastDirection;
+                            else
+                                ActiveShape.Move(Direction.Down);
+                            return;
+                        }
                         else if (block.BoardPosition.Y >= TetrisGame.BlocksHigh)
-                            ActiveShape.Move(Direction.Up);
+                        {
+                            if (Player.Rotated)
+                                ActiveShape.Direction = ActiveShape.LastDirection;
+                            else
+                                ActiveShape.Move(Direction.Up);
+                            return;
+                        }
 
                         // Other blocks
                         if (Cells[(int)block.BoardPosition.Y, (int)block.BoardPosition.X] != null)
                         {
-                            Vector2 newPos = ActiveShape.Position;
-                            if ((int)ActiveShape.Position.X != (int)ActiveShape.PreviousPosition.X)
-                                newPos.X = ActiveShape.PreviousPosition.X;
-                            if ((int)ActiveShape.Position.Y != (int)ActiveShape.PreviousPosition.Y)
-                                newPos.Y = ActiveShape.PreviousPosition.Y;
-                            ActiveShape.Position = newPos;
+                            ActiveShape.ResetPosition();
                         }
                     }
                 }
             }
+
+            ActiveShape.LastPosition = ActiveShape.Position;
+            ActiveShape.LastDirection = ActiveShape.Direction;
         }
 
         /// <summary>
