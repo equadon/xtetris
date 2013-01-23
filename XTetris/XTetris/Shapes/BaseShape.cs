@@ -105,27 +105,53 @@ namespace XTetris
 
         public void RotateRight()
         {
+            CurrentRotation = GetNextDirection();
+
+            CalculateBounds(true);
+
+            // Check collision with walls
+            if (Board.IsCollidingWithLeftWall(this) ||
+                Board.IsCollidingWithRightWall(this))
+            {
+                CurrentRotation = GetPreviousDirection();
+                CalculateBounds(true);
+            }
+        }
+
+        public void RotateLeft()
+        {
+            CurrentRotation = GetPreviousDirection();
+
+            CalculateBounds(true);
+
+            // Check collision with walls
+            if (Board.IsCollidingWithLeftWall(this) ||
+                Board.IsCollidingWithRightWall(this))
+            {
+                CurrentRotation = GetNextDirection();
+                CalculateBounds(true);
+            }
+        }
+
+        #endregion
+
+        private Direction GetNextDirection()
+        {
             int pos = (int) CurrentRotation;
             pos++;
             if (pos > 3)
                 pos = 0;
-            CurrentRotation = (Direction) pos;
-
-            CalculateBounds(true);
+            return (Direction) pos;
         }
 
-        public void RotateLeft()
+        private Direction GetPreviousDirection()
         {
             int pos = (int) CurrentRotation;
             pos--;
             if (pos < 0)
                 pos = 3;
-            CurrentRotation = (Direction) pos;
-
-            CalculateBounds(true);
+            return (Direction)pos;
         }
-
-        #endregion
 
         protected void GenerateBlocks(List<int[,]> rotations)
         {

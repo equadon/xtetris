@@ -44,6 +44,11 @@ namespace XTetris
             get { return ActiveShape != null; }
         }
 
+        public static int BoardWidth
+        {
+            get { return TetrisGame.BlocksWide * TetrisGame.BlockSize; }
+        }
+
         #endregion
 
         public Board(Texture2D texture)
@@ -112,22 +117,34 @@ namespace XTetris
         public void CheckCollisionWithWalls()
         {
             // Left wall
-            if (IsCollidingWithWall(ActiveShape))
+            if (IsCollidingWithLeftWall(ActiveShape))
             {
                 ActiveShape.Position = new Vector2(
-                    0 - ActiveShape.Bounds.X,
+                    0 - ActiveShape.Bounds.Left + TetrisGame.BoardPadding/2f,
+                    ActiveShape.Position.Y);
+            }
+
+            // Right wall
+            if (IsCollidingWithRightWall(ActiveShape))
+            {
+                ActiveShape.Position = new Vector2(
+                    TetrisGame.BoardPadding / 2f + BoardWidth - ActiveShape.Bounds.Right,
                     ActiveShape.Position.Y);
             }
         }
 
-        /// <summary>
-        /// Used to check if new rotation collides with wall.
-        /// </summary>
         /// <returns>Returns true if shape is colliding with wall.</returns>
-        public bool IsCollidingWithWall(BaseShape shape)
+        public static bool IsCollidingWithLeftWall(BaseShape shape)
         {
-            // Left wall
-            if (shape.Position.X + shape.Bounds.X < 0)
+            if (shape.Position.X + shape.Bounds.Left < TetrisGame.BoardPadding / 2f)
+                return true;
+            return false;
+        }
+
+        /// <returns>Returns true if shape is colliding with wall.</returns>
+        public static bool IsCollidingWithRightWall(BaseShape shape)
+        {
+            if (shape.Position.X + shape.Bounds.Right > TetrisGame.BoardPadding / 2f + Board.BoardWidth)
                 return true;
             return false;
         }
