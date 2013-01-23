@@ -7,37 +7,35 @@ namespace XTetris.Shapes
     public class OShape : BaseShape
     {
         public OShape(Texture2D texture, Board board)
-            : base(texture, board)
+            : base(texture, board, TetrisGame.OShapeColor)
         {
-            Color = new Color(255, 255, 0);
-
-            List<int[,]> rotations = new List<int[,]>
+            var rotations = new List<int[,]>
+            {
+                new int[3, 4]
                 {
-                    new int[3, 4]
-                    {
-                        {0,1,1,0},
-                        {0,1,1,0},
-                        {0,0,0,0}
-                    },
-                    new int[3, 4]
-                    {
-                        {0,1,1,0},
-                        {0,1,1,0},
-                        {0,0,0,0}
-                    },
-                    new int[3, 4]
-                    {
-                        {0,1,1,0},
-                        {0,1,1,0},
-                        {0,0,0,0}
-                    },
-                    new int[3, 4]
-                    {
-                        {0,1,1,0},
-                        {0,1,1,0},
-                        {0,0,0,0}
-                    }
-                };
+                    {0,1,1,0},
+                    {0,1,1,0},
+                    {0,0,0,0}
+                },
+                new int[3, 4]
+                {
+                    {0,1,1,0},
+                    {0,1,1,0},
+                    {0,0,0,0}
+                },
+                new int[3, 4]
+                {
+                    {0,1,1,0},
+                    {0,1,1,0},
+                    {0,0,0,0}
+                },
+                new int[3, 4]
+                {
+                    {0,1,1,0},
+                    {0,1,1,0},
+                    {0,0,0,0}
+                }
+            };
 
             GenerateBlocks(rotations);
         }

@@ -1,3 +1,5 @@
+using System;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,13 +15,23 @@ namespace XTetris
     public class TetrisGame : Microsoft.Xna.Framework.Game
     {
         public const int BlockSize = 30;
-        public const int BoardPadding = 60;
+
+        public const int BoardPaddingTop = 0;
+        public const int BoardPaddingSide = 15;
 
         public const int BlocksWide = 10;
-        public const int BlocksHigh = 20;
+        public const int BlocksHigh = 22;
 
-        public const int ScreenWidth = BlockSize * BlocksWide + BoardPadding;
-        public const int ScreenHeight = BlockSize * BlocksHigh + BoardPadding;
+        public const int ScreenWidth = 620 + BoardPaddingSide * 2;
+        public const int ScreenHeight = 690 + BoardPaddingSide * 2;
+
+        public static readonly Color IShapeColor = new Color(0, 255, 255);
+        public static readonly Color JShapeColor = new Color(0, 0, 255);
+        public static readonly Color LShapeColor = new Color(255, 170, 0);
+        public static readonly Color OShapeColor = new Color(255, 255, 0);
+        public static readonly Color SShapeColor = new Color(0, 255, 0);
+        public static readonly Color TShapeColor = new Color(153, 0, 255);
+        public static readonly Color ZShapeColor = new Color(255, 0, 0);
 
         private readonly GraphicsDeviceManager _graphics;
         private readonly GameStateManager _stateManager;
@@ -109,7 +121,7 @@ namespace XTetris
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.BurlyWood);
 
             base.Draw(gameTime);
         }

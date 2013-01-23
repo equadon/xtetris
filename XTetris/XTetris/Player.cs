@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using XTetris.Engine;
@@ -13,41 +11,29 @@ namespace XTetris
 {
     public class Player
     {
-        #region Properties
-
         public Board Board { get; private set; }
 
-        #endregion
+        public int Score { get; private set; }
 
         public Player(Board board)
         {
             Board = board;
+            Score = 0;
         }
 
         public void Update(GameTime gameTime)
         {
-            if (Board.HasActiveShape)
-            {
-                if (InputHandler.KeyPressed(Keys.Right))
-                    Board.ActiveShape.MoveRight();
+            if (InputHandler.KeyPressed(Keys.Left))
+                Board.ActiveShape.Move(Direction.Left);
 
-                if (InputHandler.KeyPressed(Keys.Left))
-                    Board.ActiveShape.MoveLeft();
+            if (InputHandler.KeyPressed(Keys.Right))
+                Board.ActiveShape.Move(Direction.Right);
 
-                if (InputHandler.KeyPressed(Keys.Up) || InputHandler.KeyPressed(Keys.X))
-                    Board.ActiveShape.RotateRight();
+            if (InputHandler.KeyPressed(Keys.Up))
+                Board.ActiveShape.Move(Direction.Up);
 
-                if (InputHandler.KeyPressed(Keys.Down))
-                    Board.ActiveShape.MoveDown();
-
-                if (InputHandler.KeyPressed(Keys.LeftControl) ||
-                    InputHandler.KeyPressed(Keys.RightControl) ||
-                    InputHandler.KeyPressed(Keys.Z))
-                    Board.ActiveShape.RotateLeft();
-
-                if (InputHandler.KeyPressed(Keys.Space))
-                    Board.ActiveShape.Drop();
-            }
+            if (InputHandler.KeyPressed(Keys.Down))
+                Board.ActiveShape.Move(Direction.Down);
         }
     }
 }

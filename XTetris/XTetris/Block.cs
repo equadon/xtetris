@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using XTetris.Shapes;
+
 namespace XTetris
 {
     public class Block
@@ -9,8 +11,7 @@ namespace XTetris
 
         #region Properties
 
-        public BaseShape Parent { get; private set; }
-        public Color Color { get; private set; }
+        public BaseShape ParentShape { get; private set; }
 
         public Vector2 Position
         {
@@ -18,43 +19,12 @@ namespace XTetris
             set { _position = value; }
         }
 
-        public Vector2 AbsolutePosition
+        public Block(BaseShape parentShape, Vector2 position)
         {
-            get
-            {
-                return new Vector2(
-                    Parent.Position.X + Position.X * Width,
-                    Parent.Position.Y + Position.Y * Height);
-            }
-        }
-
-        public Texture2D Texture
-        {
-            get { return Parent.Texture; }
-        }
-
-        public int Width
-        {
-            get { return Texture.Width; }
-        }
-
-        public int Height
-        {
-            get { return Texture.Height; }
+            ParentShape = parentShape;
+            Position = position;
         }
 
         #endregion
-
-        public Block(BaseShape parent, Color color, int row, int col)
-        {
-            Color = color;
-            Parent = parent;
-            Position = new Vector2(col, row);
-        }
-
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Texture, AbsolutePosition, Color);
-        }
     }
 }

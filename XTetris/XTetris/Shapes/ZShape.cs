@@ -7,10 +7,8 @@ namespace XTetris.Shapes
     public class ZShape : BaseShape
     {
         public ZShape(Texture2D texture, Board board)
-            : base(texture, board)
+            : base(texture, board, TetrisGame.ZShapeColor)
         {
-            Color = new Color(255, 0, 0);
-
             List<int[,]> rotations = new List<int[,]>
                 {
                     new int[3, 3]

@@ -3,18 +3,19 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using XTetris.Engine;
-using XTetris.Shapes;
 
 namespace XTetris.GameStates
 {
     public class GamePlayState : BaseGameState
     {
-        public static Texture2D BlockTexture { get; private set; }
-        public static SpriteFont DebugFont { get; private set; }
+        public SpriteFont DebugFont { get; private set; }
+
+        public Texture2D BorderTexture { get; private set; }
+        public Texture2D BlockTexture { get; private set; }
+        public Texture2D EmptyBlockTexture { get; private set; }
         public Texture2D FillTexture { get; private set; }
 
         public Board Board { get; private set; }
-        public Player Player { get; private set; }
 
         public GamePlayState(Game game, GameStateManager manager)
             : base(game, manager)
@@ -23,25 +24,26 @@ namespace XTetris.GameStates
 
         public override void Initialize()
         {
+            Board = new Board(this);
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            BorderTexture = Content.Load<Texture2D>(@"Textures\border");
             BlockTexture = Content.Load<Texture2D>(@"Textures\block");
+            EmptyBlockTexture = Content.Load<Texture2D>(@"Textures\empty");
+
             FillTexture = Content.Load<Texture2D>(@"Textures\fill");
 
             DebugFont = Content.Load<SpriteFont>(@"Fonts\Debug");
-
-            Board = new Board(FillTexture);
-            Player = new Player(Board);
 
             base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
-            Player.Update(gameTime);
             Board.Update(gameTime);
 
             base.Update(gameTime);

@@ -3,24 +3,25 @@ using Microsoft.Xna.Framework.Graphics;
 
 using XTetris.Shapes;
 
-namespace XTetris.Engine
+namespace XTetris
 {
     public enum ShapeTypes { I, J, L, O, S, T, Z, Random }
+}
 
+namespace XTetris.Engine
+{
     public static class ShapesFactory
     {
-        private static Random _random;
+        private static readonly Random _random;
 
         static ShapesFactory()
         {
             _random = new Random();
         }
 
-        public static BaseShape CreateRandom(Board board, ShapeTypes shapeType = ShapeTypes.Random)
+        public static BaseShape CreateShape(Board board, ShapeTypes shapeType)
         {
-            Texture2D blockTexture = XTetris.GameStates.GamePlayState.BlockTexture;
-            if (shapeType == ShapeTypes.Random)
-                shapeType = (ShapeTypes) _random.Next(7);
+            var blockTexture = board.GameState.BlockTexture;
 
             switch (shapeType)
             {
