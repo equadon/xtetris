@@ -21,6 +21,8 @@ namespace XTetris
         private readonly Random _random;
         private readonly GamePlayState _gameState;
 
+        private double _delayDuration = 1.0d;
+
         #endregion
 
         #region Properties
@@ -68,10 +70,12 @@ namespace XTetris
 
         public void Update(GameTime gameTime)
         {
-            if (InputHandler.KeyPressed(Keys.Enter))
+            _delayDuration -= gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (_delayDuration <= 0d)
             {
-                ActiveShape.Save();
-                SpawnShape();
+                _delayDuration = 1.0d;
+                ActiveShape.Move(Direction.Down);
             }
 
             // Handle player input
@@ -93,7 +97,8 @@ namespace XTetris
             DrawShape(ActiveShape, gameTime, spriteBatch);
 
             // Print debug info
-            string text = "Active Shape: (" + ActiveShape.Position.X + "," + ActiveShape.Position.Y + ")" +
+            string text = "Delay left: " + _delayDuration.ToString("N5") +
+                          "\n\nActive Shape: (" + ActiveShape.Position.X + "," + ActiveShape.Position.Y + ")" +
                           "\n    Direction: " + ActiveShape.Direction +
                           "\n\nElapsed: " + gameTime.TotalGameTime.ToString() +
                           "\n\nBoard: " +
@@ -206,16 +211,36 @@ namespace XTetris
                         else if (block.BoardPosition.Y >= TetrisGame.BlocksHigh)
                         {
                             if (Player.Rotated)
+                            {
                                 ActiveShape.Direction = ActiveShape.LastDirection;
+                            }
                             else
+                            {
                                 ActiveShape.Move(Direction.Up);
-                            return;
+
+                                ActiveShape.Save();
+                                SpawnShape();
+
+                                return;
+                            }
                         }
 
                         // Other blocks
                         if (Cells[(int)block.BoardPosition.Y, (int)block.BoardPosition.X] != null)
                         {
+                            // We don't want to save to board if there only were horizontal movement
+                            bool save = !((int)ActiveShape.Position.Y == (int)ActiveShape.LastPosition.Y &&
+                                          (int)ActiveShape.Position.X != (int)ActiveShape.LastPosition.X);
+
                             ActiveShape.ResetPosition();
+
+                            if (save)
+                            {
+                                ActiveShape.Save();
+                                SpawnShape();
+                            }
+
+                            return;
                         }
                     }
                 }
