@@ -13,6 +13,7 @@ namespace XTetris
     {
         private Random _random;
         private Vector2 _position;
+        private Vector2 _previousPosition;
         protected Rectangle _bounds;
 
         public  Vector2 LowestBlock { get; protected set; }
@@ -35,6 +36,12 @@ namespace XTetris
                 _position.X = value.X - value.X % TetrisGame.BlockSize;
                 _position.Y = value.Y - value.Y % TetrisGame.BlockSize;
             }
+        }
+
+        public Vector2 PreviousPosition
+        {
+            get { return _previousPosition; }
+            set { _previousPosition = value; }
         }
 
         public Rectangle Bounds
@@ -90,16 +97,22 @@ namespace XTetris
 
         public void MoveLeft()
         {
+            PreviousPosition = Position;
+
             _position.X -= Texture.Width;
         }
 
         public void MoveRight()
         {
+            PreviousPosition = Position;
+
             _position.X += Texture.Width;
         }
 
         public void MoveDown()
         {
+            PreviousPosition = Position;
+
             _position.Y += Texture.Height;
         }
 

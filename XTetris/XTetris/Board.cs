@@ -142,6 +142,8 @@ namespace XTetris
             ActiveShape.Position = new Vector2(
                 TetrisGame.BoardPadding / 2f + ScreenRectangle.Width / 2f - ActiveShape.Bounds.Width / 2f - ActiveShape.Bounds.X,
                 ActiveShape.Position.Y + TetrisGame.BoardPadding / 2f - TetrisGame.BlockSize);
+
+            ActiveShape.PreviousPosition = ActiveShape.Position;
         }
 
         #region Collision Methods
@@ -151,32 +153,58 @@ namespace XTetris
             if (!HasActiveShape)
                 return;
 
-            // Left wall
-            if (IsCollidingWithLeftWall(ActiveShape))
+            // Left/right wall
+            if (IsCollidingWithLeftWall(ActiveShape) ||
+                IsCollidingWithRightWall(ActiveShape))
             {
-                ActiveShape.Position = new Vector2(
-                    0 - ActiveShape.Bounds.Left + TetrisGame.BoardPadding/2f,
-                    ActiveShape.Position.Y);
-            }
-
-            // Right wall
-            if (IsCollidingWithRightWall(ActiveShape))
-            {
-                ActiveShape.Position = new Vector2(
-                    TetrisGame.BoardPadding / 2f + BoardWidth - ActiveShape.Bounds.Right,
-                    ActiveShape.Position.Y);
+                //ActiveShape.Position = new Vector2(ActiveShape.Position.X + TetrisGame.BlockSize, ActiveShape.Position.Y);
+                ActiveShape.Position = ActiveShape.PreviousPosition;
             }
 
             // Bottom
             if (IsCollidingWithBottom(ActiveShape))
             {
-                ActiveShape.Position = new Vector2(
-                    ActiveShape.Position.X,
-                    TetrisGame.BoardPadding/2f + BoardHeight - ActiveShape.Bounds.Bottom);
-
                 // Store active shape in Cells
                 StoreActiveShape();
             }
+
+            // Only store shape if movement is downward and collides with a cell
+            if ((int)ActiveShape.Position.Y - (int)ActiveShape.PreviousPosition.Y == 0 &&
+                IsCollidingWithLeftCell(ActiveShape))
+            {
+                ActiveShape.Position = ActiveShape.PreviousPosition;
+            }
+            else if ((int)ActiveShape.Position.Y != (int)ActiveShape.PreviousPosition.Y &&
+                IsCollidingWithLeftCell(ActiveShape))
+            {
+                ActiveShape.Position = ActiveShape.PreviousPosition;
+                
+                StoreActiveShape();
+            }
+        }
+
+        public bool IsCollidingWithLeftCell(BaseShape shape)
+        {
+            var blocks = shape.Rotations[(int) shape.CurrentRotation];
+
+            for (int row = 0; row <= blocks.GetUpperBound(0); row++)
+            {
+                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+                {
+                    var block = blocks[row, col];
+                    if (block != null)
+                    {
+                        Vector2 coords = PositionToCoordinates(block.AbsolutePosition);
+                        if (coords.X - 1 < 0 || coords.Y - 1 < 0)
+                            continue;
+
+                        if (Cells[(int)coords.Y - 1, (int)coords.X - 1] != null)
+                            return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public static bool IsCollidingWithLeftWall(BaseShape shape)
@@ -221,7 +249,7 @@ namespace XTetris
                 }
             }
 
-            ActiveShape = ShapesFactory.CreateRandom(this);
+            SpawnShape();
         }
 
         private Vector2 PositionToCoordinates(Vector2 position)
