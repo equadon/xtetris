@@ -116,6 +116,13 @@ namespace XTetris
             _position.Y += Texture.Height;
         }
 
+        public void MoveUp()
+        {
+            PreviousPosition = Position;
+
+            _position.Y -= Texture.Height;
+        }
+
         public void RotateRight()
         {
             CurrentRotation = GetNextDirection();
@@ -141,6 +148,21 @@ namespace XTetris
             {
                 CurrentRotation = GetNextDirection();
                 CalculateBounds(true);
+            }
+        }
+
+        public void Drop()
+        {
+            int tmp;
+            while (true)
+            {
+                MoveDown();
+
+                if (Board.IsCollidingWithBottom(this))
+                    break;
+
+                if (Board.IsCollidingWithCell(this))
+                    break;
             }
         }
 

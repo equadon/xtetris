@@ -79,9 +79,6 @@ namespace XTetris
 
         public void Update(GameTime gameTime)
         {
-            if (InputHandler.KeyPressed(Keys.Space))
-                StopMove = !StopMove;
-
             if (!StopMove)
                 ShapeMoveDelay -= gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -161,29 +158,33 @@ namespace XTetris
                 ActiveShape.Position = ActiveShape.PreviousPosition;
             }
 
-            // Bottom
-            if (IsCollidingWithBottom(ActiveShape))
-            {
-                // Store active shape in Cells
-                StoreActiveShape();
-            }
-
             // Only store shape if movement is downward and collides with a cell
             if ((int)ActiveShape.Position.Y - (int)ActiveShape.PreviousPosition.Y == 0 &&
-                IsCollidingWithLeftCell(ActiveShape))
+                IsCollidingWithCell(ActiveShape))
             {
                 ActiveShape.Position = ActiveShape.PreviousPosition;
             }
             else if ((int)ActiveShape.Position.Y != (int)ActiveShape.PreviousPosition.Y &&
-                IsCollidingWithLeftCell(ActiveShape))
+                IsCollidingWithCell(ActiveShape))
             {
                 ActiveShape.Position = ActiveShape.PreviousPosition;
-                
+
+                StoreActiveShape();
+            }
+
+            // Bottom
+            if (IsCollidingWithBottom(ActiveShape))
+            {
+                ActiveShape.Position = new Vector2(
+                    ActiveShape.Position.X,
+                    TetrisGame.BoardPadding/2f + BoardHeight - ActiveShape.Bounds.Bottom);
+
+                // Store active shape in Cells
                 StoreActiveShape();
             }
         }
 
-        public bool IsCollidingWithLeftCell(BaseShape shape)
+        public bool IsCollidingWithCell(BaseShape shape)
         {
             var blocks = shape.Rotations[(int) shape.CurrentRotation];
 
@@ -199,7 +200,7 @@ namespace XTetris
                             continue;
 
                         if (Cells[(int)coords.Y - 1, (int)coords.X - 1] != null)
-                            return true;
+                                return true;
                     }
                 }
             }
@@ -207,21 +208,21 @@ namespace XTetris
             return false;
         }
 
-        public static bool IsCollidingWithLeftWall(BaseShape shape)
+        public bool IsCollidingWithLeftWall(BaseShape shape)
         {
             if (shape.Position.X + shape.Bounds.Left < TetrisGame.BoardPadding / 2f)
                 return true;
             return false;
         }
 
-        public static bool IsCollidingWithRightWall(BaseShape shape)
+        public bool IsCollidingWithRightWall(BaseShape shape)
         {
             if (shape.Position.X + shape.Bounds.Right > TetrisGame.BoardPadding / 2f + Board.BoardWidth)
                 return true;
             return false;
         }
 
-        public static bool IsCollidingWithBottom(BaseShape shape)
+        public bool IsCollidingWithBottom(BaseShape shape)
         {
             if (TetrisGame.BoardPadding/2f + shape.Position.Y > TetrisGame.BoardPadding/2f + BoardHeight - shape.Bounds.Bottom)
                 return true;
@@ -242,8 +243,6 @@ namespace XTetris
                     if (block != null)
                     {
                         Vector2 coords = PositionToCoordinates(block.AbsolutePosition);
-                        Console.WriteLine("(" + block.AbsolutePosition.X + "," + block.AbsolutePosition.Y + ") -> " +
-                            "(" + coords.X + "," + coords.Y + ")");
                         Cells[(int)coords.Y - 1, (int)coords.X - 1] = block;
                     }
                 }

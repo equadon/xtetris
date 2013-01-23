@@ -44,6 +44,9 @@ namespace XTetris
                     InputHandler.KeyPressed(Keys.RightControl) ||
                     InputHandler.KeyPressed(Keys.Z))
                     Board.ActiveShape.RotateLeft();
+
+                if (InputHandler.KeyPressed(Keys.Space))
+                    Board.ActiveShape.Drop();
             }
         }
     }
