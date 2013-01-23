@@ -184,7 +184,7 @@ namespace XTetris
 
         #endregion
 
-        private void CheckCollisions()
+        public void CheckCollisions()
         {
             var blocks = ActiveShape.Rotations[(int) ActiveShape.Direction];
 

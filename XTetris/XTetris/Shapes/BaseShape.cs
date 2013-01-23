@@ -72,6 +72,19 @@ namespace XTetris.Shapes
             }
         }
 
+        public void Drop()
+        {
+            LastDirection = Direction;
+            LastPosition = Position;
+
+            while (Board.ActiveShape == this)
+            {
+                Move(Direction.Down);
+
+                Board.CheckCollisions();
+            }
+        }
+
         public void Rotate(Direction direction)
         {
             LastDirection = Direction;
