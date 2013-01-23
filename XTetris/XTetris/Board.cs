@@ -87,22 +87,7 @@ namespace XTetris
             DrawCells(gameTime, spriteBatch);
 
             // Draw active shape
-            Block[,] blocks = ActiveShape.Rotations[(int) ActiveShape.Direction];
-            for (int row = 0; row <= blocks.GetUpperBound(0); row++)
-            {
-                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
-                {
-                    Block block = blocks[row, col];
-                    if (block != null)
-                    {
-                        spriteBatch.Draw(GameState.BlockTexture,
-                            new Vector2(
-                                Bounds.Left + ActiveShape.Position.X * TetrisGame.BlockSize + block.Position.X * TetrisGame.BlockSize,
-                                Bounds.Top + ActiveShape.Position.Y * TetrisGame.BlockSize + block.Position.Y * TetrisGame.BlockSize),
-                            ActiveShape.Color);
-                    }
-                }
-            }
+            DrawShape(ActiveShape, gameTime, spriteBatch);
 
             // Print debug info
             string text = "Active Shape: (" + ActiveShape.Position.X + "," + ActiveShape.Position.Y + ")" +
@@ -121,6 +106,26 @@ namespace XTetris
 
             // Draw border
             //spriteBatch.Draw(GameState.BorderTexture, new Rectangle(TetrisGame.BoardPaddingSide, TetrisGame.BoardPaddingTop, 604, 707), Color.White);
+        }
+
+        private void DrawShape(BaseShape shape, GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            Block[,] blocks = shape.Rotations[(int) shape.Direction];
+            for (int row = 0; row <= blocks.GetUpperBound(0); row++)
+            {
+                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+                {
+                    Block block = blocks[row, col];
+                    if (block != null)
+                    {
+                        spriteBatch.Draw(GameState.BlockTexture,
+                            new Vector2(
+                                Bounds.Left + block.BoardPosition.X * TetrisGame.BlockSize,
+                                Bounds.Top + block.BoardPosition.Y * TetrisGame.BlockSize),
+                            ActiveShape.Color);
+                    }
+                }
+            }
         }
 
         private void DrawCells(GameTime gameTime, SpriteBatch spriteBatch)

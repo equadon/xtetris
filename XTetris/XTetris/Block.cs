@@ -19,6 +19,11 @@ namespace XTetris
             set { _position = value; }
         }
 
+        public Vector2 BoardPosition
+        {
+            get { return ParentShape.Position + Position; }
+        }
+
         public Block(BaseShape parentShape, Vector2 position)
         {
             ParentShape = parentShape;
