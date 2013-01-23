@@ -169,11 +169,17 @@ namespace XTetris
                     var block = blocks[row, col];
                     if (block != null)
                     {
-                        // Left wall
+                        // Left + right wall
                         if (block.BoardPosition.X < 0)
                             ActiveShape.Move(Direction.Right);
                         else if (block.BoardPosition.X >= TetrisGame.BlocksWide)
                             ActiveShape.Move(Direction.Left);
+
+                        // Top + bottom wall
+                        if (block.BoardPosition.Y < 0)
+                            ActiveShape.Move(Direction.Down);
+                        else if (block.BoardPosition.Y >= TetrisGame.BlocksHigh)
+                            ActiveShape.Move(Direction.Up);
                     }
                 }
             }
