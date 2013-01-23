@@ -79,7 +79,7 @@ namespace XTetris
                 ShapeMoveDelay = StartingShapeSpeed + _level * _shapeSpeedIncrease;
             }
 
-            CheckCollisionWithWalls();
+            CheckCollisions();
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -114,7 +114,7 @@ namespace XTetris
 
         #region Collision Methods
 
-        public void CheckCollisionWithWalls()
+        public void CheckCollisions()
         {
             // Left wall
             if (IsCollidingWithLeftWall(ActiveShape))

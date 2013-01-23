@@ -110,8 +110,7 @@ namespace XTetris
             CalculateBounds(true);
 
             // Check collision with walls
-            if (Board.IsCollidingWithLeftWall(this) ||
-                Board.IsCollidingWithRightWall(this))
+            if (IsColliding())
             {
                 CurrentRotation = GetPreviousDirection();
                 CalculateBounds(true);
@@ -125,8 +124,7 @@ namespace XTetris
             CalculateBounds(true);
 
             // Check collision with walls
-            if (Board.IsCollidingWithLeftWall(this) ||
-                Board.IsCollidingWithRightWall(this))
+            if (IsColliding())
             {
                 CurrentRotation = GetNextDirection();
                 CalculateBounds(true);
@@ -134,6 +132,15 @@ namespace XTetris
         }
 
         #endregion
+
+        private bool IsColliding()
+        {
+            // Check collision with walls
+            if (Board.IsCollidingWithLeftWall(this) ||
+                Board.IsCollidingWithRightWall(this))
+                return true;
+            return false;
+        }
 
         private Direction GetNextDirection()
         {
