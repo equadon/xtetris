@@ -63,11 +63,6 @@ namespace XTetris
             // Fill queue with shapes
             ShapesQueue = new Queue<BaseShape>();
 
-            for (int i = 0; i < MaxShapesInQueue; i++)
-            {
-                ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
-            }
-
             SpawnShape();
         }
 
@@ -153,7 +148,9 @@ namespace XTetris
                     spriteBatch.Draw(GameState.EmptyBlockTexture, cellPos, Color.White);
 
                     if (block != null)
+                    {
                         spriteBatch.Draw(GameState.BlockTexture, cellPos, block.Color);
+                    }
                 }
             }
         }
@@ -203,6 +200,15 @@ namespace XTetris
         /// </summary>
         public void SpawnShape()
         {
+            // Fill the queue if needed
+            if (ShapesQueue.Count < MaxShapesInQueue)
+            {
+                do
+                {
+                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
+                } while (ShapesQueue.Count < MaxShapesInQueue);
+            }
+
             ActiveShape = ShapesQueue.Dequeue();
             ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes)_random.Next(7)));
         }
