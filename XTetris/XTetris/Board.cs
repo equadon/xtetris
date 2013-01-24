@@ -44,6 +44,13 @@ namespace XTetris
         public bool AllowHold { get; set; }
         public BaseShape HoldShape { get; private set; }
 
+        public double TotalTime { get; private set; }
+
+        // HUD Items
+        public HudItem ScoreHud { get; private set; }
+        public HudItem LevelHud { get; private set; }
+        public HudItem TimeHud { get; private set; }
+
         public bool HasActiveShape
         {
             get { return ActiveShape != null; }
@@ -76,14 +83,31 @@ namespace XTetris
 
             AllowHold = true;
 
-            // Fill queue with shapes
             ShapesQueue = new Queue<BaseShape>();
 
             SpawnShape();
         }
 
+        public void LoadContent()
+        {
+            Vector2 pos = new Vector2(10, 190);
+
+            ScoreHud = new HudItem(GameState.GameFont, "Score");
+            ScoreHud.Position = pos;
+
+            pos.Y += 150;
+            LevelHud = new HudItem(GameState.GameFont, "Level");
+            LevelHud.Position = pos;
+
+            pos.Y += 150;
+            TimeHud = new HudItem(GameState.GameFont, "Time");
+            TimeHud.Position = pos;
+        }
+
         public void Update(GameTime gameTime)
         {
+            TotalTime += gameTime.ElapsedGameTime.TotalSeconds;
+
             if (!HasActiveShape)
                 _moveDelayDuration = MoveDownDelay;
             else
@@ -189,6 +213,9 @@ namespace XTetris
                         TetrisGame.BoardPaddingSide + 9 + 62 - GameState.CancelTexture.Width/2f,
                         TetrisGame.BoardPaddingTop + 72 + 65 - GameState.CancelTexture.Height / 2f), 
                     Color.White);
+
+            // Draw HUD items
+            DrawHUD(gameTime, spriteBatch);
         }
 
         private void DrawCells(SpriteBatch spriteBatch)
@@ -296,8 +323,21 @@ namespace XTetris
             }
         }
 
+        private void DrawHUD(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            // Score
+            ScoreHud.Draw(spriteBatch, Player.Score);
+
+            // Time
+            LevelHud.Draw(spriteBatch, Level);
+
+            // Time
+            TimeHud.Draw(spriteBatch, Convert.ToInt32(TotalTime));
+        }
+
         #endregion
 
+        // TODO: Implement a better game over checking
         public void GameOver()
         {
             GameState.StateManager.ChangeState(GameState.GameRef.GameOverState);

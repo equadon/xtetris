@@ -43,6 +43,8 @@ namespace XTetris.GameStates
             DebugFont = Content.Load<SpriteFont>(@"Fonts\Debug");
             GameFont = Content.Load<SpriteFont>(@"Fonts\Game");
 
+            Board.LoadContent();
+
             base.LoadContent();
         }
 
