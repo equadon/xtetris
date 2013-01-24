@@ -103,6 +103,9 @@ namespace XTetris
 
             if (HasActiveShape)
                 CheckCollisions();
+
+            // See if there are any lines we can clear
+            ClearLines();
         }
 
         #region Draw Methods
@@ -278,6 +281,64 @@ namespace XTetris
         }
 
         #endregion
+
+        private void ClearLines()
+        {
+            int linesCleared = 0;
+
+            for (int row = Cells.GetUpperBound(0); row >= 0; row--)
+            {
+                int columnCount = 0;
+
+                for (int col = 0; col <= Cells.GetUpperBound(1); col++)
+                {
+                    if (Cells[row, col] != null)
+                    {
+                        columnCount++;
+                    }
+                }
+
+                // Clear lines if the whole row is filled
+                if (columnCount == Cells.GetUpperBound(1) + 1)
+                {
+                    for (int col = 0; col <= Cells.GetUpperBound(1); col++)
+                        Cells[row, col] = null;
+
+                    HandlePhysics(row);
+
+                    linesCleared++;
+                }
+                else if (columnCount == 0)
+                {
+                    // no need to check anymore
+                    return;
+                }
+            }
+        }
+
+        // Make "flying" blocks fall down
+        private void HandlePhysics(int currentRow)
+        {
+            for (int row = currentRow - 1; row >= 0; row--)
+            {
+                int columnCount = 0;
+
+                for (int col = 0; col <= Cells.GetUpperBound(1); col++)
+                {
+                    Block block = Cells[row, col];
+                    if (block != null)
+                    {
+                        Cells[row, col] = null;
+                        Cells[row + 1, col] = block;
+
+                        columnCount++;
+                    }
+                }
+
+                if (columnCount == 0)
+                    return;
+            }
+        }
 
         public void CheckCollisions()
         {
