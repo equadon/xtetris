@@ -90,12 +90,19 @@ namespace XTetris.Shapes
             LastDirection = Direction;
             LastPosition = Position;
 
+            int startY = (int) Position.Y;
+            int endY = 0;
+
             while (Board.ActiveShape == this)
             {
                 Move(Direction.Down);
 
                 Board.CheckCollisions();
+
+                endY = (int) Position.Y;
             }
+
+            Board.Player.HardDrop(endY - startY);
         }
 
         public void Rotate(Direction direction)
