@@ -179,8 +179,6 @@ namespace XTetris.Shapes
 
             Position = newPos;
             LastPosition = Position;
-
-            Direction = LastDirection;
         }
 
         /// <summary>

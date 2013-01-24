@@ -341,12 +341,19 @@ namespace XTetris
                             bool save = !((int)ActiveShape.Position.Y == (int)ActiveShape.LastPosition.Y &&
                                           (int)ActiveShape.Position.X != (int)ActiveShape.LastPosition.X);
 
-                            ActiveShape.ResetPosition();
-
-                            if (save)
+                            if (Player.Rotated)
                             {
-                                ActiveShape.Save();
-                                SpawnShape();
+                                ActiveShape.Direction = ActiveShape.LastDirection;
+                            }
+                            else
+                            {
+                                ActiveShape.ResetPosition();
+
+                                if (save)
+                                {
+                                    ActiveShape.Save();
+                                    SpawnShape();
+                                }
                             }
 
                             return;
