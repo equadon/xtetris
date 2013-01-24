@@ -11,10 +11,13 @@ namespace XTetris
 {
     public class Player
     {
+        private const double KeyDownDelay = 0.1d;
+
+        private double _softDropTimeLeft = 0d;
+        private double _sideMoveTimeLeft = 0d;
+
         public Board Board { get; private set; }
-
         public int Score { get; set; }
-
         public bool Rotated { get; private set; }
 
         public Player(Board board)
@@ -28,6 +31,12 @@ namespace XTetris
         {
             Rotated = false;
 
+            if (_softDropTimeLeft > 0d)
+                _softDropTimeLeft -= gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (_sideMoveTimeLeft > 0d)
+                _sideMoveTimeLeft -= gameTime.ElapsedGameTime.TotalSeconds;
+
             if (Board.HasActiveShape)
             {
                 // Move left/right
@@ -39,6 +48,22 @@ namespace XTetris
                 // Soft drop
                 if (InputHandler.KeyPressed(Keys.Down))
                     Board.ActiveShape.Move(Direction.Down);
+
+                if (_softDropTimeLeft <= 0d)
+                {
+                    if (InputHandler.KeyDown(Keys.Down))
+                        Board.ActiveShape.Move(Direction.Down);
+                    _softDropTimeLeft = KeyDownDelay;
+                }
+
+                if (_sideMoveTimeLeft <= 0d)
+                {
+                    if (InputHandler.KeyDown(Keys.Left))
+                        Board.ActiveShape.Move(Direction.Left);
+                    else if (InputHandler.KeyDown(Keys.Right))
+                        Board.ActiveShape.Move(Direction.Right);
+                    _sideMoveTimeLeft = KeyDownDelay;
+                }
 
                 // Rotate left
                 if (InputHandler.KeyPressed(Keys.LeftControl) || InputHandler.KeyPressed(Keys.LeftControl) ||
@@ -66,16 +91,6 @@ namespace XTetris
                 {
                     Board.Hold();
                 }
-
-                // Debug: Save block at current location
-                if (TetrisGame.Debug &&
-                    InputHandler.KeyPressed(Keys.Y))
-                {
-                    Board.ActiveShape.Save();
-                }
-
-                if (InputHandler.KeyPressed(Keys.Escape))
-                    Board.GameOver();
             }
         }
     }
