@@ -13,7 +13,7 @@ namespace XTetris
     {
         public Board Board { get; private set; }
 
-        public int Score { get; private set; }
+        public int Score { get; set; }
 
         public bool Rotated { get; private set; }
 

@@ -374,7 +374,8 @@ namespace XTetris
                 else if (columnCount == 0)
                 {
                     // no need to check anymore
-                    return;
+                    row = -1;
+                    break;
                 }
             }
         }
@@ -526,8 +527,7 @@ namespace XTetris
             {
                 do
                 {
-                    //ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
-                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.I));
+                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
                 } while (ShapesQueue.Count < MaxShapesInQueue);
             }
 
