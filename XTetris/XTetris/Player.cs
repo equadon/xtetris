@@ -21,10 +21,15 @@ namespace XTetris
         // # of lines left to clear until the level advances
         private int _linesToNextLevel;
 
+        // stored as (# of lines cleared, back-to-back count)
+        private Tuple<int, int> _lastLineClearCount;
+
         public Board Board { get; private set; }
 
         public int Score { get; private set; }
         public int Level { get; private set; }
+
+        public int TotalLinesCleared { get; private set; }
 
         public bool Rotated { get; private set; }
 
@@ -40,7 +45,11 @@ namespace XTetris
             Score = 0;
             Level = 1;
 
+            TotalLinesCleared = 0;
+
             _linesToNextLevel = Level * 5;
+
+            _lastLineClearCount = new Tuple<int, int>(0, 0);
 
             Rotated = false;
         }
@@ -116,20 +125,33 @@ namespace XTetris
             Score += 2 * dropHeight;
         }
 
+        /// <summary>
+        /// Calculate points for a Line Clear and subtract the number of lines
+        /// from _linesToNextLevel.
+        /// </summary>
+        /// <param name="lineCount"></param>
         public void LineClear(int lineCount)
         {
             if (lineCount > 0)
             {
-                Console.WriteLine("Cleared " + lineCount + " line(s).");
+                if (_lastLineClearCount.Item1 == lineCount)
+                    _lastLineClearCount = Tuple.Create(_lastLineClearCount.Item1, _lastLineClearCount.Item2 + 1);
+                else
+                    _lastLineClearCount = Tuple.Create(lineCount, 0);
 
                 int points = lineCount * 200 - 100;
 
                 if (lineCount >= 4)
                     points += 100; // bonus points for tetris
 
-                Score += (points * Level);
+                // TODO: Calculate new level before adding points?
+                int lineClearValue = points / 100;
 
-                _linesToNextLevel -= lineCount;
+                _linesToNextLevel -= lineClearValue;
+
+                TotalLinesCleared += lineCount;
+
+                Score += points * Level;
             }
         }
 
