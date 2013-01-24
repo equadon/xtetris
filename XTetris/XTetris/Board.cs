@@ -34,7 +34,6 @@ namespace XTetris
         public GamePlayState GameState { get; set; }
 
         public Player Player { get; private set; }
-        public int Level { get; private set; }
 
         public Block[,] Cells { get; private set; }
 
@@ -78,7 +77,6 @@ namespace XTetris
             _random = new Random();
             GameState = gameState;
             Player = new Player(this);
-            Level = 1;
             Cells = new Block[TetrisGame.BlocksHigh, TetrisGame.BlocksWide];
 
             AllowHold = true;
@@ -329,7 +327,7 @@ namespace XTetris
             ScoreHud.Draw(spriteBatch, Player.Score);
 
             // Time
-            LevelHud.Draw(spriteBatch, Level);
+            LevelHud.Draw(spriteBatch, Player.Level);
 
             // Time
             TimeHud.Draw(spriteBatch, Convert.ToInt32(TotalTime));
