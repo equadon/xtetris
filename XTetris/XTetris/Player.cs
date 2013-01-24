@@ -61,9 +61,8 @@ namespace XTetris
                     Board.ActiveShape.Drop();
 
                 // Hold shape
-                if (Board.AllowHold &&
-                   (InputHandler.KeyPressed(Keys.LeftShift) || InputHandler.KeyPressed(Keys.RightShift) ||
-                    InputHandler.KeyPressed(Keys.C)))
+                if (InputHandler.KeyPressed(Keys.LeftShift) || InputHandler.KeyPressed(Keys.RightShift) ||
+                    InputHandler.KeyPressed(Keys.C))
                 {
                     Board.Hold();
                 }

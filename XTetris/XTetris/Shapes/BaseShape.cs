@@ -33,7 +33,11 @@ namespace XTetris.Shapes
         public Vector2 Position
         {
             get { return _position; }
-            set { _position = value; }
+            set
+            {
+                _position = value;
+                CalculateBounds();
+            }
         }
 
         public Vector2 Origin
@@ -134,6 +138,9 @@ namespace XTetris.Shapes
 
         private void CalculateBounds()
         {
+            if (Rotations == null)
+                return;
+
             // Find min/max for both X and Y
             var blocks = Rotations[(int) Direction];
 

@@ -14,6 +14,7 @@ namespace XTetris.GameStates
         public Texture2D BlockTexture { get; private set; }
         public Texture2D EmptyBlockTexture { get; private set; }
         public Texture2D FillTexture { get; private set; }
+        public Texture2D CancelTexture { get; private set; }
 
         public Board Board { get; private set; }
 
@@ -36,6 +37,8 @@ namespace XTetris.GameStates
             EmptyBlockTexture = Content.Load<Texture2D>(@"Textures\empty");
 
             FillTexture = Content.Load<Texture2D>(@"Textures\fill");
+
+            CancelTexture = Content.Load<Texture2D>(@"Textures\cancel");
 
             DebugFont = Content.Load<SpriteFont>(@"Fonts\Debug");
 
