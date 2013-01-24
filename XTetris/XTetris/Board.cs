@@ -39,6 +39,9 @@ namespace XTetris
         public Queue<BaseShape> ShapesQueue { get; private set; }
         public BaseShape ActiveShape { get; set; }
 
+        public bool AllowHold { get; set; }
+        public BaseShape HoldShape { get; private set; }
+
         public bool HasActiveShape
         {
             get { return ActiveShape != null; }
@@ -68,6 +71,8 @@ namespace XTetris
             Player = new Player(this);
             Level = 1;
             Cells = new Block[TetrisGame.BlocksHigh, TetrisGame.BlocksWide];
+
+            AllowHold = true;
 
             // Fill queue with shapes
             ShapesQueue = new Queue<BaseShape>();
@@ -137,6 +142,16 @@ namespace XTetris
 
             // Draw queue
             DrawQueue(spriteBatch);
+
+            // Draw shape in hold queue
+            if (HoldShape != null)
+                DrawShape(
+                    spriteBatch,
+                    HoldShape,
+                    new Vector2(
+                        0,
+                        0),
+                    0.85f);
         }
 
         private void DrawCells(SpriteBatch spriteBatch)
@@ -212,8 +227,9 @@ namespace XTetris
                 scale);
 
             // Draw the rest
-            int queueAreaWidth = 47;
-            int queueAreaHeight = 49;
+            const int queueAreaWidth = 47;
+            const int queueAreaHeight = 49;
+
             float offsetY = 0f;
             scale = 0.65f;
 
@@ -226,6 +242,9 @@ namespace XTetris
                 // Skip the first shape
                 if (i == 1)
                     continue;
+
+                if (i == MaxShapesInQueue - 2)
+                    Console.WriteLine("a");
 
                 Vector2 pos = new Vector2(
                     Bounds.Right - shape.Bounds.X * blockSize * scale + 34 + queueAreaWidth - shape.Origin.X * scale,
@@ -241,6 +260,27 @@ namespace XTetris
         }
 
         #endregion
+
+        public void Hold()
+        {
+            if (HoldShape == null)
+            {
+                HoldShape = ActiveShape;
+                ActiveShape = null;
+            }
+            else
+            {
+                BaseShape tmp = ActiveShape;
+                ActiveShape = HoldShape;
+                HoldShape = tmp;
+            }
+
+            HoldShape.Position = new Vector2(0, 0);
+
+            SpawnShape(ActiveShape);
+
+            AllowHold = false;
+        }
 
         public void CheckCollisions()
         {
@@ -320,29 +360,31 @@ namespace XTetris
         }
 
         /// <summary>
-        /// Spawns the next shape in queue.
+        /// Spawns the next shape in queue or the provided `shape`.
         /// </summary>
-        public void SpawnShape()
+        public void SpawnShape(BaseShape shape = null)
         {
-            BaseShape shape;
-
             // Fill the queue if needed
             if (ShapesQueue.Count < MaxShapesInQueue)
             {
                 do
                 {
-                    shape = ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7));
-                    //shape = ShapesFactory.CreateShape(this, ShapeTypes.I);
-                    ShapesQueue.Enqueue(shape);
+                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
+                    //ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.T));
                 } while (ShapesQueue.Count < MaxShapesInQueue);
             }
 
-            ActiveShape = ShapesQueue.Dequeue();
-            ActiveShape.Position = new Vector2(3, 1);
+            if (shape == null)
+                shape = ShapesQueue.Dequeue();
+            
+            shape.Position = new Vector2(3, 1);
+            ActiveShape = shape;
 
-            shape = ShapesFactory.CreateShape(this, (ShapeTypes)_random.Next(7));
-
-            ShapesQueue.Enqueue(shape);
+            if (ShapesQueue.Count < MaxShapesInQueue)
+            {
+                shape = ShapesFactory.CreateShape(this, (ShapeTypes)_random.Next(7));
+                ShapesQueue.Enqueue(shape);
+            }
         }
     }
 }

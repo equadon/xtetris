@@ -30,14 +30,17 @@ namespace XTetris
 
             if (Board.HasActiveShape)
             {
+                // Move left/right
                 if (InputHandler.KeyPressed(Keys.Left))
                     Board.ActiveShape.Move(Direction.Left);
                 else if (InputHandler.KeyPressed(Keys.Right))
                     Board.ActiveShape.Move(Direction.Right);
 
+                // Soft drop
                 if (InputHandler.KeyPressed(Keys.Down))
                     Board.ActiveShape.Move(Direction.Down);
 
+                // Rotate left
                 if (InputHandler.KeyPressed(Keys.LeftControl) || InputHandler.KeyPressed(Keys.LeftControl) ||
                     InputHandler.KeyPressed(Keys.Z))
                 {
@@ -45,6 +48,7 @@ namespace XTetris
                     Rotated = true;
                 }
 
+                // Rotate right
                 if (InputHandler.KeyPressed(Keys.Up) ||
                     InputHandler.KeyPressed(Keys.X))
                 {
@@ -52,8 +56,17 @@ namespace XTetris
                     Rotated = true;
                 }
 
+                // Drop shape
                 if (InputHandler.KeyPressed(Keys.Space))
                     Board.ActiveShape.Drop();
+
+                // Hold shape
+                if (Board.AllowHold &&
+                   (InputHandler.KeyPressed(Keys.LeftShift) || InputHandler.KeyPressed(Keys.RightShift) ||
+                    InputHandler.KeyPressed(Keys.C)))
+                {
+                    Board.Hold();
+                }
             }
         }
     }

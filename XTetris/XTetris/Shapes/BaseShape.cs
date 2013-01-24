@@ -200,6 +200,7 @@ namespace XTetris.Shapes
             }
 
             Board.ActiveShape = null;
+            Board.AllowHold = true;
         }
 
         #region Generate Blocks
