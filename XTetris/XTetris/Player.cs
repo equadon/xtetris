@@ -14,10 +14,9 @@ namespace XTetris
         // player needs to clear [line count] * 5 to advance to next lvl
         private const int LineCountLevelModifier = 5;
 
-        private const double KeyDownDelay = 0.1d;
+        private const double KeyDownDelay = 0.15d;
 
         private double _softDropTimeLeft = 0d;
-        private double _sideMoveTimeLeft = 0d;
 
         // # of lines left to clear until the level advances
         private int _linesToNextLevel;
@@ -28,6 +27,11 @@ namespace XTetris
         public int Level { get; private set; }
 
         public bool Rotated { get; private set; }
+
+        public int LinesToNextLevel
+        {
+            get { return _linesToNextLevel; }
+        }
 
         public Player(Board board)
         {
@@ -52,9 +56,6 @@ namespace XTetris
             if (_softDropTimeLeft > 0d)
                 _softDropTimeLeft -= gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (_sideMoveTimeLeft > 0d)
-                _sideMoveTimeLeft -= gameTime.ElapsedGameTime.TotalSeconds;
-
             if (Board.HasActiveShape)
             {
                 // Move left/right
@@ -72,15 +73,6 @@ namespace XTetris
                     if (InputHandler.KeyDown(Keys.Down))
                         Board.ActiveShape.Move(Direction.Down);
                     _softDropTimeLeft = KeyDownDelay;
-                }
-
-                if (_sideMoveTimeLeft <= 0d)
-                {
-                    if (InputHandler.KeyDown(Keys.Left))
-                        Board.ActiveShape.Move(Direction.Left);
-                    else if (InputHandler.KeyDown(Keys.Right))
-                        Board.ActiveShape.Move(Direction.Right);
-                    _sideMoveTimeLeft = KeyDownDelay;
                 }
 
                 // Rotate left
@@ -128,12 +120,16 @@ namespace XTetris
         {
             if (lineCount > 0)
             {
+                Console.WriteLine("Cleared " + lineCount + " line(s).");
+
                 int points = lineCount * 200 - 100;
 
                 if (lineCount >= 4)
                     points += 100; // bonus points for tetris
 
                 Score += (points * Level);
+
+                _linesToNextLevel -= lineCount;
             }
         }
 

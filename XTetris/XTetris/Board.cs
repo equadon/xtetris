@@ -347,6 +347,8 @@ namespace XTetris
         {
             int linesCleared = 0;
 
+            int firstClearedLine = -1;
+
             for (int row = Cells.GetUpperBound(0); row >= 0; row--)
             {
                 int columnCount = 0;
@@ -365,7 +367,8 @@ namespace XTetris
                     for (int col = 0; col <= Cells.GetUpperBound(1); col++)
                         Cells[row, col] = null;
 
-                    HandlePhysics(row);
+                    if (firstClearedLine == -1)
+                        firstClearedLine = row;
 
                     linesCleared++;
                 }
@@ -376,12 +379,19 @@ namespace XTetris
                     break;
                 }
             }
+
+            if (linesCleared > 0)
+            {
+                Player.LineClear(linesCleared);
+
+                HandlePhysics(firstClearedLine, linesCleared);
+            }
         }
 
         // Make "flying" blocks fall down
-        private void HandlePhysics(int currentRow)
+        private void HandlePhysics(int firstClearedRow, int linesCleared)
         {
-            for (int row = currentRow - 1; row >= 0; row--)
+            for (int row = firstClearedRow - linesCleared; row >= 0; row--)
             {
                 int columnCount = 0;
 
@@ -391,7 +401,7 @@ namespace XTetris
                     if (block != null)
                     {
                         Cells[row, col] = null;
-                        Cells[row + 1, col] = block;
+                        Cells[row + linesCleared, col] = block;
 
                         columnCount++;
                     }
