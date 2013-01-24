@@ -28,6 +28,8 @@ namespace XTetris.Shapes
         public Vector2 LastPosition { get; set; }
         public Direction LastDirection { get; set; }
 
+        public Rectangle Bounds { get; private set; }
+
         public Vector2 Position
         {
             get { return _position; }
@@ -70,6 +72,8 @@ namespace XTetris.Shapes
                     _position.Y++;
                     break;
             }
+
+            CalculateBounds();
         }
 
         public void Drop()
@@ -99,6 +103,8 @@ namespace XTetris.Shapes
                     Direction = NextDirection();
                     break;
             }
+
+            CalculateBounds();
         }
 
         private Direction NextDirection()
@@ -120,6 +126,35 @@ namespace XTetris.Shapes
         }
 
         #endregion
+
+        private void CalculateBounds()
+        {
+            // Find min/max for both X and Y
+            var blocks = Rotations[(int) Direction];
+
+            int minX = blocks.GetUpperBound(1) + 1;
+            int maxX = -1;
+
+            int minY = blocks.GetUpperBound(1) + 1;
+            int maxY = -1;
+
+            for (int row = 0; row <= blocks.GetUpperBound(0); row++)
+                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+                    if (blocks[row, col] != null)
+                    {
+                        minX = Math.Min(minX, col);
+                        maxX = Math.Max(maxX, col);
+
+                        minY = Math.Min(minY, row);
+                        maxY = Math.Max(maxY, row);
+                    }
+
+            Bounds = new Rectangle(
+                (int) Position.X,
+                (int) Position.Y,
+                1 + maxX - minX,
+                1 + maxY - minY);
+        }
 
         public void ResetPosition()
         {
@@ -187,6 +222,8 @@ namespace XTetris.Shapes
                             blocks[row, col] = new Block(this, Color, new Vector2(col, row));
                 Rotations.Add(blocks);
             }
+
+            CalculateBounds();
         }
 
         protected int[,] InvertRotation(int[,] rotation)
