@@ -198,7 +198,7 @@ namespace XTetris.Shapes
                         int x = (int) block.BoardPosition.X;
                         int y = (int)block.BoardPosition.Y;
                         if (Board.Cells[y, x] != null)
-                            throw new Exception("This cell should be empty!");
+                            Board.GameOver();
                         Board.Cells[y, x] = block;
                     }
                 }
@@ -206,6 +206,8 @@ namespace XTetris.Shapes
 
             Board.ActiveShape = null;
             Board.AllowHold = true;
+
+            Board.SpawnShape();
         }
 
         #region Generate Blocks

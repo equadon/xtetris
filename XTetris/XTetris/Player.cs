@@ -66,6 +66,16 @@ namespace XTetris
                 {
                     Board.Hold();
                 }
+
+                // Debug: Save block at current location
+                if (TetrisGame.Debug &&
+                    InputHandler.KeyPressed(Keys.Y))
+                {
+                    Board.ActiveShape.Save();
+                }
+
+                if (InputHandler.KeyPressed(Keys.Escape))
+                    Board.GameOver();
             }
         }
     }

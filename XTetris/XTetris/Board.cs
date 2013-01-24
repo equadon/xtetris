@@ -122,31 +122,35 @@ namespace XTetris
             {
                 DrawShape(spriteBatch, ActiveShape, new Vector2(Bounds.Left, Bounds.Top), 1.0f);
 
-                //// Print debug info
-                //string text = "\n\nDelay left: " + _moveDelayDuration.ToString("N5") +
-                //              "\n\nActive Shape: (" + ActiveShape.Position.X + "," + ActiveShape.Position.Y + ")" +
-                //              "\n    Direction: " + ActiveShape.Direction +
-                //              "\n    Bounds:" +
-                //              "\n       position: (" + ActiveShape.Bounds.X + "," + ActiveShape.Bounds.Y + ")" +
-                //              "\n       size: " + ActiveShape.Bounds.Width + "x" + ActiveShape.Bounds.Height +
-                //              "\n       top left: (" + ActiveShape.Bounds.Left + "," + ActiveShape.Bounds.Top + ")" +
-                //              "\n       bot right: (" + ActiveShape.Bounds.Right + "," + ActiveShape.Bounds.Bottom + ")" +
-                //              "\n\nElapsed: " + gameTime.TotalGameTime.ToString() +
-                //              "\n\nBoard: " +
-                //              "\n    size: " + Width + "x" + Height +
-                //              "\n    top left: (" + Bounds.Left + "," + Bounds.Top + ")" +
-                //              "\n    bot right:  (" + Bounds.Right + "," + Bounds.Bottom + ")";
+                // Print debug info
+                if (TetrisGame.Debug)
+                {
+                    string text = "\n\nDelay left: " + _moveDelayDuration.ToString("N5") +
+                                  "\n\nActive Shape: (" + ActiveShape.Position.X + "," + ActiveShape.Position.Y + ")" +
+                                  "\n    Direction: " + ActiveShape.Direction +
+                                  "\n    Bounds:" +
+                                  "\n       position: (" + ActiveShape.Bounds.X + "," + ActiveShape.Bounds.Y + ")" +
+                                  "\n       size: " + ActiveShape.Bounds.Width + "x" + ActiveShape.Bounds.Height +
+                                  "\n       top left: (" + ActiveShape.Bounds.Left + "," + ActiveShape.Bounds.Top + ")" +
+                                  "\n       bot right: (" + ActiveShape.Bounds.Right + "," + ActiveShape.Bounds.Bottom + ")" +
+                                  "\n\nElapsed: " + gameTime.TotalGameTime.ToString() +
+                                  "\n\nBoard: " +
+                                  "\n    size: " + Width + "x" + Height +
+                                  "\n    top left: (" + Bounds.Left + "," + Bounds.Top + ")" +
+                                  "\n    bot right:  (" + Bounds.Right + "," + Bounds.Bottom + ")";
 
-                //Vector2 textSize = GameState.DebugFont.MeasureString(text);
+                    Vector2 textSize = GameState.DebugFont.MeasureString(text);
 
-                //Vector2 pos = new Vector2(Convert.ToInt32(Bounds.Right - textSize.X) - 15,
-                //                          Convert.ToInt32(Bounds.Bottom - textSize.Y) - 15);
+                    Vector2 pos = new Vector2(Convert.ToInt32(Bounds.Right - textSize.X) - 15,
+                                              Convert.ToInt32(Bounds.Bottom - textSize.Y) - 15);
 
-                //spriteBatch.DrawString(GameState.DebugFont, text, pos, Color.White);
+                    spriteBatch.DrawString(GameState.DebugFont, text, pos, Color.White);
+                }
             }
 
             // Draw border
-            spriteBatch.Draw(GameState.BorderTexture, new Rectangle(TetrisGame.BoardPaddingSide, TetrisGame.BoardPaddingTop, 604, 707), Color.White);
+            if (!TetrisGame.Debug)
+                spriteBatch.Draw(GameState.BorderTexture, new Rectangle(TetrisGame.BoardPaddingSide, TetrisGame.BoardPaddingTop, 604, 707), Color.White);
 
             // Draw queue
             DrawQueue(spriteBatch);
@@ -154,10 +158,6 @@ namespace XTetris
             // Draw shape in hold queue
             int blockSize = TetrisGame.BlockSize;
             float scale = 0.85f;
-
-            
-            //Bounds.Right - firstShape.Bounds.X * blockSize * scale + 21 + 60 - firstShape.Origin.X * scale,
-            //TetrisGame.BoardPaddingTop - firstShape.Bounds.Y * blockSize * scale + 74 + 60 - firstShape.Origin.Y * scale),
 
             if (HoldShape != null)
                 DrawShape(
@@ -223,13 +223,16 @@ namespace XTetris
                             SpriteEffects.None,
                             0f);
 
-                        //// Debug block positions
-                        //string text = block.BoardPosition.Y + "," + block.BoardPosition.X;
-                        //var pos = new Vector2(
-                        //    Bounds.Left + block.BoardPosition.X * 30 + 5,
-                        //    Bounds.Top + block.BoardPosition.Y * 30 + 5);
+                        // Debug block positions
+                        if (TetrisGame.Debug)
+                        {
+                            string text = block.BoardPosition.Y + "," + block.BoardPosition.X;
+                            var pos = new Vector2(
+                                Bounds.Left + block.BoardPosition.X * 30 + 5,
+                                Bounds.Top + block.BoardPosition.Y * 30 + 5);
 
-                        //spriteBatch.DrawString(GameState.DebugFont, text, pos, Color.Red, 0f, Vector2.Zero, 0.6f, SpriteEffects.None, 0f);
+                            spriteBatch.DrawString(GameState.DebugFont, text, pos, Color.Red, 0f, Vector2.Zero, 0.6f, SpriteEffects.None, 0f);
+                        }
                     }
                 }
             }
@@ -281,6 +284,13 @@ namespace XTetris
         }
 
         #endregion
+
+        public void GameOver()
+        {
+            GameState.StateManager.ChangeState(GameState.GameRef.GameOverState);
+        }
+
+        #region Collision Detection and Clearing Lines
 
         private void ClearLines()
         {
@@ -390,17 +400,16 @@ namespace XTetris
                             ActiveShape.Move(Direction.Up);
 
                             ActiveShape.Save();
-                            SpawnShape();
 
                             return;
                         }
 
                         // Other blocks
-                        if (Cells[(int)block.BoardPosition.Y, (int)block.BoardPosition.X] != null)
+                        if (Cells[(int) block.BoardPosition.Y, (int) block.BoardPosition.X] != null)
                         {
                             // We don't want to save to board if there only were horizontal movement
-                            bool save = !((int)ActiveShape.Position.Y == (int)ActiveShape.LastPosition.Y &&
-                                          (int)ActiveShape.Position.X != (int)ActiveShape.LastPosition.X);
+                            bool save = !((int) ActiveShape.Position.Y == (int) ActiveShape.LastPosition.Y &&
+                                          (int) ActiveShape.Position.X != (int) ActiveShape.LastPosition.X);
 
                             if (Player.Rotated)
                             {
@@ -411,10 +420,7 @@ namespace XTetris
                                 ActiveShape.ResetPosition();
 
                                 if (save)
-                                {
                                     ActiveShape.Save();
-                                    SpawnShape();
-                                }
                             }
 
                             return;
@@ -423,6 +429,8 @@ namespace XTetris
                 }
             }
         }
+
+        #endregion
 
         #region Hold and Spawn Shape Methods
 
@@ -465,8 +473,8 @@ namespace XTetris
             {
                 do
                 {
-                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
-                    //ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.I));
+                    //ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
+                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.I));
                 } while (ShapesQueue.Count < MaxShapesInQueue);
             }
 

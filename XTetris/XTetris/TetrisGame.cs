@@ -25,6 +25,8 @@ namespace XTetris
         public const int ScreenWidth = 620 + BoardPaddingSide * 2;
         public const int ScreenHeight = 690 + BoardPaddingSide * 2;
 
+        public static bool Debug = false;
+
         public static readonly Color IShapeColor = new Color(0, 255, 255);
         public static readonly Color JShapeColor = new Color(0, 0, 255);
         public static readonly Color LShapeColor = new Color(255, 170, 0);
@@ -42,6 +44,7 @@ namespace XTetris
 
         // Game states
         public GamePlayState GamePlayState { get; private set; }
+        public GameOverState GameOverState { get; private set; }
 
         public GameStateManager StateManager
         {
@@ -66,8 +69,10 @@ namespace XTetris
             Components.Add(StateManager);
 
             GamePlayState = new GamePlayState(this, StateManager);
+            GameOverState = new GameOverState(this, StateManager);
 
             StateManager.ChangeState(GamePlayState);
+            //StateManager.ChangeState(GameOverState);
         }
 
         /// <summary>

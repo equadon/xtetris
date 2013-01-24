@@ -83,6 +83,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameStates\BaseGameState.cs" />
+    <Compile Include="GameStates\GameOverState.cs" />
     <Compile Include="GameStates\GamePlayState.cs" />
     <Compile Include="Player.cs">
       <SubType>Code</SubType>
