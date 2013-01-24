@@ -102,17 +102,22 @@ namespace XTetris
             spriteBatch.Draw(GameState.FillTexture, Bounds, BackgroundColor);
 
             // Draw cells
-            DrawCells(gameTime, spriteBatch);
+            DrawCells(spriteBatch);
 
             // Draw active shape
             if (HasActiveShape)
             {
-                DrawShape(ActiveShape, gameTime, spriteBatch);
+                DrawShape(spriteBatch, ActiveShape, new Vector2(Bounds.Left, Bounds.Top), 1.0f);
 
                 // Print debug info
-                string text = "Delay left: " + _moveDelayDuration.ToString("N5") +
+                string text = "\n\nDelay left: " + _moveDelayDuration.ToString("N5") +
                               "\n\nActive Shape: (" + ActiveShape.Position.X + "," + ActiveShape.Position.Y + ")" +
                               "\n    Direction: " + ActiveShape.Direction +
+                              "\n    Bounds:" +
+                              "\n       position: (" + ActiveShape.Bounds.X + "," + ActiveShape.Bounds.Y + ")" +
+                              "\n       size: " + ActiveShape.Bounds.Width + "x" + ActiveShape.Bounds.Height +
+                              "\n       top left: (" + ActiveShape.Bounds.Left + "," + ActiveShape.Bounds.Top + ")" +
+                              "\n       bot right: (" + ActiveShape.Bounds.Right + "," + ActiveShape.Bounds.Bottom + ")" +
                               "\n\nElapsed: " + gameTime.TotalGameTime.ToString() +
                               "\n\nBoard: " +
                               "\n    size: " + Width + "x" + Height +
@@ -129,37 +134,12 @@ namespace XTetris
 
             // Draw border
             spriteBatch.Draw(GameState.BorderTexture, new Rectangle(TetrisGame.BoardPaddingSide, TetrisGame.BoardPaddingTop, 604, 707), Color.White);
+
+            // Draw queue
+            DrawQueue(spriteBatch);
         }
 
-        private void DrawShape(BaseShape shape, GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            Block[,] blocks = shape.Rotations[(int) shape.Direction];
-            for (int row = 0; row <= blocks.GetUpperBound(0); row++)
-            {
-                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
-                {
-                    Block block = blocks[row, col];
-                    if (block != null)
-                    {
-                        spriteBatch.Draw(GameState.BlockTexture,
-                            new Vector2(
-                                Bounds.Left + block.BoardPosition.X * TetrisGame.BlockSize,
-                                Bounds.Top + block.BoardPosition.Y * TetrisGame.BlockSize),
-                            block.Color);
-
-                        //// Debug block positions
-                        //string text = block.BoardPosition.Y + "," + block.BoardPosition.X;
-                        //var pos = new Vector2(
-                        //    Bounds.Left + block.BoardPosition.X * 30 + 5,
-                        //    Bounds.Top + block.BoardPosition.Y * 30 + 5);
-
-                        //spriteBatch.DrawString(GameState.DebugFont, text, pos, Color.Red, 0f, Vector2.Zero, 0.6f, SpriteEffects.None, 0f);
-                    }
-                }
-            }
-        }
-
-        private void DrawCells(GameTime gameTime, SpriteBatch spriteBatch)
+        private void DrawCells(SpriteBatch spriteBatch)
         {
             for (int row = 2; row <= Cells.GetUpperBound(0); row++)
             {
@@ -180,6 +160,55 @@ namespace XTetris
                     }
                 }
             }
+        }
+
+        private void DrawShape(SpriteBatch spriteBatch, BaseShape shape, Vector2 position, float scale)
+        {
+            Block[,] blocks = shape.Rotations[(int)shape.Direction];
+            for (int row = 0; row <= blocks.GetUpperBound(0); row++)
+            {
+                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+                {
+                    Block block = blocks[row, col];
+                    if (block != null)
+                    {
+                        spriteBatch.Draw(GameState.BlockTexture,
+                            new Vector2(
+                                position.X + (block.BoardPosition.X * TetrisGame.BlockSize) * scale,
+                                position.Y + (block.BoardPosition.Y * TetrisGame.BlockSize) * scale),
+                            null,
+                            block.Color,
+                            0f,
+                            Vector2.Zero,
+                            scale,
+                            SpriteEffects.None,
+                            0f);
+
+                        //// Debug block positions
+                        //string text = block.BoardPosition.Y + "," + block.BoardPosition.X;
+                        //var pos = new Vector2(
+                        //    Bounds.Left + block.BoardPosition.X * 30 + 5,
+                        //    Bounds.Top + block.BoardPosition.Y * 30 + 5);
+
+                        //spriteBatch.DrawString(GameState.DebugFont, text, pos, Color.Red, 0f, Vector2.Zero, 0.6f, SpriteEffects.None, 0f);
+                    }
+                }
+            }
+        }
+
+        private void DrawQueue(SpriteBatch spriteBatch)
+        {
+            int blockSize = TetrisGame.BlockSize;
+
+            BaseShape shape = ShapesQueue.Peek();
+
+            float scale = 0.9f;
+            DrawShape(spriteBatch,
+                shape,
+                new Vector2(
+                    Bounds.Right - shape.Bounds.X * blockSize * scale + 21 + 60 - shape.Origin.X * scale,
+                    TetrisGame.BoardPaddingTop - shape.Bounds.Y * blockSize * scale + 74 + 60 - shape.Origin.Y * scale),
+                scale);
         }
 
         #endregion
@@ -266,17 +295,25 @@ namespace XTetris
         /// </summary>
         public void SpawnShape()
         {
+            BaseShape shape;
+
             // Fill the queue if needed
             if (ShapesQueue.Count < MaxShapesInQueue)
             {
                 do
                 {
-                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
+                    //shape = ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7));
+                    shape = ShapesFactory.CreateShape(this, ShapeTypes.I);
+                    ShapesQueue.Enqueue(shape);
                 } while (ShapesQueue.Count < MaxShapesInQueue);
             }
 
             ActiveShape = ShapesQueue.Dequeue();
-            ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes)_random.Next(7)));
+            ActiveShape.Position = new Vector2(3, 1);
+
+            shape = ShapesFactory.CreateShape(this, (ShapeTypes)_random.Next(7));
+
+            ShapesQueue.Enqueue(shape);
         }
     }
 }

@@ -22,6 +22,8 @@ namespace XTetris.GameStates
         protected TimeSpan TransitionTimer { get; set; }
         protected TimeSpan TransitionInterval { get; set; }
 
+        public TetrisGame GameRef { get; private set; }
+
         protected SpriteBatch SpriteBatch
         {
             get { return ((TetrisGame)Game).SpriteBatch; }
@@ -39,6 +41,7 @@ namespace XTetris.GameStates
         {
             PlayerIndexInControl = PlayerIndex.One;
             TransitionInterval = TimeSpan.FromSeconds(0.5);
+            GameRef = (TetrisGame) game;
         }
 
         #region XNA Method Region

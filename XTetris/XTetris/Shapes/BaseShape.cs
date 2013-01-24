@@ -36,6 +36,11 @@ namespace XTetris.Shapes
             set { _position = value; }
         }
 
+        public Vector2 Origin
+        {
+            get { return new Vector2(Bounds.Width / 2f * TetrisGame.BlockSize, Bounds.Height / 2f * TetrisGame.BlockSize); }
+        }
+
         #endregion
 
         public BaseShape(Texture2D texture, Board board, Color color)
@@ -45,7 +50,7 @@ namespace XTetris.Shapes
             Direction = Direction.Right;
             Color = color;
 
-            Position = new Vector2(3, 1);
+            Position = new Vector2(0, 0);
 
             LastPosition = Position;
             LastDirection = Direction;
@@ -150,8 +155,8 @@ namespace XTetris.Shapes
                     }
 
             Bounds = new Rectangle(
-                (int) Position.X,
-                (int) Position.Y,
+                (int) Position.X + minX,
+                (int) Position.Y + minY,
                 1 + maxX - minX,
                 1 + maxY - minY);
         }
