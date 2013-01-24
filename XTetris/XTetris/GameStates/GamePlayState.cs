@@ -8,6 +8,7 @@ namespace XTetris.GameStates
     public class GamePlayState : BaseGameState
     {
         public SpriteFont DebugFont { get; private set; }
+        public SpriteFont GameFont { get; private set; }
 
         public Texture2D BorderTexture { get; private set; }
         public Texture2D BlockTexture { get; private set; }
@@ -40,6 +41,7 @@ namespace XTetris.GameStates
             CancelTexture = Content.Load<Texture2D>(@"Textures\cancel");
 
             DebugFont = Content.Load<SpriteFont>(@"Fonts\Debug");
+            GameFont = Content.Load<SpriteFont>(@"Fonts\Game");
 
             base.LoadContent();
         }

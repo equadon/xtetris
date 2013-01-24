@@ -34,7 +34,6 @@ namespace XTetris.GameStates
         {
             GameRef.GraphicsDevice.Clear(new Color(50, 50, 50));
 
-            //string text = "GAME OVER";
             string text = "GAME OVER";
 
             Vector2 stringSize = GameOverFont.MeasureString(text);

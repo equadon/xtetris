@@ -152,6 +152,19 @@ namespace XTetris
             if (!TetrisGame.Debug)
                 spriteBatch.Draw(GameState.BorderTexture, new Rectangle(TetrisGame.BoardPaddingSide, TetrisGame.BoardPaddingTop, 604, 707), Color.White);
 
+            // Labels
+            spriteBatch.DrawString(GameState.GameFont, "Hold",
+                new Vector2(
+                    TetrisGame.BoardPaddingSide + 20,
+                    TetrisGame.BoardPaddingTop + 15),
+                Color.Crimson);
+
+            spriteBatch.DrawString(GameState.GameFont, "Next",
+                new Vector2(
+                    Bounds.Right + 25,
+                    TetrisGame.BoardPaddingTop + 15),
+                Color.Crimson);
+
             // Draw queue
             DrawQueue(spriteBatch);
 
