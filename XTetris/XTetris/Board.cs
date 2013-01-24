@@ -200,15 +200,44 @@ namespace XTetris
         {
             int blockSize = TetrisGame.BlockSize;
 
-            BaseShape shape = ShapesQueue.Peek();
+            // Draw first shape in queue
+            BaseShape firstShape = ShapesQueue.Peek();
 
-            float scale = 0.9f;
+            float scale = 0.85f;
             DrawShape(spriteBatch,
-                shape,
+                firstShape,
                 new Vector2(
-                    Bounds.Right - shape.Bounds.X * blockSize * scale + 21 + 60 - shape.Origin.X * scale,
-                    TetrisGame.BoardPaddingTop - shape.Bounds.Y * blockSize * scale + 74 + 60 - shape.Origin.Y * scale),
+                    Bounds.Right - firstShape.Bounds.X * blockSize * scale + 21 + 60 - firstShape.Origin.X * scale,
+                    TetrisGame.BoardPaddingTop - firstShape.Bounds.Y * blockSize * scale + 74 + 60 - firstShape.Origin.Y * scale),
                 scale);
+
+            // Draw the rest
+            int queueAreaWidth = 47;
+            int queueAreaHeight = 49;
+            float offsetY = 0f;
+            scale = 0.65f;
+
+            int i = 0;
+
+            foreach (var shape in ShapesQueue)
+            {
+                i++;
+
+                // Skip the first shape
+                if (i == 1)
+                    continue;
+
+                Vector2 pos = new Vector2(
+                    Bounds.Right - shape.Bounds.X * blockSize * scale + 34 + queueAreaWidth - shape.Origin.X * scale,
+                    TetrisGame.BoardPaddingTop + offsetY - shape.Bounds.Y * blockSize * scale + 236 + queueAreaHeight - shape.Origin.Y * scale);
+
+                DrawShape(spriteBatch,
+                    shape,
+                    pos,
+                    scale);
+
+                offsetY += queueAreaHeight * 2;
+            }
         }
 
         #endregion
@@ -302,8 +331,8 @@ namespace XTetris
             {
                 do
                 {
-                    //shape = ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7));
-                    shape = ShapesFactory.CreateShape(this, ShapeTypes.I);
+                    shape = ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7));
+                    //shape = ShapesFactory.CreateShape(this, ShapeTypes.I);
                     ShapesQueue.Enqueue(shape);
                 } while (ShapesQueue.Count < MaxShapesInQueue);
             }
