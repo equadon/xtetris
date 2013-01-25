@@ -24,6 +24,10 @@ namespace XTetris
         // stored as (# of lines cleared, back-to-back count)
         private Tuple<int, int> _lastLineClearCount;
 
+        // Auto move ActiveShape down
+        private const double MoveDownDelay = 1.0d;
+        private double _moveDelayDuration = MoveDownDelay;
+
         public Board Board { get; private set; }
 
         public int Score { get; private set; }
@@ -112,6 +116,17 @@ namespace XTetris
                     InputHandler.KeyPressed(Keys.C))
                 {
                     Board.Hold();
+                }
+
+                if (!Board.HasActiveShape)
+                    _moveDelayDuration = MoveDownDelay;
+                else
+                    _moveDelayDuration -= gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (Board.HasActiveShape && _moveDelayDuration <= 0d)
+                {
+                    _moveDelayDuration = 0.5 + (11 - Level) * 0.05;
+                    Board.ActiveShape.Move(Direction.Down);
                 }
             }
         }

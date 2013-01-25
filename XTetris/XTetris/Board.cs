@@ -18,14 +18,9 @@ namespace XTetris
 
         private const int MaxShapesInQueue = 5;
 
-        private const double MoveDownDelay = 1.0d;
-        private const double SpawnDelay = 1.0d;
-
         private double _cancelIconDuration = 0d;
 
         private readonly Random _random;
-
-        private double _moveDelayDuration = MoveDownDelay;
 
         #endregion
 
@@ -49,6 +44,8 @@ namespace XTetris
         public HudItem ScoreHud { get; private set; }
         public HudItem LevelHud { get; private set; }
         public HudItem TimeHud { get; private set; }
+
+        public bool IsGameOver { get; private set; }
 
         public bool HasActiveShape
         {
@@ -81,6 +78,8 @@ namespace XTetris
 
             AllowHold = true;
 
+            IsGameOver = false;
+
             ShapesQueue = new Queue<BaseShape>();
 
             SpawnShape();
@@ -104,18 +103,10 @@ namespace XTetris
 
         public void Update(GameTime gameTime)
         {
+            if (IsGameOver)
+                return;
+
             TotalTime += gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (!HasActiveShape)
-                _moveDelayDuration = MoveDownDelay;
-            else
-                _moveDelayDuration -= gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (HasActiveShape && _moveDelayDuration <= 0d)
-            {
-                _moveDelayDuration = MoveDownDelay;
-                ActiveShape.Move(Direction.Down);
-            }
 
             if (_cancelIconDuration > 0d)
                 _cancelIconDuration -= gameTime.ElapsedGameTime.TotalSeconds;
@@ -134,6 +125,9 @@ namespace XTetris
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            if (IsGameOver)
+                return;
+
             spriteBatch.Draw(GameState.FillTexture, Bounds, BackgroundColor);
 
             // Draw cells
@@ -164,16 +158,15 @@ namespace XTetris
             DrawQueue(spriteBatch);
 
             // Draw shape in hold queue
-            int blockSize = TetrisGame.BlockSize;
-            float scale = 0.85f;
+            const float scale = 0.85f;
 
             if (HoldShape != null)
                 DrawShape(
                     spriteBatch,
                     HoldShape,
                     new Vector2(
-                        TetrisGame.BoardPaddingSide - HoldShape.Bounds.X * blockSize * scale + 10 + 60 - HoldShape.Origin.X * scale,
-                        TetrisGame.BoardPaddingTop - HoldShape.Bounds.Y * blockSize * scale + 73 + 60 - HoldShape.Origin.Y * scale),
+                        TetrisGame.BoardPaddingSide - HoldShape.Bounds.X * TetrisGame.BlockSize * scale + 10 + 60 - HoldShape.Origin.X * scale,
+                        TetrisGame.BoardPaddingTop - HoldShape.Bounds.Y * TetrisGame.BlockSize * scale + 73 + 60 - HoldShape.Origin.Y * scale),
                     scale);
 
             // User tried to hold when hold was not allowed
@@ -189,7 +182,7 @@ namespace XTetris
             DrawHud(gameTime, spriteBatch);
         }
 
-        private void DrawCells(SpriteBatch spriteBatch)
+        public void DrawCells(SpriteBatch spriteBatch)
         {
             for (int row = 2; row <= Cells.GetUpperBound(0); row++)
             {
@@ -222,18 +215,6 @@ namespace XTetris
                     Block block = blocks[row, col];
                     if (block != null)
                     {
-                        spriteBatch.Draw(GameState.BlockTexture,
-                            new Vector2(
-                                position.X + (block.BoardPosition.X * TetrisGame.BlockSize) * scale,
-                                position.Y + (block.BoardPosition.Y * TetrisGame.BlockSize) * scale),
-                            null,
-                            block.Color,
-                            0f,
-                            Vector2.Zero,
-                            scale,
-                            SpriteEffects.None,
-                            0f);
-
                         // Ghost shape
                         if (Player.GhostShapeEnabled && shape.Equals(ActiveShape))
                         {
@@ -251,6 +232,18 @@ namespace XTetris
                                 SpriteEffects.None,
                                 0f);
                         }
+
+                        spriteBatch.Draw(GameState.BlockTexture,
+                            new Vector2(
+                                position.X + (block.BoardPosition.X * TetrisGame.BlockSize) * scale,
+                                position.Y + (block.BoardPosition.Y * TetrisGame.BlockSize) * scale),
+                            null,
+                            block.Color,
+                            0f,
+                            Vector2.Zero,
+                            scale,
+                            SpriteEffects.None,
+                            0f);
                     }
                 }
             }
@@ -318,6 +311,7 @@ namespace XTetris
         // TODO: Implement a better game over checking
         public void GameOver()
         {
+            IsGameOver = true;
             GameState.StateManager.ChangeState(GameState.GameRef.GameOverState);
         }
 

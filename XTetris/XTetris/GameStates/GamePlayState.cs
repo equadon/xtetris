@@ -25,7 +25,7 @@ namespace XTetris.GameStates
 
         public override void Initialize()
         {
-            Board = new Board(this);
+            NewGame();
 
             base.Initialize();
         }
@@ -64,6 +64,12 @@ namespace XTetris.GameStates
             base.Draw(gameTime);
 
             SpriteBatch.End();
+        }
+
+        public void NewGame()
+        {
+            Board = new Board(this);
+            Board.LoadContent();
         }
     }
 }
