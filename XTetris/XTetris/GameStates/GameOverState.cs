@@ -30,7 +30,7 @@ namespace XTetris.GameStates
             if (InputHandler.KeyPressed(Keys.Enter))
             {
                 GameRef.GamePlayState.NewGame();
-                GameRef.StateManager.ChangeState(GameRef.GamePlayState);
+                StateManager.ChangeState(GameRef.GamePlayState);
             }
 
             base.Update(gameTime);
