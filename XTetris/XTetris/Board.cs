@@ -141,38 +141,7 @@ namespace XTetris
 
             // Draw active shape
             if (HasActiveShape)
-            {
                 DrawShape(spriteBatch, ActiveShape, new Vector2(Bounds.Left, Bounds.Top), 1.0f);
-
-                Vector2 ghostPos = GhostPosition(ActiveShape);
-                spriteBatch.DrawString(GameState.DebugFont, "Ghost pos: (" + ghostPos.X + "," + ghostPos.Y + ")",
-                                       new Vector2(200, 150), Color.White);
-
-                // Print debug info
-                if (TetrisGame.Debug)
-                {
-                    string text = "\n\nDelay left: " + _moveDelayDuration.ToString("N5") +
-                                  "\n\nActive Shape: (" + ActiveShape.Position.X + "," + ActiveShape.Position.Y + ")" +
-                                  "\n    Direction: " + ActiveShape.Direction +
-                                  "\n    Bounds:" +
-                                  "\n       position: (" + ActiveShape.Bounds.X + "," + ActiveShape.Bounds.Y + ")" +
-                                  "\n       size: " + ActiveShape.Bounds.Width + "x" + ActiveShape.Bounds.Height +
-                                  "\n       top left: (" + ActiveShape.Bounds.Left + "," + ActiveShape.Bounds.Top + ")" +
-                                  "\n       bot right: (" + ActiveShape.Bounds.Right + "," + ActiveShape.Bounds.Bottom + ")" +
-                                  "\n\nElapsed: " + gameTime.TotalGameTime.ToString() +
-                                  "\n\nBoard: " +
-                                  "\n    size: " + Width + "x" + Height +
-                                  "\n    top left: (" + Bounds.Left + "," + Bounds.Top + ")" +
-                                  "\n    bot right:  (" + Bounds.Right + "," + Bounds.Bottom + ")";
-
-                    Vector2 textSize = GameState.DebugFont.MeasureString(text);
-
-                    Vector2 pos = new Vector2(Convert.ToInt32(Bounds.Right - textSize.X) - 15,
-                                              Convert.ToInt32(Bounds.Bottom - textSize.Y) - 15);
-
-                    spriteBatch.DrawString(GameState.DebugFont, text, pos, Color.White);
-                }
-            }
 
             // Draw border
             if (!TetrisGame.Debug)
@@ -236,9 +205,7 @@ namespace XTetris
                     spriteBatch.Draw(GameState.EmptyBlockTexture, cellPos, Color.White);
 
                     if (block != null)
-                    {
                         spriteBatch.Draw(GameState.BlockTexture, cellPos, block.Color);
-                    }
                 }
             }
         }
@@ -270,10 +237,6 @@ namespace XTetris
                         // Ghost shape
                         if (Player.GhostShapeEnabled && shape.Equals(ActiveShape))
                         {
-                            //Vector2 ghostBlockPos = new Vector2(
-                            //    position.X + (block.BoardPosition.X * TetrisGame.BlockSize) * scale,
-                            //    position.Y + (ghostPos.Y - shape.Bounds.Height + block.Position.Y) * TetrisGame.BlockSize * scale);
-
                             Vector2 ghostBlockPos = new Vector2(
                                 position.X + (block.BoardPosition.X * TetrisGame.BlockSize) * scale,
                                 position.Y + (ghostPos.Y + block.Position.Y) * TetrisGame.BlockSize * scale);
@@ -287,17 +250,6 @@ namespace XTetris
                                 scale,
                                 SpriteEffects.None,
                                 0f);
-                        }
-
-                        // Debug block positions
-                        if (TetrisGame.Debug)
-                        {
-                            string text = block.BoardPosition.Y + "," + block.BoardPosition.X;
-                            var pos = new Vector2(
-                                Bounds.Left + block.BoardPosition.X * 30 + 5,
-                                Bounds.Top + block.BoardPosition.Y * 30 + 5);
-
-                            spriteBatch.DrawString(GameState.DebugFont, text, pos, Color.Red, 0f, Vector2.Zero, 0.6f, SpriteEffects.None, 0f);
                         }
                     }
                 }
@@ -608,7 +560,6 @@ namespace XTetris
                 do
                 {
                     ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
-                    //ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.L));
                 } while (ShapesQueue.Count < MaxShapesInQueue);
             }
 
