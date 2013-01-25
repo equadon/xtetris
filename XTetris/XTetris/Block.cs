@@ -25,13 +25,13 @@ namespace XTetris
             get { return ParentShape.Position + Position; }
         }
 
+        #endregion
+
         public Block(BaseShape parentShape, Color color, Vector2 position)
         {
             ParentShape = parentShape;
             Color = color;
             Position = position;
         }
-
-        #endregion
     }
 }

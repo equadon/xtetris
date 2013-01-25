@@ -25,7 +25,7 @@ namespace XTetris
         public const int ScreenWidth = 620 + BoardPaddingSide * 2;
         public const int ScreenHeight = 690 + BoardPaddingSide * 2;
 
-        public static bool Debug = true;
+        public static bool Debug = false;
 
         public static readonly Color IShapeColor = new Color(0, 255, 255);
         public static readonly Color JShapeColor = new Color(0, 0, 255);

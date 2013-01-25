@@ -100,13 +100,6 @@ namespace XTetris
             pos.Y += 150;
             TimeHud = new HudItem(GameState.GameFont, "Time");
             TimeHud.Position = pos;
-
-            // TODO: Bug #1 check notes, needs fixing, maybe use CheckCollision ??
-            Cells[18, 5] = new Block(ActiveShape, Color.Blue, new Vector2(5, 18));
-            Cells[19, 5] = new Block(ActiveShape, Color.Blue, new Vector2(5, 19));
-            Cells[20, 5] = new Block(ActiveShape, Color.Blue, new Vector2(5, 20));
-            Cells[21, 5] = new Block(ActiveShape, Color.Blue, new Vector2(5, 21));
-            Cells[21, 6] = new Block(ActiveShape, Color.Blue, new Vector2(6, 21));
         }
 
         public void Update(GameTime gameTime)
@@ -394,90 +387,30 @@ namespace XTetris
                 }
             }
 
-            // row, diff
-            var currentLowest = new KeyValuePair<int, int>(TetrisGame.BlocksHigh - 1, 1000);
+            Vector2 shapePos = shape.Position;
 
-            // Go through the check list
-            foreach (var block in checkList)
+            for (int row = (int)shapePos.Y; row <= TetrisGame.BlocksHigh; row++)
             {
-                int col = (int)block.BoardPosition.X;
+                bool collision = false;
 
-                for (int row = Cells.GetUpperBound(0); row > block.BoardPosition.Y; row--)
+                foreach (var block in checkList)
                 {
-                    if (Cells[row, col] != null)
-                    {
-                        int prevRow = row - 1;
-                        int diff = prevRow - (int)block.Position.Y;
+                    float newX = shapePos.X + block.Position.X;
+                    float newY = shapePos.Y + block.Position.Y;
 
-                        if (diff == currentLowest.Value)
-                        {
-                            currentLowest = new KeyValuePair<int, int>(Math.Max(prevRow, currentLowest.Key), diff);
-                        }
-                        else if (diff < currentLowest.Value)
-                        {
-                            currentLowest = new KeyValuePair<int, int>(Math.Min(prevRow, currentLowest.Key), diff);
-                        }
-                        //else if (prevRow < currentLowest.Key && diff < currentLowest.Value)
-                        //{
-                        //    currentLowest = new KeyValuePair<int, int>(prevRow, diff);
-                        //}
-                    }
-                }
-            }
-
-            int posY = currentLowest.Key - shape.Rotations[(int) shape.Direction].GetUpperBound(0);
-            int distance = (int)shape.Position.Y + shape.Rotations[(int) shape.Direction].GetUpperBound(0) + 1 - shape.Bounds.Bottom;
-
-            posY += distance;
-
-            //return new Vector2(shape.Position.X, currentLowest.Key);
-            return new Vector2(shape.Position.X, posY);
-        }
-
-        private Vector2 GhostPosition2(BaseShape shape)
-        {
-            Vector2 blockPos = shape.Position;
-            Vector2 ghostPos = blockPos;
-
-            ghostPos.Y = Cells.GetUpperBound(0);
-
-            var blocks = shape.Rotations[(int)shape.Direction];
-
-            int minX = TetrisGame.BlocksWide + 1;
-            int maxX = -1;
-
-            bool noMoreRows = false;
-            for (int row = blocks.GetUpperBound(0); row >= 0; row--)
-            {
-                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
-                {
-                    if (blocks[row, col] != null)
-                    {
-                        minX = Math.Min(minX, (int) blocks[row, col].BoardPosition.X);
-                        maxX = Math.Max(maxX, (int) blocks[row, col].BoardPosition.X);
-
-                        noMoreRows = true;
-                    }
+                    if (newX < 0 || newX > TetrisGame.BlocksWide - 1 ||
+                        newY < 0 || newY > TetrisGame.BlocksHigh - 1 ||
+                        Cells[(int)newY, (int)newX] != null)
+                        collision = true;
                 }
 
-                if (noMoreRows)
+                if (collision)
                     break;
+
+                shapePos.Y++;
             }
 
-            for (int row = (int)shape.Bounds.Bottom - 1; row <= Cells.GetUpperBound(0); row++ )
-            {
-                for (int col = minX; col <= maxX; col++)
-                {
-                    if (Cells[row, col] != null)
-                    {
-                        ghostPos.Y = row - 1;
-                        row = Cells.GetUpperBound(0) + 2;
-                        break;
-                    }
-                }
-            }
-
-            return ghostPos;
+            return new Vector2(shape.Position.X, shapePos.Y - 1);
         }
 
         #region Collision Detection and Clearing Lines
@@ -674,8 +607,8 @@ namespace XTetris
             {
                 do
                 {
-                    //ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
-                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.L));
+                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
+                    //ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.L));
                 } while (ShapesQueue.Count < MaxShapesInQueue);
             }
 
