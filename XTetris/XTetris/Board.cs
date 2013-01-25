@@ -124,7 +124,7 @@ namespace XTetris
             Player.Update(gameTime);
 
             if (HasActiveShape)
-                CheckCollisions();
+                CheckCollisions(ActiveShape);
 
             // See if there are any lines we can clear
             ClearLines();
@@ -143,6 +143,10 @@ namespace XTetris
             if (HasActiveShape)
             {
                 DrawShape(spriteBatch, ActiveShape, new Vector2(Bounds.Left, Bounds.Top), 1.0f);
+
+                Vector2 ghostPos = GhostPosition(ActiveShape);
+                spriteBatch.DrawString(GameState.DebugFont, "Ghost pos: (" + ghostPos.X + "," + ghostPos.Y + ")",
+                                       new Vector2(200, 150), Color.White);
 
                 // Print debug info
                 if (TetrisGame.Debug)
@@ -241,6 +245,8 @@ namespace XTetris
 
         private void DrawShape(SpriteBatch spriteBatch, BaseShape shape, Vector2 position, float scale)
         {
+            Vector2 ghostPos = GhostPosition(shape);
+
             Block[,] blocks = shape.Rotations[(int)shape.Direction];
             for (int row = 0; row <= blocks.GetUpperBound(0); row++)
             {
@@ -260,6 +266,24 @@ namespace XTetris
                             scale,
                             SpriteEffects.None,
                             0f);
+
+                        // Ghost shape
+                        if (Player.GhostShapeEnabled && shape.Equals(ActiveShape))
+                        {
+                            Vector2 ghostBlockPos = new Vector2(
+                                position.X + (block.BoardPosition.X * TetrisGame.BlockSize) * scale,
+                                position.Y + (ghostPos.Y + 1 - shape.Bounds.Height + block.Position.Y) * TetrisGame.BlockSize * scale);
+
+                            spriteBatch.Draw(GameState.BlockTexture,
+                                ghostBlockPos,
+                                null,
+                                Color.Gray,
+                                0f,
+                                Vector2.Zero,
+                                scale,
+                                SpriteEffects.None,
+                                0f);
+                        }
 
                         // Debug block positions
                         if (TetrisGame.Debug)
@@ -341,6 +365,64 @@ namespace XTetris
             GameState.StateManager.ChangeState(GameState.GameRef.GameOverState);
         }
 
+        private Vector2 GhostPosition(BaseShape shape)
+        {
+            Vector2 blockPos = shape.Position;
+            Vector2 ghostPos = blockPos;
+
+            ghostPos.Y = Cells.GetUpperBound(0);
+
+            // Get the lowest block in shape
+            //Block lowestBlock = null;
+
+            //var blocks = shape.Rotations[(int) shape.Direction];
+            //for (int row = blocks.GetUpperBound(0) - 1; row >= 0; row--)
+            //    for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+            //        if (blocks[row, col] != null)
+            //        {
+            //            lowestBlock = blocks[row, col];
+            //            row = -1;
+            //            break;
+            //        }
+
+            //for (int row = (int) lowestBlock.BoardPosition.Y; row <= Cells.GetUpperBound(0); row++)
+            //{
+            //    if (Cells[row, (int)blockPos.X] != null)
+            //    {
+            //        ghostPos.Y = row - 1;
+            //        break;
+            //    }
+            //}
+
+            var blocks = shape.Rotations[(int)shape.Direction];
+
+            int minX = TetrisGame.BlocksWide + 1;
+            int maxX = -1;
+
+            for (int row = blocks.GetUpperBound(0) - 1; row >= 0; row--)
+                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+                    if (blocks[row, col] != null)
+                    {
+                        minX = Math.Min(minX, (int) blocks[row, col].BoardPosition.X);
+                        maxX = Math.Max(maxX, (int) blocks[row, col].BoardPosition.X);
+                    }
+
+            for (int row = (int)shape.Bounds.Bottom - 1; row <= Cells.GetUpperBound(0); row++ )
+            {
+                for (int col = minX; col <= maxX; col++)
+                {
+                    if (Cells[row, col] != null)
+                    {
+                        ghostPos.Y = row - 1;
+                        row = Cells.GetUpperBound(0) + 2;
+                        break;
+                    }
+                }
+            }
+
+            return ghostPos;
+        }
+
         #region Collision Detection and Clearing Lines
 
         private void ClearLines()
@@ -412,9 +494,9 @@ namespace XTetris
             }
         }
 
-        public void CheckCollisions()
+        public void CheckCollisions(BaseShape shape)
         {
-            var blocks = ActiveShape.Rotations[(int) ActiveShape.Direction];
+            var blocks = shape.Rotations[(int) shape.Direction];
 
             for (int row = 0; row <= blocks.GetUpperBound(0); row++)
             {
@@ -427,9 +509,9 @@ namespace XTetris
                         if (block.BoardPosition.X < 0)
                         {
                             if (Player.Rotated)
-                                ActiveShape.Direction = ActiveShape.LastDirection;
+                                shape.Direction = shape.LastDirection;
                             else
-                                ActiveShape.Move(Direction.Right);
+                                shape.Move(Direction.Right);
 
                             return;
                         }
@@ -438,9 +520,9 @@ namespace XTetris
                         if (block.BoardPosition.X >= TetrisGame.BlocksWide)
                         {
                             if (Player.Rotated)
-                                ActiveShape.Direction = ActiveShape.LastDirection;
+                                shape.Direction = shape.LastDirection;
                             else
-                                ActiveShape.Move(Direction.Left);
+                                shape.Move(Direction.Left);
 
                             return;
                         }
@@ -449,9 +531,9 @@ namespace XTetris
                         if (block.BoardPosition.Y < 0)
                         {
                             if (Player.Rotated)
-                                ActiveShape.Direction = ActiveShape.LastDirection;
+                                shape.Direction = shape.LastDirection;
                             else
-                                ActiveShape.Move(Direction.Down);
+                                shape.Move(Direction.Down);
 
                             return;
                         }
@@ -459,9 +541,9 @@ namespace XTetris
                         // Bottom wall
                         if (block.BoardPosition.Y >= TetrisGame.BlocksHigh)
                         {
-                            ActiveShape.Move(Direction.Up);
+                            shape.Move(Direction.Up);
 
-                            ActiveShape.Save();
+                            shape.Save();
 
                             return;
                         }
@@ -470,19 +552,19 @@ namespace XTetris
                         if (Cells[(int) block.BoardPosition.Y, (int) block.BoardPosition.X] != null)
                         {
                             // We don't want to save to board if there only were horizontal movement
-                            bool save = !((int) ActiveShape.Position.Y == (int) ActiveShape.LastPosition.Y &&
-                                          (int) ActiveShape.Position.X != (int) ActiveShape.LastPosition.X);
+                            bool save = !((int) shape.Position.Y == (int) shape.LastPosition.Y &&
+                                          (int) shape.Position.X != (int) shape.LastPosition.X);
 
                             if (Player.Rotated)
                             {
-                                ActiveShape.Direction = ActiveShape.LastDirection;
+                                shape.Direction = shape.LastDirection;
                             }
                             else
                             {
-                                ActiveShape.ResetPosition();
+                                shape.ResetPosition();
 
                                 if (save)
-                                    ActiveShape.Save();
+                                    shape.Save();
                             }
 
                             return;
@@ -536,6 +618,7 @@ namespace XTetris
                 do
                 {
                     ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
+                    //ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.O));
                 } while (ShapesQueue.Count < MaxShapesInQueue);
             }
 

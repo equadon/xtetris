@@ -33,6 +33,8 @@ namespace XTetris
 
         public bool Rotated { get; private set; }
 
+        public bool GhostShapeEnabled { get; private set; }
+
         public int LinesToNextLevel
         {
             get { return _linesToNextLevel; }
@@ -52,6 +54,7 @@ namespace XTetris
             _lastLineClearCount = new Tuple<int, int>(0, 0);
 
             Rotated = false;
+            GhostShapeEnabled = true;
         }
 
         public void Update(GameTime gameTime)

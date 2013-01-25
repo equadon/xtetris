@@ -97,7 +97,7 @@ namespace XTetris.Shapes
             {
                 Move(Direction.Down);
 
-                Board.CheckCollisions();
+                Board.CheckCollisions(Board.ActiveShape);
 
                 endY = (int) Position.Y;
             }
