@@ -99,12 +99,14 @@ namespace XTetris
 
             pos.Y += 150;
             TimeHud = new HudItem(GameState.GameFont, "Time");
-
-            Cells[19, 8] = new Block(ActiveShape, Color.Green, new Vector2(8, 19));
-            Cells[20, 8] = new Block(ActiveShape, Color.Green, new Vector2(8, 20));
-            Cells[20, 9] = new Block(ActiveShape, Color.Green, new Vector2(9, 20));
-            Cells[21, 9] = new Block(ActiveShape, Color.Green, new Vector2(9, 21));
             TimeHud.Position = pos;
+
+            // TODO: Bug #1 check notes, needs fixing, maybe use CheckCollision ??
+            Cells[18, 5] = new Block(ActiveShape, Color.Blue, new Vector2(5, 18));
+            Cells[19, 5] = new Block(ActiveShape, Color.Blue, new Vector2(5, 19));
+            Cells[20, 5] = new Block(ActiveShape, Color.Blue, new Vector2(5, 20));
+            Cells[21, 5] = new Block(ActiveShape, Color.Blue, new Vector2(5, 21));
+            Cells[21, 6] = new Block(ActiveShape, Color.Blue, new Vector2(6, 21));
         }
 
         public void Update(GameTime gameTime)
@@ -222,7 +224,7 @@ namespace XTetris
                     Color.White);
 
             // Draw HUD items
-            DrawHUD(gameTime, spriteBatch);
+            DrawHud(gameTime, spriteBatch);
         }
 
         private void DrawCells(SpriteBatch spriteBatch)
@@ -275,9 +277,13 @@ namespace XTetris
                         // Ghost shape
                         if (Player.GhostShapeEnabled && shape.Equals(ActiveShape))
                         {
+                            //Vector2 ghostBlockPos = new Vector2(
+                            //    position.X + (block.BoardPosition.X * TetrisGame.BlockSize) * scale,
+                            //    position.Y + (ghostPos.Y - shape.Bounds.Height + block.Position.Y) * TetrisGame.BlockSize * scale);
+
                             Vector2 ghostBlockPos = new Vector2(
                                 position.X + (block.BoardPosition.X * TetrisGame.BlockSize) * scale,
-                                position.Y + (ghostPos.Y + 1 - shape.Bounds.Height + block.Position.Y) * TetrisGame.BlockSize * scale);
+                                position.Y + (ghostPos.Y + block.Position.Y) * TetrisGame.BlockSize * scale);
 
                             spriteBatch.Draw(GameState.BlockTexture,
                                 ghostBlockPos,
@@ -350,7 +356,7 @@ namespace XTetris
             }
         }
 
-        private void DrawHUD(GameTime gameTime, SpriteBatch spriteBatch)
+        private void DrawHud(GameTime gameTime, SpriteBatch spriteBatch)
         {
             // Score
             ScoreHud.Draw(spriteBatch, Player.Score);
@@ -371,6 +377,64 @@ namespace XTetris
         }
 
         private Vector2 GhostPosition(BaseShape shape)
+        {
+            var checkList = new List<Block>();
+            var blocks = shape.Rotations[(int) shape.Direction];
+
+            for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+            {
+                for (int row = blocks.GetUpperBound(0); row >= 0; row--)
+                {
+                    Block block = blocks[row, col];
+                    if (block != null)
+                    {
+                        checkList.Add(block);
+                        break;
+                    }
+                }
+            }
+
+            // row, diff
+            var currentLowest = new KeyValuePair<int, int>(TetrisGame.BlocksHigh - 1, 1000);
+
+            // Go through the check list
+            foreach (var block in checkList)
+            {
+                int col = (int)block.BoardPosition.X;
+
+                for (int row = Cells.GetUpperBound(0); row > block.BoardPosition.Y; row--)
+                {
+                    if (Cells[row, col] != null)
+                    {
+                        int prevRow = row - 1;
+                        int diff = prevRow - (int)block.Position.Y;
+
+                        if (diff == currentLowest.Value)
+                        {
+                            currentLowest = new KeyValuePair<int, int>(Math.Max(prevRow, currentLowest.Key), diff);
+                        }
+                        else if (diff < currentLowest.Value)
+                        {
+                            currentLowest = new KeyValuePair<int, int>(Math.Min(prevRow, currentLowest.Key), diff);
+                        }
+                        //else if (prevRow < currentLowest.Key && diff < currentLowest.Value)
+                        //{
+                        //    currentLowest = new KeyValuePair<int, int>(prevRow, diff);
+                        //}
+                    }
+                }
+            }
+
+            int posY = currentLowest.Key - shape.Rotations[(int) shape.Direction].GetUpperBound(0);
+            int distance = (int)shape.Position.Y + shape.Rotations[(int) shape.Direction].GetUpperBound(0) + 1 - shape.Bounds.Bottom;
+
+            posY += distance;
+
+            //return new Vector2(shape.Position.X, currentLowest.Key);
+            return new Vector2(shape.Position.X, posY);
+        }
+
+        private Vector2 GhostPosition2(BaseShape shape)
         {
             Vector2 blockPos = shape.Position;
             Vector2 ghostPos = blockPos;
@@ -611,7 +675,7 @@ namespace XTetris
                 do
                 {
                     //ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
-                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.T));
+                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.L));
                 } while (ShapesQueue.Count < MaxShapesInQueue);
             }
 
