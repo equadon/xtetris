@@ -99,6 +99,11 @@ namespace XTetris
 
             pos.Y += 150;
             TimeHud = new HudItem(GameState.GameFont, "Time");
+
+            Cells[19, 8] = new Block(ActiveShape, Color.Green, new Vector2(8, 19));
+            Cells[20, 8] = new Block(ActiveShape, Color.Green, new Vector2(8, 20));
+            Cells[20, 9] = new Block(ActiveShape, Color.Green, new Vector2(9, 20));
+            Cells[21, 9] = new Block(ActiveShape, Color.Green, new Vector2(9, 21));
             TimeHud.Position = pos;
         }
 
@@ -372,40 +377,28 @@ namespace XTetris
 
             ghostPos.Y = Cells.GetUpperBound(0);
 
-            // Get the lowest block in shape
-            //Block lowestBlock = null;
-
-            //var blocks = shape.Rotations[(int) shape.Direction];
-            //for (int row = blocks.GetUpperBound(0) - 1; row >= 0; row--)
-            //    for (int col = 0; col <= blocks.GetUpperBound(1); col++)
-            //        if (blocks[row, col] != null)
-            //        {
-            //            lowestBlock = blocks[row, col];
-            //            row = -1;
-            //            break;
-            //        }
-
-            //for (int row = (int) lowestBlock.BoardPosition.Y; row <= Cells.GetUpperBound(0); row++)
-            //{
-            //    if (Cells[row, (int)blockPos.X] != null)
-            //    {
-            //        ghostPos.Y = row - 1;
-            //        break;
-            //    }
-            //}
-
             var blocks = shape.Rotations[(int)shape.Direction];
 
             int minX = TetrisGame.BlocksWide + 1;
             int maxX = -1;
 
-            for (int row = blocks.GetUpperBound(0) - 1; row >= 0; row--)
+            bool noMoreRows = false;
+            for (int row = blocks.GetUpperBound(0); row >= 0; row--)
+            {
                 for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+                {
                     if (blocks[row, col] != null)
                     {
                         minX = Math.Min(minX, (int) blocks[row, col].BoardPosition.X);
                         maxX = Math.Max(maxX, (int) blocks[row, col].BoardPosition.X);
+
+                        noMoreRows = true;
                     }
+                }
+
+                if (noMoreRows)
+                    break;
+            }
 
             for (int row = (int)shape.Bounds.Bottom - 1; row <= Cells.GetUpperBound(0); row++ )
             {
@@ -617,8 +610,8 @@ namespace XTetris
             {
                 do
                 {
-                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
-                    //ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.O));
+                    //ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
+                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, ShapeTypes.T));
                 } while (ShapesQueue.Count < MaxShapesInQueue);
             }
 
