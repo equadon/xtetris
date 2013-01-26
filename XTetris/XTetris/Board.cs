@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 using Valekhz.Tetris.Engine;
-using Valekhz.Tetris.GameStates;
+using Valekhz.Tetris.Screens;
 using Valekhz.Tetris.Shapes;
 
 namespace Valekhz.Tetris
@@ -26,9 +27,7 @@ namespace Valekhz.Tetris
 
         #region Properties
 
-        public GamePlayState GameState { get; set; }
-
-        public Player Player { get; private set; }
+        public GameplayScreen Screen { get; set; }
 
         public Block[,] Cells { get; private set; }
 
@@ -69,11 +68,10 @@ namespace Valekhz.Tetris
 
         #endregion
 
-        public Board(GamePlayState gameState)
+        public Board(GameplayScreen gameScreen)
         {
             _random = new Random();
-            GameState = gameState;
-            Player = new Player(this);
+            Screen = gameScreen;
             Cells = new Block[TetrisGame.BlocksHigh, TetrisGame.BlocksWide];
 
             AllowHold = true;
@@ -89,15 +87,15 @@ namespace Valekhz.Tetris
         {
             Vector2 pos = new Vector2(10, 190);
 
-            ScoreHud = new HudItem(GameState.GameFont, "Score");
+            ScoreHud = new HudItem(Screen.GameFont, "Score");
             ScoreHud.Position = pos;
 
             pos.Y += 150;
-            LevelHud = new HudItem(GameState.GameFont, "Level");
+            LevelHud = new HudItem(Screen.GameFont, "Level");
             LevelHud.Position = pos;
 
             pos.Y += 150;
-            TimeHud = new HudItem(GameState.GameFont, "Time");
+            TimeHud = new HudItem(Screen.GameFont, "Time");
             TimeHud.Position = pos;
         }
 
@@ -110,9 +108,6 @@ namespace Valekhz.Tetris
 
             if (_cancelIconDuration > 0d)
                 _cancelIconDuration -= gameTime.ElapsedGameTime.TotalSeconds;
-
-            // Handle player input
-            Player.Update(gameTime);
 
             if (HasActiveShape)
                 CheckCollisions(ActiveShape);
@@ -128,7 +123,7 @@ namespace Valekhz.Tetris
             if (IsGameOver)
                 return;
 
-            spriteBatch.Draw(GameState.FillTexture, Bounds, BackgroundColor);
+            spriteBatch.Draw(Screen.ScreenManager.BlankTexture, Bounds, BackgroundColor);
 
             // Draw cells
             DrawCells(spriteBatch);
@@ -139,16 +134,16 @@ namespace Valekhz.Tetris
 
             // Draw border
             if (!TetrisGame.Debug)
-                spriteBatch.Draw(GameState.BorderTexture, new Rectangle(TetrisGame.BoardPaddingSide, TetrisGame.BoardPaddingTop, 604, 707), Color.White);
+                spriteBatch.Draw(Screen.BorderTexture, new Rectangle(TetrisGame.BoardPaddingSide, TetrisGame.BoardPaddingTop, 604, 707), Color.White);
 
             // Labels
-            spriteBatch.DrawString(GameState.GameFont, "Hold",
+            spriteBatch.DrawString(Screen.GameFont, "Hold",
                 new Vector2(
                     TetrisGame.BoardPaddingSide + 20,
                     TetrisGame.BoardPaddingTop + 15),
                 Color.Crimson);
 
-            spriteBatch.DrawString(GameState.GameFont, "Next",
+            spriteBatch.DrawString(Screen.GameFont, "Next",
                 new Vector2(
                     Bounds.Right + 25,
                     TetrisGame.BoardPaddingTop + 15),
@@ -172,10 +167,10 @@ namespace Valekhz.Tetris
             // User tried to hold when hold was not allowed
             if (_cancelIconDuration > 0d)
                 spriteBatch.Draw(
-                    GameState.CancelTexture,
+                    Screen.CancelTexture,
                     new Vector2(
-                        TetrisGame.BoardPaddingSide + 9 + 62 - GameState.CancelTexture.Width/2f,
-                        TetrisGame.BoardPaddingTop + 72 + 65 - GameState.CancelTexture.Height / 2f), 
+                        TetrisGame.BoardPaddingSide + 9 + 62 - Screen.CancelTexture.Width / 2f,
+                        TetrisGame.BoardPaddingTop + 72 + 65 - Screen.CancelTexture.Height / 2f), 
                     Color.White);
 
             // Draw HUD items
@@ -195,10 +190,10 @@ namespace Valekhz.Tetris
                         Bounds.Top + row * TetrisGame.BlockSize);
 
                     // Draw empty cell for now to fix the white corners
-                    spriteBatch.Draw(GameState.EmptyBlockTexture, cellPos, Color.White);
+                    spriteBatch.Draw(Screen.EmptyBlockTexture, cellPos, Color.White);
 
                     if (block != null)
-                        spriteBatch.Draw(GameState.BlockTexture, cellPos, block.Color);
+                        spriteBatch.Draw(Screen.BlockTexture, cellPos, block.Color);
                 }
             }
         }
@@ -216,13 +211,13 @@ namespace Valekhz.Tetris
                     if (block != null)
                     {
                         // Ghost shape
-                        if (Player.GhostShapeEnabled && shape.Equals(ActiveShape))
+                        if (Screen.Player.GhostShapeEnabled && shape.Equals(ActiveShape))
                         {
                             Vector2 ghostBlockPos = new Vector2(
                                 position.X + (block.BoardPosition.X * TetrisGame.BlockSize) * scale,
                                 position.Y + (ghostPos.Y + block.Position.Y) * TetrisGame.BlockSize * scale);
 
-                            spriteBatch.Draw(GameState.BlockTexture,
+                            spriteBatch.Draw(Screen.BlockTexture,
                                 ghostBlockPos,
                                 null,
                                 Color.Gray,
@@ -233,7 +228,7 @@ namespace Valekhz.Tetris
                                 0f);
                         }
 
-                        spriteBatch.Draw(GameState.BlockTexture,
+                        spriteBatch.Draw(Screen.BlockTexture,
                             new Vector2(
                                 position.X + (block.BoardPosition.X * TetrisGame.BlockSize) * scale,
                                 position.Y + (block.BoardPosition.Y * TetrisGame.BlockSize) * scale),
@@ -297,10 +292,10 @@ namespace Valekhz.Tetris
         private void DrawHud(GameTime gameTime, SpriteBatch spriteBatch)
         {
             // Score
-            ScoreHud.Draw(spriteBatch, Player.Score);
+            ScoreHud.Draw(spriteBatch, Screen.Player.Score);
 
             // Time
-            LevelHud.Draw(spriteBatch, Player.Level);
+            LevelHud.Draw(spriteBatch, Screen.Player.Level);
 
             // Time
             TimeHud.Draw(spriteBatch, Convert.ToInt32(TotalTime));
@@ -312,7 +307,6 @@ namespace Valekhz.Tetris
         public void GameOver()
         {
             IsGameOver = true;
-            GameState.StateManager.ChangeState(GameState.GameRef.GameOverState);
         }
 
         private Vector2 GhostPosition(BaseShape shape)
@@ -400,7 +394,7 @@ namespace Valekhz.Tetris
 
             if (linesCleared > 0)
             {
-                Player.LineClear(linesCleared);
+                Screen.Player.LineClear(linesCleared);
 
                 HandlePhysics(firstClearedLine, linesCleared);
             }
@@ -444,7 +438,7 @@ namespace Valekhz.Tetris
                         // Left wall
                         if (block.BoardPosition.X < 0)
                         {
-                            if (Player.Rotated)
+                            if (Screen.Player.Rotated)
                                 shape.Direction = shape.LastDirection;
                             else
                                 shape.Move(Direction.Right);
@@ -455,7 +449,7 @@ namespace Valekhz.Tetris
                         // Right wall
                         if (block.BoardPosition.X >= TetrisGame.BlocksWide)
                         {
-                            if (Player.Rotated)
+                            if (Screen.Player.Rotated)
                                 shape.Direction = shape.LastDirection;
                             else
                                 shape.Move(Direction.Left);
@@ -466,7 +460,7 @@ namespace Valekhz.Tetris
                         // Top wall
                         if (block.BoardPosition.Y < 0)
                         {
-                            if (Player.Rotated)
+                            if (Screen.Player.Rotated)
                                 shape.Direction = shape.LastDirection;
                             else
                                 shape.Move(Direction.Down);
@@ -491,7 +485,7 @@ namespace Valekhz.Tetris
                             bool save = !((int) shape.Position.Y == (int) shape.LastPosition.Y &&
                                           (int) shape.Position.X != (int) shape.LastPosition.X);
 
-                            if (Player.Rotated)
+                            if (Screen.Player.Rotated)
                             {
                                 shape.Direction = shape.LastDirection;
                             }
@@ -553,7 +547,7 @@ namespace Valekhz.Tetris
             {
                 do
                 {
-                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7)));
+                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(Screen.BlockTexture, this, (ShapeTypes) _random.Next(7)));
                 } while (ShapesQueue.Count < MaxShapesInQueue);
             }
 
@@ -565,7 +559,7 @@ namespace Valekhz.Tetris
 
             if (ShapesQueue.Count < MaxShapesInQueue)
             {
-                shape = ShapesFactory.CreateShape(this, (ShapeTypes) _random.Next(7));
+                shape = ShapesFactory.CreateShape(Screen.BlockTexture, this, (ShapeTypes)_random.Next(7));
                 ShapesQueue.Enqueue(shape);
             }
         }

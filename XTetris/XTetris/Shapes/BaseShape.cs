@@ -85,7 +85,11 @@ namespace Valekhz.Tetris.Shapes
             CalculateBounds();
         }
 
-        public void Drop()
+        /// <summary>
+        /// Hard drop shape.
+        /// </summary>
+        /// <returns>Returns the distance it was dropped</returns>
+        public int Drop()
         {
             LastDirection = Direction;
             LastPosition = Position;
@@ -102,7 +106,7 @@ namespace Valekhz.Tetris.Shapes
                 endY = (int) Position.Y;
             }
 
-            Board.Player.HardDrop(endY - startY);
+            return endY - startY;
         }
 
         public void Rotate(Direction direction)

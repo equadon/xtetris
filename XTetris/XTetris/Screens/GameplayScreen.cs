@@ -6,30 +6,68 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 using Valekhz.ScreenManagement;
+using Valekhz.Tetris.Shapes;
 
 namespace Valekhz.Tetris.Screens
 {
-    class GameplayScreen : GameScreen
+    public class GameplayScreen : GameScreen
     {
-        private InputAction _pauseAction;
         private float _pauseAlpha;
 
-        public SpriteFont GameFont { get; private set; }
+        // Variables to handle auto move shape downward
+        private const double MoveDownDelay = 1.0d;
+        private double _moveDelayDuration = MoveDownDelay;
 
+        // Easier access to the content manager instance
         public ContentManager Content
         {
             get { return ScreenManager.Content; }
         }
 
+        // Input actions
+        public InputAction PauseAction { get; private set; }
+
+        public InputAction MoveLeftAction { get; private set; }
+        public InputAction MoveRightAction { get; private set; }
+
+        public InputAction RotateLeftAction { get; private set; }
+        public InputAction RotateRightAction { get; private set; }
+
+        public InputAction SoftDropAction { get; private set; }
+        public InputAction HardDropAction { get; private set; }
+
+        public InputAction HoldAction { get; private set; }
+
+        // Gameplay contents
+        public SpriteFont GameFont { get; private set; }
+
+        public Texture2D BorderTexture { get; private set; }
+        public Texture2D BlockTexture { get; private set; }
+        public Texture2D EmptyBlockTexture { get; private set; }
+        public Texture2D CancelTexture { get; private set; }
+
+        public Board Board { get; private set; }
+        public Player Player { get; private set; }
+
+        public bool PlayerRotated { get; private set; }
+
         public GameplayScreen()
         {
-            TransitionOnTime = TimeSpan.FromSeconds(1.5);
+            TransitionOnTime = TimeSpan.FromSeconds(1.0);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
-            _pauseAction = new InputAction(
-                null,
-                new Keys[] { Keys.Escape },
-                true);
+            PauseAction = new InputAction(null, new Keys[] { Keys.Escape }, true);
+
+            MoveLeftAction = new InputAction(null, new Keys[] { Keys.Left, Keys.A }, true);
+            MoveRightAction = new InputAction(null, new Keys[] { Keys.Right, Keys.D }, true);
+
+            RotateLeftAction = new InputAction(null, new Keys[] { Keys.LeftControl, Keys.RightControl, Keys.Z }, true);
+            RotateRightAction = new InputAction(null, new Keys[] { Keys.Up, Keys.X }, true);
+
+            SoftDropAction = new InputAction(null, new Keys[] { Keys.Down }, true);
+            HardDropAction = new InputAction(null, new Keys[] { Keys.Space }, true);
+
+            HoldAction = new InputAction(null, new Keys[] { Keys.LeftShift, Keys.RightShift, Keys.C }, true);
         }
 
         public override void Activate(bool instancePreserved)
@@ -37,6 +75,13 @@ namespace Valekhz.Tetris.Screens
             if (!instancePreserved)
             {
                 GameFont = Content.Load<SpriteFont>(@"Fonts\Game");
+
+                BorderTexture = Content.Load<Texture2D>(@"Textures\border");
+                BlockTexture = Content.Load<Texture2D>(@"Textures\block");
+                EmptyBlockTexture = Content.Load<Texture2D>(@"Textures\empty");
+                CancelTexture = Content.Load<Texture2D>(@"Textures\cancel");
+
+                NewGame();
             }
         }
 
@@ -62,7 +107,18 @@ namespace Valekhz.Tetris.Screens
 
             if (IsActive)
             {
-                // Update game
+                if (!Board.HasActiveShape)
+                    _moveDelayDuration = MoveDownDelay;
+                else
+                    _moveDelayDuration -= gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (Board.HasActiveShape && _moveDelayDuration <= 0d)
+                {
+                    _moveDelayDuration = 0.5 + (11 - Player.Level) * 0.05;
+                    Board.ActiveShape.Move(Direction.Down);
+                }
+
+                Board.Update(gameTime);
             }
         }
 
@@ -76,28 +132,67 @@ namespace Valekhz.Tetris.Screens
                 throw new ArgumentNullException("input");
 
             // Look up inputs for the active player
-            int playerIndex = (int) ControllingPlayer.Value;
+            int activePlayerIndex = (int) ControllingPlayer.Value;
 
-            KeyboardState keyboardState = input.CurrentKeyboardStates[playerIndex];
+            KeyboardState keyboardState = input.CurrentKeyboardStates[activePlayerIndex];
 
-            PlayerIndex player;
+            PlayerIndex playerIndex;
 
             // Pause the game if user presses the pause key
-            if (_pauseAction.Evaluate(input, ControllingPlayer, out player))
+            if (PauseAction.Evaluate(input, ControllingPlayer, out playerIndex))
             {
                 ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+            }
+
+            if (Board.HasActiveShape)
+            {
+                PlayerRotated = false;
+
+                // Move left
+                if (MoveLeftAction.Evaluate(input, ControllingPlayer, out playerIndex))
+                    Board.ActiveShape.Move(Direction.Left);
+
+                // Move right
+                if (MoveRightAction.Evaluate(input, ControllingPlayer, out playerIndex))
+                    Board.ActiveShape.Move(Direction.Right);
+
+                // Rotate left
+                if (RotateLeftAction.Evaluate(input, ControllingPlayer, out playerIndex))
+                {
+                    Board.ActiveShape.Rotate(Direction.Left);
+                    PlayerRotated = true;
+                }
+
+                // Rotate right
+                if (RotateRightAction.Evaluate(input, ControllingPlayer, out playerIndex))
+                {
+                    Board.ActiveShape.Rotate(Direction.Right);
+                    PlayerRotated = true;
+                }
+
+                // Soft drop
+                if (SoftDropAction.Evaluate(input, ControllingPlayer, out playerIndex))
+                    Board.ActiveShape.Move(Direction.Down);
+
+                // Hard drop
+                if (HardDropAction.Evaluate(input, ControllingPlayer, out playerIndex))
+                {
+                    int distance = Board.ActiveShape.Drop();
+                }
+
+                // Hold shape
+                if (HoldAction.Evaluate(input, ControllingPlayer, out playerIndex))
+                    Board.Hold();
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
-            SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
+            ScreenManager.SpriteBatch.Begin();
 
-            spriteBatch.Begin();
+            Board.Draw(gameTime, ScreenManager.SpriteBatch);
 
-
-
-            spriteBatch.End();
+            ScreenManager.SpriteBatch.End();
 
             if (TransitionPosition > 0 || _pauseAlpha > 0)
             {
@@ -105,6 +200,14 @@ namespace Valekhz.Tetris.Screens
 
                 ScreenManager.FadeBackBufferToBlack(alpha);
             }
+        }
+
+        public void NewGame()
+        {
+            Board = new Board(this);
+            Board.LoadContent();
+
+            Player = new Player(this);
         }
     }
 }

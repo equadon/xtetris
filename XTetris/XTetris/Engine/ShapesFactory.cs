@@ -12,10 +12,8 @@ namespace Valekhz.Tetris.Engine
 {
     public static class ShapesFactory
     {
-        public static BaseShape CreateShape(Board board, ShapeTypes shapeType)
+        public static BaseShape CreateShape(Texture2D blockTexture, Board board, ShapeTypes shapeType)
         {
-            var blockTexture = board.GameState.BlockTexture;
-
             switch (shapeType)
             {
                 case ShapeTypes.I:

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Content;
 
 using Valekhz.ScreenManagement;
 using Valekhz.ScreenManagement.Menu;
+using Valekhz.Tetris.Engine;
 
 namespace Valekhz.Tetris.Screens
 {
