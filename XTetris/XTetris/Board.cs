@@ -31,8 +31,6 @@ namespace Valekhz.Tetris
         public HudItem LevelHud { get; private set; }
         public HudItem TimeHud { get; private set; }
 
-        public bool IsGameOver { get; private set; }
-
         public Rectangle Bounds
         {
             get { return new Rectangle(TetrisGame.BoardPaddingSide + 152, TetrisGame.BoardPaddingTop - 6, Width, Height); }
@@ -55,8 +53,6 @@ namespace Valekhz.Tetris
             Screen = gameScreen;
             Player = player;
             Cells = new Block[TetrisGame.BlocksHigh, TetrisGame.BlocksWide];
-
-            IsGameOver = false;
         }
 
         public void LoadContent()
@@ -77,9 +73,6 @@ namespace Valekhz.Tetris
 
         public void Update(GameTime gameTime)
         {
-            if (IsGameOver)
-                return;
-
             TotalTime += gameTime.ElapsedGameTime.TotalSeconds;
 
             if (Screen.Player.HasShape)
@@ -93,9 +86,6 @@ namespace Valekhz.Tetris
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if (IsGameOver)
-                return;
-
             spriteBatch.Draw(Screen.ScreenManager.BlankTexture, Bounds, BackgroundColor);
 
             // Draw cells
@@ -229,7 +219,7 @@ namespace Valekhz.Tetris
         // TODO: Implement a better game over checking
         public void GameOver()
         {
-            IsGameOver = true;
+            Screen.GameOver();
         }
 
         private Vector2 GhostPosition(BaseShape shape)

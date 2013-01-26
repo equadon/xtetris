@@ -210,5 +210,10 @@ namespace Valekhz.Tetris.Screens
             Board = new Board(this, Player);
             Board.LoadContent();
         }
+
+        public void GameOver()
+        {
+            ScreenManager.AddScreen(new GameOverScreen(this), ControllingPlayer);
+        }
     }
 }
