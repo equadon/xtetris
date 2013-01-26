@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using XTetris.Engine;
+using Valekhz.Tetris.Engine;
 
-namespace XTetris.GameStates
+namespace Valekhz.Tetris.GameStates
 {
     public class GameOverState : BaseGameState
     {

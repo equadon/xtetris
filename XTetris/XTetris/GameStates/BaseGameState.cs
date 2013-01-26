@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-using XTetris.Engine;
+using Valekhz.Tetris.Engine;
 
-namespace XTetris.GameStates
+namespace Valekhz.Tetris.GameStates
 {
     public abstract partial class BaseGameState : GameState
     {

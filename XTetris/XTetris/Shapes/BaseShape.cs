@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using XTetris.Shapes;
+using Valekhz.Tetris.Shapes;
 
-namespace XTetris.Shapes
+namespace Valekhz.Tetris.Shapes
 {
     public enum Direction { Right, Up, Left, Down }
 

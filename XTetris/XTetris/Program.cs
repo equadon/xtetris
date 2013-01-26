@@ -1,6 +1,6 @@
 using System;
 
-namespace XTetris
+namespace Valekhz.Tetris
 {
 #if WINDOWS || XBOX
     static class Program

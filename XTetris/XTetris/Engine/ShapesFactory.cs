@@ -1,14 +1,14 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Graphics;
 
-using XTetris.Shapes;
+using Valekhz.Tetris.Shapes;
 
-namespace XTetris
+namespace Valekhz.Tetris
 {
     public enum ShapeTypes { I, J, L, O, S, T, Z }
 }
 
-namespace XTetris.Engine
+namespace Valekhz.Tetris.Engine
 {
     public static class ShapesFactory
     {

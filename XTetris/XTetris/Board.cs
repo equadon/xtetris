@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using XTetris.Engine;
-using XTetris.GameStates;
-using XTetris.Shapes;
+using Valekhz.Tetris.Engine;
+using Valekhz.Tetris.GameStates;
+using Valekhz.Tetris.Shapes;
 
-namespace XTetris
+namespace Valekhz.Tetris
 {
     public class Board
     {

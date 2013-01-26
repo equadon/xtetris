@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
-using XTetris.Shapes;
+using Valekhz.Tetris.Shapes;
 
-namespace XTetris
+namespace Valekhz.Tetris
 {
     public class Block
     {

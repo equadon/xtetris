@@ -2,7 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace XTetris.Engine
+namespace Valekhz.Tetris.Engine
 {
     public enum MouseButton { Left, Middle, Right }
 

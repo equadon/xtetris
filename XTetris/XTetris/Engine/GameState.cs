@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 
-namespace XTetris.Engine
+namespace Valekhz.Tetris.Engine
 {
     public abstract partial class GameState : DrawableGameComponent
     {

@@ -3,7 +3,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace XTetris.Shapes
+namespace Valekhz.Tetris.Shapes
 {
     public class TShape : BaseShape
     {

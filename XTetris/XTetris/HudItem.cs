@@ -4,7 +4,7 @@ using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace XTetris
+namespace Valekhz.Tetris
 {
     public class HudItem
     {

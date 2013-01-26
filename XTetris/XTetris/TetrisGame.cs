@@ -4,10 +4,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using XTetris.Engine;
-using XTetris.GameStates;
+using Valekhz.Tetris.Engine;
+using Valekhz.Tetris.GameStates;
 
-namespace XTetris
+namespace Valekhz.Tetris
 {
     /// <summary>
     /// This is the main type for your game
