@@ -1,9 +1,8 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
 
-using Valekhz.Tetris.Engine;
 using Valekhz.Tetris.Screens;
 using Valekhz.Tetris.Shapes;
 
@@ -11,6 +10,8 @@ namespace Valekhz.Tetris
 {
     public class Player
     {
+        private const float HoldShapeScale = 0.85f;
+
         // player needs to clear [line count] * 5 to advance to next lvl
         private const int LineCountLevelModifier = 5;
 
@@ -23,17 +24,6 @@ namespace Valekhz.Tetris
 
         public GameplayScreen Screen { get; private set; }
 
-        public int Score { get; private set; }
-        public int Level { get; private set; }
-
-        public int TotalLinesCleared { get; private set; }
-
-        public bool Rotated { get; private set; }
-
-        public bool GhostShapeEnabled { get; private set; }
-
-        public int LinesToNextLevel { get; private set; }
-
         // Shape currently attached to player
         public BaseShape Shape { get; set; } // TODO: change back to private setter when hold and queue is in Player
 
@@ -41,6 +31,24 @@ namespace Valekhz.Tetris
         {
             get { return Shape != null; }
         }
+
+        // Hold shape
+        public bool AllowHold { get; set; }
+        public BaseShape HoldShape { get; private set; }
+
+        private double _cancelIconDuration = 0d;
+
+        public bool GhostShapeEnabled { get; private set; }
+
+        // Score + Levels
+        public int Score { get; private set; }
+        public int Level { get; private set; }
+
+        public int TotalLinesCleared { get; private set; }
+
+        public bool Rotated { get; private set; }
+
+        public int LinesToNextLevel { get; private set; }
 
         public Player(GameplayScreen screen)
         {
@@ -55,6 +63,7 @@ namespace Valekhz.Tetris
 
             _lastLineClearCount = new Tuple<int, int>(0, 0);
 
+            AllowHold = true;
             Rotated = false;
             GhostShapeEnabled = true;
         }
@@ -64,13 +73,69 @@ namespace Valekhz.Tetris
             // Advance to next level?
             if (LinesToNextLevel <= 0)
                 NextLevel();
+
+            if (_cancelIconDuration > 0d)
+                _cancelIconDuration -= gameTime.ElapsedGameTime.TotalSeconds;
         }
 
-        #region Active Shape
-
-        public void ClearShape()
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            Shape = null;
+            // Draw active shape
+            if (HasShape)
+                Screen.Board.DrawShape(spriteBatch, Shape, new Vector2(Screen.Board.Bounds.Left, Screen.Board.Bounds.Top), 1.0f);
+
+            // Draw border
+            if (!TetrisGame.Debug)
+                spriteBatch.Draw(Screen.BorderTexture, new Rectangle(TetrisGame.BoardPaddingSide, TetrisGame.BoardPaddingTop, 604, 707), Color.White);
+
+            if (HoldShape != null)
+                Screen.Board.DrawShape(
+                    spriteBatch,
+                    HoldShape,
+                    new Vector2(
+                        TetrisGame.BoardPaddingSide - HoldShape.Bounds.X * TetrisGame.BlockSize * HoldShapeScale + 10 + 60 - HoldShape.Origin.X * HoldShapeScale,
+                        TetrisGame.BoardPaddingTop - HoldShape.Bounds.Y * TetrisGame.BlockSize * HoldShapeScale + 73 + 60 - HoldShape.Origin.Y * HoldShapeScale),
+                    HoldShapeScale);
+
+            // User tried to hold when hold was not allowed
+            if (_cancelIconDuration > 0d)
+                spriteBatch.Draw(
+                    Screen.CancelTexture,
+                    new Vector2(
+                        TetrisGame.BoardPaddingSide + 9 + 62 - Screen.CancelTexture.Width / 2f,
+                        TetrisGame.BoardPaddingTop + 72 + 65 - Screen.CancelTexture.Height / 2f),
+                    Color.White);
+        }
+
+        #region Hold Shape
+
+        // Place the active shape in the hold queue
+        public void Hold()
+        {
+            // Show cancel texture if hold is not allowed
+            if (!AllowHold)
+            {
+                _cancelIconDuration = 0.3d;
+                return;
+            }
+
+            if (HoldShape == null)
+            {
+                HoldShape = Shape;
+                Shape = null;
+            }
+            else
+            {
+                BaseShape tmp = Shape;
+                Shape = HoldShape;
+                HoldShape = tmp;
+            }
+
+            HoldShape.Position = new Vector2(0, 0);
+
+            Screen.Board.SpawnShape(Shape);
+
+            AllowHold = false;
         }
 
         #endregion

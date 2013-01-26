@@ -118,6 +118,7 @@ namespace Valekhz.Tetris.Screens
                     Player.Shape.Move(Direction.Down);
                 }
 
+                Player.Update(gameTime);
                 Board.Update(gameTime);
             }
         }
@@ -182,7 +183,7 @@ namespace Valekhz.Tetris.Screens
 
                 // Hold shape
                 if (HoldAction.Evaluate(input, ControllingPlayer, out playerIndex))
-                    Board.Hold();
+                    Player.Hold();
             }
         }
 

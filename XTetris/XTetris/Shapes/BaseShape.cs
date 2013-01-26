@@ -216,7 +216,7 @@ namespace Valekhz.Tetris.Shapes
             }
 
             Board.Player.Shape = null;
-            Board.AllowHold = true;
+            Board.Player.AllowHold = true;
 
             Board.SpawnShape();
         }

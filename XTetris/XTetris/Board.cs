@@ -19,8 +19,6 @@ namespace Valekhz.Tetris
 
         private const int MaxShapesInQueue = 5;
 
-        private double _cancelIconDuration = 0d;
-
         private readonly Random _random;
 
         #endregion
@@ -33,9 +31,6 @@ namespace Valekhz.Tetris
         public Block[,] Cells { get; private set; }
 
         public Queue<BaseShape> ShapesQueue { get; private set; }
-
-        public bool AllowHold { get; set; }
-        public BaseShape HoldShape { get; private set; }
 
         public double TotalTime { get; private set; }
 
@@ -70,8 +65,6 @@ namespace Valekhz.Tetris
             Player = player;
             Cells = new Block[TetrisGame.BlocksHigh, TetrisGame.BlocksWide];
 
-            AllowHold = true;
-
             IsGameOver = false;
 
             ShapesQueue = new Queue<BaseShape>();
@@ -102,9 +95,6 @@ namespace Valekhz.Tetris
 
             TotalTime += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (_cancelIconDuration > 0d)
-                _cancelIconDuration -= gameTime.ElapsedGameTime.TotalSeconds;
-
             if (Screen.Player.HasShape)
                 CheckCollisions(Player.Shape);
 
@@ -124,14 +114,6 @@ namespace Valekhz.Tetris
             // Draw cells
             DrawCells(spriteBatch);
 
-            // Draw active shape
-            if (Player.HasShape)
-                DrawShape(spriteBatch, Player.Shape, new Vector2(Bounds.Left, Bounds.Top), 1.0f);
-
-            // Draw border
-            if (!TetrisGame.Debug)
-                spriteBatch.Draw(Screen.BorderTexture, new Rectangle(TetrisGame.BoardPaddingSide, TetrisGame.BoardPaddingTop, 604, 707), Color.White);
-
             // Labels
             spriteBatch.DrawString(Screen.GameFont, "Hold",
                 new Vector2(
@@ -145,29 +127,10 @@ namespace Valekhz.Tetris
                     TetrisGame.BoardPaddingTop + 15),
                 Color.Crimson);
 
+            Player.Draw(gameTime, spriteBatch);
+
             // Draw queue
             DrawQueue(spriteBatch);
-
-            // Draw shape in hold queue
-            const float scale = 0.85f;
-
-            if (HoldShape != null)
-                DrawShape(
-                    spriteBatch,
-                    HoldShape,
-                    new Vector2(
-                        TetrisGame.BoardPaddingSide - HoldShape.Bounds.X * TetrisGame.BlockSize * scale + 10 + 60 - HoldShape.Origin.X * scale,
-                        TetrisGame.BoardPaddingTop - HoldShape.Bounds.Y * TetrisGame.BlockSize * scale + 73 + 60 - HoldShape.Origin.Y * scale),
-                    scale);
-
-            // User tried to hold when hold was not allowed
-            if (_cancelIconDuration > 0d)
-                spriteBatch.Draw(
-                    Screen.CancelTexture,
-                    new Vector2(
-                        TetrisGame.BoardPaddingSide + 9 + 62 - Screen.CancelTexture.Width / 2f,
-                        TetrisGame.BoardPaddingTop + 72 + 65 - Screen.CancelTexture.Height / 2f), 
-                    Color.White);
 
             // Draw HUD items
             DrawHud(gameTime, spriteBatch);
@@ -194,7 +157,7 @@ namespace Valekhz.Tetris
             }
         }
 
-        private void DrawShape(SpriteBatch spriteBatch, BaseShape shape, Vector2 position, float scale)
+        public void DrawShape(SpriteBatch spriteBatch, BaseShape shape, Vector2 position, float scale)
         {
             Vector2 ghostPos = GhostPosition(shape);
 
@@ -503,35 +466,6 @@ namespace Valekhz.Tetris
         #endregion
 
         #region Hold and Spawn Shape Methods
-
-        // Place the active shape in the hold queue
-        public void Hold()
-        {
-            // Show cancel texture if hold is not allowed
-            if (!AllowHold)
-            {
-                _cancelIconDuration = 0.3d;
-                return;
-            }
-
-            if (HoldShape == null)
-            {
-                HoldShape = Player.Shape;
-                Player.Shape = null;
-            }
-            else
-            {
-                BaseShape tmp = Player.Shape;
-                Player.Shape = HoldShape;
-                HoldShape = tmp;
-            }
-
-            HoldShape.Position = new Vector2(0, 0);
-
-            SpawnShape(Player.Shape);
-
-            AllowHold = false;
-        }
 
         /// <summary>
         /// Spawns the next shape in queue or the provided `shape`.
