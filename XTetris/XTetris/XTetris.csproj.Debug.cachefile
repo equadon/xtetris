@@ -1,5 +1,4 @@
 Content\Textures\block.xnb
-Content\Textures\fill.xnb
 Content\Fonts\Debug.xnb
 Content\Textures\empty.xnb
 Content\Textures\border.xnb
@@ -7,3 +6,5 @@ Content\Textures\cancel.xnb
 Content\Fonts\Game.xnb
 Content\Fonts\Menu.xnb
 Content\Fonts\GameOver.xnb
+Content\Backgrounds\loading.xnb
+Content\Textures\blank.xnb

@@ -7,7 +7,7 @@ namespace Valekhz.Tetris.Shapes
     public class OShape : BaseShape
     {
         public OShape(Texture2D texture, Board board)
-            : base(texture, board, TetrisGame.OShapeColor)
+            : base(texture, board, TetrisGame.ShapeOColor)
         {
             var rotations = new List<int[,]>
             {

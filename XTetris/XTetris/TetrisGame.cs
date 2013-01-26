@@ -4,8 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using Valekhz.Tetris.Engine;
-using Valekhz.Tetris.GameStates;
+using Valekhz.ScreenManagement;
+using Valekhz.Tetris.Screens;
 
 namespace Valekhz.Tetris
 {
@@ -27,29 +27,23 @@ namespace Valekhz.Tetris
 
         public static bool Debug = false;
 
-        public static readonly Color IShapeColor = new Color(0, 255, 255);
-        public static readonly Color JShapeColor = new Color(0, 0, 255);
-        public static readonly Color LShapeColor = new Color(255, 170, 0);
-        public static readonly Color OShapeColor = new Color(255, 255, 0);
-        public static readonly Color SShapeColor = new Color(0, 255, 0);
-        public static readonly Color TShapeColor = new Color(153, 0, 255);
-        public static readonly Color ZShapeColor = new Color(255, 0, 0);
+        public static readonly Color ShapeIColor = new Color(0, 255, 255);
+        public static readonly Color ShapeJColor = new Color(0, 0, 255);
+        public static readonly Color ShapeLColor = new Color(255, 170, 0);
+        public static readonly Color ShapeOColor = new Color(255, 255, 0);
+        public static readonly Color ShapeSColor = new Color(0, 255, 0);
+        public static readonly Color ShapeTColor = new Color(153, 0, 255);
+        public static readonly Color ShapeZColor = new Color(255, 0, 0);
 
         private readonly GraphicsDeviceManager _graphics;
-        private readonly GameStateManager _stateManager;
 
         public SpriteBatch SpriteBatch { get; private set; }
 
         public Rectangle ScreenRectangle { get; private set; }
 
-        // Game states
-        public GamePlayState GamePlayState { get; private set; }
-        public GameOverState GameOverState { get; private set; }
-
-        public GameStateManager StateManager
-        {
-            get { return _stateManager; }
-        }
+        // Screen Management
+        private readonly ScreenManager _screenManager;
+        private readonly ScreenFactory _screenFactory;
 
         public TetrisGame()
         {
@@ -63,16 +57,15 @@ namespace Valekhz.Tetris
 
             Window.Title = "Tetris";
 
-            Components.Add(new InputHandler(this));
+            _screenFactory = new ScreenFactory();
+            Services.AddService(typeof(IScreenFactory), _screenFactory);
 
-            _stateManager = new GameStateManager(this);
-            Components.Add(StateManager);
+            _screenManager = new ScreenManager(Services);
+            Components.Add(_screenManager);
 
-            GamePlayState = new GamePlayState(this, StateManager);
-            GameOverState = new GameOverState(this, StateManager);
-
-            StateManager.ChangeState(GamePlayState);
-            //StateManager.ChangeState(GameOverState);
+            // Add initial screens
+            _screenManager.AddScreen(new BackgroundScreen(), null);
+            _screenManager.AddScreen(new MainMenuScreen(), null);
         }
 
         /// <summary>

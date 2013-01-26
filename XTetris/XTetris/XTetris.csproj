@@ -72,49 +72,17 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Block.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Board.cs" />
-    <Compile Include="Engine\GameState.cs" />
-    <Compile Include="Engine\GameStateManager.cs" />
-    <Compile Include="Engine\InputHandler.cs" />
-    <Compile Include="Engine\ShapesFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameStates\BaseGameState.cs" />
-    <Compile Include="GameStates\GameOverState.cs" />
-    <Compile Include="GameStates\GamePlayState.cs" />
     <Compile Include="HudItem.cs" />
-    <Compile Include="Player.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Shapes\BaseShape.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Shapes\IShape.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Shapes\JShape.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Shapes\LShape.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Shapes\OShape.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Shapes\SShape.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Shapes\TShape.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Shapes\ZShape.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="ScreenFactory.cs" />
+    <Compile Include="Screens\BackgroundScreen.cs" />
+    <Compile Include="Screens\LoadingScreen.cs" />
+    <Compile Include="Screens\MainMenuScreen.cs" />
+    <Compile Include="Screens\GameplayScreen.cs" />
+    <Compile Include="Screens\MenuScreen.cs" />
+    <Compile Include="Screens\PauseMenuScreen.cs" />
+    <Compile Include="Screens\PlayerIndexEventArgs.cs" />
     <Compile Include="TetrisGame.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +93,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\ValekhzLibs\Component\Component.csproj">
+      <Project>{3F8DF562-A72B-4396-893F-0E91F3982BAD}</Project>
+      <Name>Component</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ValekhzLibs\ScreenManagement\ScreenManagement.csproj">
+      <Project>{E4617F00-5CF9-4639-A355-65745ADD1D15}</Project>
+      <Name>ScreenManagement</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XTetrisContent\XTetrisContent.contentproj">
       <Name>XTetrisContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
