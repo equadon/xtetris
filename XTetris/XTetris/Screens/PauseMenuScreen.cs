@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
 using Valekhz.ScreenManagement;
+using Valekhz.ScreenManagement.Menu;
 
 namespace Valekhz.Tetris.Screens
 {
@@ -13,7 +14,6 @@ namespace Valekhz.Tetris.Screens
         public PauseMenuScreen()
             : base("Paused")
         {
-            TitlePosition = new Vector2(150, 300);
         }
     }
 }

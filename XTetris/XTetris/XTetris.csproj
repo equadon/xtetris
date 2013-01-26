@@ -80,10 +80,9 @@
     <Compile Include="Screens\LoadingScreen.cs" />
     <Compile Include="Screens\MainMenuScreen.cs" />
     <Compile Include="Screens\GameplayScreen.cs" />
-    <Compile Include="Screens\MenuScreen.cs" />
     <Compile Include="Screens\PauseMenuScreen.cs" />
-    <Compile Include="Screens\PlayerIndexEventArgs.cs" />
     <Compile Include="TetrisGame.cs" />
+    <Compile Include="TetrisScreenManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Design Document.txt" />
@@ -93,11 +92,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ValekhzLibs\Component\Component.csproj">
+    <ProjectReference Include="..\..\Libs\Component\Component.csproj">
       <Project>{3F8DF562-A72B-4396-893F-0E91F3982BAD}</Project>
       <Name>Component</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\ValekhzLibs\ScreenManagement\ScreenManagement.csproj">
+    <ProjectReference Include="..\..\Libs\ScreenManagement\ScreenManagement.csproj">
       <Project>{E4617F00-5CF9-4639-A355-65745ADD1D15}</Project>
       <Name>ScreenManagement</Name>
     </ProjectReference>

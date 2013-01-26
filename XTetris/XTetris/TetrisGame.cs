@@ -37,12 +37,10 @@ namespace Valekhz.Tetris
 
         private readonly GraphicsDeviceManager _graphics;
 
-        public SpriteBatch SpriteBatch { get; private set; }
-
         public Rectangle ScreenRectangle { get; private set; }
 
         // Screen Management
-        private readonly ScreenManager _screenManager;
+        private readonly TetrisScreenManager _screenManager;
         private readonly ScreenFactory _screenFactory;
 
         public TetrisGame()
@@ -60,7 +58,7 @@ namespace Valekhz.Tetris
             _screenFactory = new ScreenFactory();
             Services.AddService(typeof(IScreenFactory), _screenFactory);
 
-            _screenManager = new ScreenManager(Services);
+            _screenManager = new TetrisScreenManager(Services);
             Components.Add(_screenManager);
 
             // Add initial screens
@@ -87,8 +85,6 @@ namespace Valekhz.Tetris
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         /// <summary>

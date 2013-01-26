@@ -5,9 +5,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XTetris", "XTetris\XTetris\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XTetrisContent", "XTetris\XTetrisContent\XTetrisContent.contentproj", "{718D7C00-11BA-45FF-9FAD-61AAD58FC6DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Component", "..\ValekhzLibs\Component\Component.csproj", "{3F8DF562-A72B-4396-893F-0E91F3982BAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Component", "Libs\Component\Component.csproj", "{3F8DF562-A72B-4396-893F-0E91F3982BAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenManagement", "..\ValekhzLibs\ScreenManagement\ScreenManagement.csproj", "{E4617F00-5CF9-4639-A355-65745ADD1D15}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenManagement", "Libs\ScreenManagement\ScreenManagement.csproj", "{E4617F00-5CF9-4639-A355-65745ADD1D15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -51,7 +51,7 @@ namespace Valekhz.Tetris.Screens
         {
             if (!instancePreserved)
             {
-                _backgroundTexture = ScreenManager.Content.Load<Texture2D>(@"Backgrounds\loading");
+                _backgroundTexture = ((TetrisScreenManager)ScreenManager).Content.Load<Texture2D>(@"Backgrounds\loading");
             }
         }
 
