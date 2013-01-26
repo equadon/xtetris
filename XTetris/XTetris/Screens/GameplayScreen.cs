@@ -107,15 +107,15 @@ namespace Valekhz.Tetris.Screens
 
             if (IsActive)
             {
-                if (!Board.HasActiveShape)
+                if (!Player.HasShape)
                     _moveDelayDuration = MoveDownDelay;
                 else
                     _moveDelayDuration -= gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (Board.HasActiveShape && _moveDelayDuration <= 0d)
+                if (Player.HasShape && _moveDelayDuration <= 0d)
                 {
                     _moveDelayDuration = 0.5 + (11 - Player.Level) * 0.05;
-                    Board.ActiveShape.Move(Direction.Down);
+                    Player.Shape.Move(Direction.Down);
                 }
 
                 Board.Update(gameTime);
@@ -144,40 +144,40 @@ namespace Valekhz.Tetris.Screens
                 ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
             }
 
-            if (Board.HasActiveShape)
+            if (Player.HasShape)
             {
                 PlayerRotated = false;
 
                 // Move left
                 if (MoveLeftAction.Evaluate(input, ControllingPlayer, out playerIndex))
-                    Board.ActiveShape.Move(Direction.Left);
+                    Player.Shape.Move(Direction.Left);
 
                 // Move right
                 if (MoveRightAction.Evaluate(input, ControllingPlayer, out playerIndex))
-                    Board.ActiveShape.Move(Direction.Right);
+                    Player.Shape.Move(Direction.Right);
 
                 // Rotate left
                 if (RotateLeftAction.Evaluate(input, ControllingPlayer, out playerIndex))
                 {
-                    Board.ActiveShape.Rotate(Direction.Left);
+                    Player.Shape.Rotate(Direction.Left);
                     PlayerRotated = true;
                 }
 
                 // Rotate right
                 if (RotateRightAction.Evaluate(input, ControllingPlayer, out playerIndex))
                 {
-                    Board.ActiveShape.Rotate(Direction.Right);
+                    Player.Shape.Rotate(Direction.Right);
                     PlayerRotated = true;
                 }
 
                 // Soft drop
                 if (SoftDropAction.Evaluate(input, ControllingPlayer, out playerIndex))
-                    Board.ActiveShape.Move(Direction.Down);
+                    Player.Shape.Move(Direction.Down);
 
                 // Hard drop
                 if (HardDropAction.Evaluate(input, ControllingPlayer, out playerIndex))
                 {
-                    int distance = Board.ActiveShape.Drop();
+                    int distance = Player.Shape.Drop();
                 }
 
                 // Hold shape
@@ -204,10 +204,10 @@ namespace Valekhz.Tetris.Screens
 
         public void NewGame()
         {
-            Board = new Board(this);
-            Board.LoadContent();
-
             Player = new Player(this);
+
+            Board = new Board(this, Player);
+            Board.LoadContent();
         }
     }
 }

@@ -97,11 +97,11 @@ namespace Valekhz.Tetris.Shapes
             int startY = (int) Position.Y;
             int endY = 0;
 
-            while (Board.ActiveShape == this)
+            while (Board.Player.Shape == this)
             {
                 Move(Direction.Down);
 
-                Board.CheckCollisions(Board.ActiveShape);
+                Board.CheckCollisions(Board.Player.Shape);
 
                 endY = (int) Position.Y;
             }
@@ -215,7 +215,7 @@ namespace Valekhz.Tetris.Shapes
                 }
             }
 
-            Board.ActiveShape = null;
+            Board.Player.Shape = null;
             Board.AllowHold = true;
 
             Board.SpawnShape();

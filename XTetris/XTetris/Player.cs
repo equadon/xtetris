@@ -14,13 +14,6 @@ namespace Valekhz.Tetris
         // player needs to clear [line count] * 5 to advance to next lvl
         private const int LineCountLevelModifier = 5;
 
-        private const double KeyDownDelay = 0.15d;
-
-        private double _softDropTimeLeft = 0d;
-
-        // # of lines left to clear until the level advances
-        private int _linesToNextLevel;
-
         // stored as (# of lines cleared, back-to-back count)
         private Tuple<int, int> _lastLineClearCount;
 
@@ -39,9 +32,14 @@ namespace Valekhz.Tetris
 
         public bool GhostShapeEnabled { get; private set; }
 
-        public int LinesToNextLevel
+        public int LinesToNextLevel { get; private set; }
+
+        // Shape currently attached to player
+        public BaseShape Shape { get; set; } // TODO: change back to private setter when hold and queue is in Player
+
+        public bool HasShape
         {
-            get { return _linesToNextLevel; }
+            get { return Shape != null; }
         }
 
         public Player(GameplayScreen screen)
@@ -53,7 +51,7 @@ namespace Valekhz.Tetris
 
             TotalLinesCleared = 0;
 
-            _linesToNextLevel = Level * 5;
+            LinesToNextLevel = Level * 5;
 
             _lastLineClearCount = new Tuple<int, int>(0, 0);
 
@@ -64,9 +62,18 @@ namespace Valekhz.Tetris
         public void Update(GameTime gameTime)
         {
             // Advance to next level?
-            if (_linesToNextLevel <= 0)
+            if (LinesToNextLevel <= 0)
                 NextLevel();
         }
+
+        #region Active Shape
+
+        public void ClearShape()
+        {
+            Shape = null;
+        }
+
+        #endregion
 
         #region Score System
 
@@ -102,7 +109,7 @@ namespace Valekhz.Tetris
                 // TODO: Calculate new level before adding points?
                 int lineClearValue = points / 100;
 
-                _linesToNextLevel -= lineClearValue;
+                LinesToNextLevel -= lineClearValue;
 
                 TotalLinesCleared += lineCount;
 
@@ -116,11 +123,11 @@ namespace Valekhz.Tetris
 
         private void NextLevel()
         {
-            if (_linesToNextLevel <= 0)
+            if (LinesToNextLevel <= 0)
             {
                 Level++;
 
-                _linesToNextLevel = Level * LineCountLevelModifier + _linesToNextLevel;
+                LinesToNextLevel = Level * LineCountLevelModifier + LinesToNextLevel;
             }
         }
 

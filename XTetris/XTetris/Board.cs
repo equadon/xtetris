@@ -28,11 +28,11 @@ namespace Valekhz.Tetris
         #region Properties
 
         public GameplayScreen Screen { get; set; }
+        public Player Player { get; private set; }
 
         public Block[,] Cells { get; private set; }
 
         public Queue<BaseShape> ShapesQueue { get; private set; }
-        public BaseShape ActiveShape { get; set; }
 
         public bool AllowHold { get; set; }
         public BaseShape HoldShape { get; private set; }
@@ -45,11 +45,6 @@ namespace Valekhz.Tetris
         public HudItem TimeHud { get; private set; }
 
         public bool IsGameOver { get; private set; }
-
-        public bool HasActiveShape
-        {
-            get { return ActiveShape != null; }
-        }
 
         public Rectangle Bounds
         {
@@ -68,10 +63,11 @@ namespace Valekhz.Tetris
 
         #endregion
 
-        public Board(GameplayScreen gameScreen)
+        public Board(GameplayScreen gameScreen, Player player)
         {
             _random = new Random();
             Screen = gameScreen;
+            Player = player;
             Cells = new Block[TetrisGame.BlocksHigh, TetrisGame.BlocksWide];
 
             AllowHold = true;
@@ -109,8 +105,8 @@ namespace Valekhz.Tetris
             if (_cancelIconDuration > 0d)
                 _cancelIconDuration -= gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (HasActiveShape)
-                CheckCollisions(ActiveShape);
+            if (Screen.Player.HasShape)
+                CheckCollisions(Player.Shape);
 
             // See if there are any lines we can clear
             ClearLines();
@@ -129,8 +125,8 @@ namespace Valekhz.Tetris
             DrawCells(spriteBatch);
 
             // Draw active shape
-            if (HasActiveShape)
-                DrawShape(spriteBatch, ActiveShape, new Vector2(Bounds.Left, Bounds.Top), 1.0f);
+            if (Player.HasShape)
+                DrawShape(spriteBatch, Player.Shape, new Vector2(Bounds.Left, Bounds.Top), 1.0f);
 
             // Draw border
             if (!TetrisGame.Debug)
@@ -211,7 +207,7 @@ namespace Valekhz.Tetris
                     if (block != null)
                     {
                         // Ghost shape
-                        if (Screen.Player.GhostShapeEnabled && shape.Equals(ActiveShape))
+                        if (Screen.Player.GhostShapeEnabled && shape.Equals(Player.Shape))
                         {
                             Vector2 ghostBlockPos = new Vector2(
                                 position.X + (block.BoardPosition.X * TetrisGame.BlockSize) * scale,
@@ -520,19 +516,19 @@ namespace Valekhz.Tetris
 
             if (HoldShape == null)
             {
-                HoldShape = ActiveShape;
-                ActiveShape = null;
+                HoldShape = Player.Shape;
+                Player.Shape = null;
             }
             else
             {
-                BaseShape tmp = ActiveShape;
-                ActiveShape = HoldShape;
+                BaseShape tmp = Player.Shape;
+                Player.Shape = HoldShape;
                 HoldShape = tmp;
             }
 
             HoldShape.Position = new Vector2(0, 0);
 
-            SpawnShape(ActiveShape);
+            SpawnShape(Player.Shape);
 
             AllowHold = false;
         }
@@ -555,7 +551,7 @@ namespace Valekhz.Tetris
                 shape = ShapesQueue.Dequeue();
 
             shape.Position = new Vector2(3, 1);
-            ActiveShape = shape;
+            Player.Shape = shape;
 
             if (ShapesQueue.Count < MaxShapesInQueue)
             {
