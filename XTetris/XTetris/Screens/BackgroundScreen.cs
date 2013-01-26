@@ -10,37 +10,12 @@ namespace Valekhz.Tetris.Screens
 {
     class BackgroundScreen : GameScreen
     {
-        public ContentManager Content { get; private set; }
-
         public Texture2D BackgroundTexture { get; protected set; }
 
         public BackgroundScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
-        }
-
-        /// <summary>
-        /// Loads graphics content for this screen. The background texture is quite
-        /// big, so we use our own local ContentManager to load it. This allows us
-        /// to unload before going from the menus into the game itself, wheras if we
-        /// used the shared ContentManager provided by the Game class, the content
-        /// would remain loaded forever.
-        /// </summary>
-        public override void Activate(bool instancePreserved)
-        {
-            if (!instancePreserved)
-            {
-                if (Content == null)
-                    Content = new ContentManager(ScreenManager.ServiceProvider, "Content");
-
-                //BackgroundTexture = Content.Load<Texture2D>(@"Backgrounds\bg");
-            }
-        }
-
-        public override void Unload()
-        {
-            Content.Unload();
         }
 
         /// <summary>

@@ -85,11 +85,6 @@ namespace Valekhz.Tetris.Screens
             }
         }
 
-        public override void Unload()
-        {
-            Content.Unload();
-        }
-
         /// <summary>
         /// Updates the state of the game. This method checks the GameScreen.IsActive
         /// property, so the game will stop updating when the pause menu is active,

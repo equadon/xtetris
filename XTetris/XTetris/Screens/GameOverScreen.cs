@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using Microsoft.Xna.Framework.Input;
 using Valekhz.ScreenManagement;
 
 namespace Valekhz.Tetris.Screens
@@ -11,14 +11,28 @@ namespace Valekhz.Tetris.Screens
 
         public SpriteFont GameOverFont { get; private set; }
 
+        public InputAction MainMenuAction { get; private set; }
+
         public GameOverScreen(GameplayScreen screen)
         {
             Screen = screen;
+            MainMenuAction = new InputAction(null, new Keys[] { Keys.Enter }, true);
         }
 
         public override void Activate(bool instancePreserved)
         {
             GameOverFont = ScreenManager.Content.Load<SpriteFont>(@"Fonts\GameOver");
+        }
+
+        public override void HandleInput(GameTime gameTime, InputState input)
+        {
+            PlayerIndex playerIndex;
+
+            // Return to main menu
+            if (MainMenuAction.Evaluate(input, ControllingPlayer, out playerIndex))
+            {
+                LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new MainMenuScreen());
+            }
         }
 
         public override void Draw(GameTime gameTime)
