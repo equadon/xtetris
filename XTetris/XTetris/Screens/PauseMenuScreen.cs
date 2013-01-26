@@ -14,6 +14,19 @@ namespace Valekhz.Tetris.Screens
         public PauseMenuScreen()
             : base("Paused")
         {
+            var resumeMenuEntry = new MenuEntry("Resume Game");
+            var quitMenuEntry = new MenuEntry("Quit Game");
+
+            resumeMenuEntry.Selected += OnCancel;
+            quitMenuEntry.Selected += QuitGameEntrySelected;
+
+            MenuEntries.Add(resumeMenuEntry);
+            MenuEntries.Add(quitMenuEntry);
+        }
+
+        protected void QuitGameEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            ((TetrisScreenManager)ScreenManager).Game.Exit();
         }
     }
 }

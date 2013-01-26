@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,8 +14,12 @@ namespace Valekhz.Tetris.Screens
         private InputAction _pauseAction;
         private float _pauseAlpha;
 
-        public ContentManager Content { get; private set; }
         public SpriteFont GameFont { get; private set; }
+
+        public ContentManager Content
+        {
+            get { return ScreenManager.Content; }
+        }
 
         public GameplayScreen()
         {
@@ -33,12 +36,7 @@ namespace Valekhz.Tetris.Screens
         {
             if (!instancePreserved)
             {
-                if (Content == null)
-                    Content = new ContentManager(ScreenManager.ServiceProvider, "Content");
                 GameFont = Content.Load<SpriteFont>(@"Fonts\Game");
-
-                // Simulate a longer delay just to test the loading screen
-                Thread.Sleep(1000);
             }
         }
 
@@ -96,7 +94,9 @@ namespace Valekhz.Tetris.Screens
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
 
             spriteBatch.Begin();
-            spriteBatch.DrawString(GameFont, "Playing...", Vector2.Zero, Color.Red);
+
+
+
             spriteBatch.End();
 
             if (TransitionPosition > 0 || _pauseAlpha > 0)
