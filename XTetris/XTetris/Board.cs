@@ -17,10 +17,6 @@ namespace Valekhz.Tetris
 
         public static readonly Color BackgroundColor = new Color(255, 255, 255);
 
-        private const int MaxShapesInQueue = 5;
-
-        private readonly Random _random;
-
         #endregion
 
         #region Properties
@@ -29,8 +25,6 @@ namespace Valekhz.Tetris
         public Player Player { get; private set; }
 
         public Block[,] Cells { get; private set; }
-
-        public Queue<BaseShape> ShapesQueue { get; private set; }
 
         public double TotalTime { get; private set; }
 
@@ -60,16 +54,11 @@ namespace Valekhz.Tetris
 
         public Board(GameplayScreen gameScreen, Player player)
         {
-            _random = new Random();
             Screen = gameScreen;
             Player = player;
             Cells = new Block[TetrisGame.BlocksHigh, TetrisGame.BlocksWide];
 
             IsGameOver = false;
-
-            ShapesQueue = new Queue<BaseShape>();
-
-            SpawnShape();
         }
 
         public void LoadContent()
@@ -128,9 +117,6 @@ namespace Valekhz.Tetris
                 Color.Crimson);
 
             Player.Draw(gameTime, spriteBatch);
-
-            // Draw queue
-            DrawQueue(spriteBatch);
 
             // Draw HUD items
             DrawHud(gameTime, spriteBatch);
@@ -200,51 +186,6 @@ namespace Valekhz.Tetris
                             0f);
                     }
                 }
-            }
-        }
-
-        private void DrawQueue(SpriteBatch spriteBatch)
-        {
-            int blockSize = TetrisGame.BlockSize;
-
-            // Draw first shape in queue
-            BaseShape firstShape = ShapesQueue.Peek();
-
-            float scale = 0.85f;
-            DrawShape(spriteBatch,
-                firstShape,
-                new Vector2(
-                    Bounds.Right - firstShape.Bounds.X * blockSize * scale + 21 + 60 - firstShape.Origin.X * scale,
-                    TetrisGame.BoardPaddingTop - firstShape.Bounds.Y * blockSize * scale + 74 + 60 - firstShape.Origin.Y * scale),
-                scale);
-
-            // Draw the rest
-            const int queueAreaWidth = 47;
-            const int queueAreaHeight = 49;
-
-            float offsetY = 0f;
-            scale = 0.65f;
-
-            int i = 0;
-
-            foreach (var shape in ShapesQueue)
-            {
-                i++;
-
-                // Skip the first shape
-                if (i == 1)
-                    continue;
-
-                Vector2 pos = new Vector2(
-                    Bounds.Right - shape.Bounds.X * blockSize * scale + 34 + queueAreaWidth - shape.Origin.X * scale,
-                    TetrisGame.BoardPaddingTop + offsetY - shape.Bounds.Y * blockSize * scale + 236 + queueAreaHeight - shape.Origin.Y * scale);
-
-                DrawShape(spriteBatch,
-                    shape,
-                    pos,
-                    scale);
-
-                offsetY += queueAreaHeight * 2;
             }
         }
 
@@ -460,37 +401,6 @@ namespace Valekhz.Tetris
                         }
                     }
                 }
-            }
-        }
-
-        #endregion
-
-        #region Hold and Spawn Shape Methods
-
-        /// <summary>
-        /// Spawns the next shape in queue or the provided `shape`.
-        /// </summary>
-        public void SpawnShape(BaseShape shape = null)
-        {
-            // Fill the queue if needed
-            if (ShapesQueue.Count < MaxShapesInQueue)
-            {
-                do
-                {
-                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(Screen.BlockTexture, this, (ShapeTypes) _random.Next(7)));
-                } while (ShapesQueue.Count < MaxShapesInQueue);
-            }
-
-            if (shape == null)
-                shape = ShapesQueue.Dequeue();
-
-            shape.Position = new Vector2(3, 1);
-            Player.Shape = shape;
-
-            if (ShapesQueue.Count < MaxShapesInQueue)
-            {
-                shape = ShapesFactory.CreateShape(Screen.BlockTexture, this, (ShapeTypes)_random.Next(7));
-                ShapesQueue.Enqueue(shape);
             }
         }
 
