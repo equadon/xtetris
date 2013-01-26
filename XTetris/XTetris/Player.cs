@@ -136,7 +136,7 @@ namespace Valekhz.Tetris
         /// <param name="spriteBatch"></param>
         private void DrawQueue(SpriteBatch spriteBatch)
         {
-            int blockSize = TetrisGame.BlockSize;
+            const int blockSize = TetrisGame.BlockSize;
 
             // Draw first shape in queue
             BaseShape firstShape = ShapesQueue.Peek();
@@ -181,7 +181,7 @@ namespace Valekhz.Tetris
 
         #endregion
 
-        #region Hold Shape
+        #region Hold + Spawn Shape
 
         // Place the active shape in the hold queue
         public void Hold()
@@ -218,12 +218,9 @@ namespace Valekhz.Tetris
         public void SpawnShape(BaseShape shape = null)
         {
             // Fill the queue if needed
-            if (ShapesQueue.Count < MaxShapesInQueue)
+            while (ShapesQueue.Count < MaxShapesInQueue)
             {
-                do
-                {
-                    ShapesQueue.Enqueue(ShapesFactory.CreateShape(Screen.BlockTexture, Screen.Board, (ShapeTypes)_random.Next(7)));
-                } while (ShapesQueue.Count < MaxShapesInQueue);
+                ShapesQueue.Enqueue(ShapesFactory.CreateShape(Screen.BlockTexture, Screen.Board, (ShapeTypes)_random.Next(7)));
             }
 
             if (shape == null)
@@ -260,10 +257,15 @@ namespace Valekhz.Tetris
 
                 collided = Screen.Board.CheckCollisions(Shape);
 
-                endY = (int)Shape.Position.Y;
+                if (!collided)
+                    endY = (int)Shape.Position.Y;
             }
 
-            return endY - startY;
+            int dropHeight = endY - startY;
+
+            Score += 2 * dropHeight;
+
+            return dropHeight;
         }
 
         /// <summary>
@@ -281,14 +283,10 @@ namespace Valekhz.Tetris
 
         #region Score System
 
-        public void SoftDrop(int dropHeight)
+        // TODO: not yet functional
+        public void SoftDropPoints(int dropHeight)
         {
             Score += 1 * dropHeight;
-        }
-
-        public void HardDrop(int dropHeight)
-        {
-            Score += 2 * dropHeight;
         }
 
         /// <summary>

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
-using Valekhz.Tetris.Engine;
 using Valekhz.Tetris.Screens;
 using Valekhz.Tetris.Shapes;
 
@@ -119,7 +117,7 @@ namespace Valekhz.Tetris
                 Color.Crimson);
 
             // Draw HUD items
-            DrawHud(gameTime, spriteBatch);
+            DrawHud(spriteBatch);
         }
 
         public void DrawCells(SpriteBatch spriteBatch)
@@ -189,7 +187,7 @@ namespace Valekhz.Tetris
             }
         }
 
-        private void DrawHud(GameTime gameTime, SpriteBatch spriteBatch)
+        private void DrawHud(SpriteBatch spriteBatch)
         {
             // Score
             ScoreHud.Draw(spriteBatch, Screen.Player.Score);
@@ -309,10 +307,10 @@ namespace Valekhz.Tetris
 
                     linesCleared++;
                 }
-                else if (columnCount == 0)
+                
+                if (columnCount == 0)
                 {
                     // no need to check anymore
-                    row = -1;
                     break;
                 }
             }
