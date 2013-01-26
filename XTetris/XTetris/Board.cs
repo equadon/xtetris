@@ -103,6 +103,8 @@ namespace Valekhz.Tetris
             // Draw cells
             DrawCells(spriteBatch);
 
+            Player.Draw(gameTime, spriteBatch);
+
             // Labels
             spriteBatch.DrawString(Screen.GameFont, "Hold",
                 new Vector2(
@@ -115,8 +117,6 @@ namespace Valekhz.Tetris
                     Bounds.Right + 25,
                     TetrisGame.BoardPaddingTop + 15),
                 Color.Crimson);
-
-            Player.Draw(gameTime, spriteBatch);
 
             // Draw HUD items
             DrawHud(gameTime, spriteBatch);
@@ -202,6 +202,31 @@ namespace Valekhz.Tetris
         }
 
         #endregion
+
+        /// <summary>
+        /// Store a shape to the board structure.
+        /// </summary>
+        /// <param name="shape">Shape to store to the board.</param>
+        public void StoreShape(BaseShape shape)
+        {
+            var blocks = shape.Rotations[(int)shape.Direction];
+
+            for (int row = 0; row <= blocks.GetUpperBound(0); row++)
+            {
+                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
+                {
+                    var block = blocks[row, col];
+                    if (block != null)
+                    {
+                        int x = (int)block.BoardPosition.X;
+                        int y = (int)block.BoardPosition.Y;
+                        if (Cells[y, x] != null)
+                            Screen.Board.GameOver();
+                        Cells[y, x] = block;
+                    }
+                }
+            }
+        }
 
         // TODO: Implement a better game over checking
         public void GameOver()
@@ -324,7 +349,12 @@ namespace Valekhz.Tetris
             }
         }
 
-        public void CheckCollisions(BaseShape shape)
+        /// <summary>
+        /// Check if shape is colliding with walls or blocks.
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <returns>Returns true if colliding</returns>
+        public bool CheckCollisions(BaseShape shape)
         {
             var blocks = shape.Rotations[(int) shape.Direction];
 
@@ -343,7 +373,7 @@ namespace Valekhz.Tetris
                             else
                                 shape.Move(Direction.Right);
 
-                            return;
+                            return true;
                         }
 
                         // Right wall
@@ -354,7 +384,7 @@ namespace Valekhz.Tetris
                             else
                                 shape.Move(Direction.Left);
 
-                            return;
+                            return true;
                         }
 
                         // Top wall
@@ -365,7 +395,7 @@ namespace Valekhz.Tetris
                             else
                                 shape.Move(Direction.Down);
 
-                            return;
+                            return true;
                         }
 
                         // Bottom wall
@@ -373,9 +403,9 @@ namespace Valekhz.Tetris
                         {
                             shape.Move(Direction.Up);
 
-                            shape.Save();
+                            Player.Save();
 
-                            return;
+                            return true;
                         }
 
                         // Other blocks
@@ -394,14 +424,16 @@ namespace Valekhz.Tetris
                                 shape.ResetPosition();
 
                                 if (save)
-                                    shape.Save();
+                                    Player.Save();
                             }
 
-                            return;
+                            return true;
                         }
                     }
                 }
             }
+
+            return false;
         }
 
         #endregion

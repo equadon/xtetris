@@ -7,7 +7,7 @@ namespace Valekhz.Tetris.Shapes
     public class JShape : BaseShape
     {
         public JShape(Texture2D texture, Board board)
-            : base(texture, board, TetrisGame.ShapeJColor)
+            : base(texture, TetrisGame.ShapeJColor)
         {
             var rotations = new List<int[,]>
             {

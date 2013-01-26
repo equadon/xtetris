@@ -7,7 +7,7 @@ namespace Valekhz.Tetris.Shapes
     public class SShape : BaseShape
     {
         public SShape(Texture2D texture, Board board)
-            : base(texture, board, TetrisGame.ShapeSColor)
+            : base(texture, TetrisGame.ShapeSColor)
         {
             var rotations = new List<int[,]>
             {

@@ -178,7 +178,7 @@ namespace Valekhz.Tetris.Screens
                 // Hard drop
                 if (HardDropAction.Evaluate(input, ControllingPlayer, out playerIndex))
                 {
-                    int distance = Player.Shape.Drop();
+                    int distance = Player.Drop();
                 }
 
                 // Hold shape

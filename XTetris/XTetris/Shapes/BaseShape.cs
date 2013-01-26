@@ -18,7 +18,6 @@ namespace Valekhz.Tetris.Shapes
 
         #region Properties
 
-        public Board Board { get; private set; }
         public Texture2D Texture { get; private set; }
 
         public List<Block[,]> Rotations { get; private set; }
@@ -47,10 +46,9 @@ namespace Valekhz.Tetris.Shapes
 
         #endregion
 
-        public BaseShape(Texture2D texture, Board board, Color color)
+        public BaseShape(Texture2D texture, Color color)
         {
             Texture = texture;
-            Board = board;
             Direction = Direction.Right;
             Color = color;
 
@@ -83,30 +81,6 @@ namespace Valekhz.Tetris.Shapes
             }
 
             CalculateBounds();
-        }
-
-        /// <summary>
-        /// Hard drop shape.
-        /// </summary>
-        /// <returns>Returns the distance it was dropped</returns>
-        public int Drop()
-        {
-            LastDirection = Direction;
-            LastPosition = Position;
-
-            int startY = (int) Position.Y;
-            int endY = 0;
-
-            while (Board.Player.Shape == this)
-            {
-                Move(Direction.Down);
-
-                Board.CheckCollisions(Board.Player.Shape);
-
-                endY = (int) Position.Y;
-            }
-
-            return endY - startY;
         }
 
         public void Rotate(Direction direction)
@@ -190,35 +164,6 @@ namespace Valekhz.Tetris.Shapes
 
             Position = newPos;
             LastPosition = Position;
-        }
-
-        /// <summary>
-        /// Save shape to board.
-        /// </summary>
-        public void Save()
-        {
-            var blocks = Rotations[(int)Direction];
-
-            for (int row = 0; row <= blocks.GetUpperBound(0); row++)
-            {
-                for (int col = 0; col <= blocks.GetUpperBound(1); col++)
-                {
-                    var block = blocks[row, col];
-                    if (block != null)
-                    {
-                        int x = (int) block.BoardPosition.X;
-                        int y = (int)block.BoardPosition.Y;
-                        if (Board.Cells[y, x] != null)
-                            Board.GameOver();
-                        Board.Cells[y, x] = block;
-                    }
-                }
-            }
-
-            Board.Player.Shape = null;
-            Board.Player.AllowHold = true;
-
-            Board.SpawnShape();
         }
 
         #region Generate Blocks

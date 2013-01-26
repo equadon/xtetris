@@ -7,7 +7,7 @@ namespace Valekhz.Tetris.Shapes
     public class ZShape : BaseShape
     {
         public ZShape(Texture2D texture, Board board)
-            : base(texture, board, TetrisGame.ShapeZColor)
+            : base(texture, TetrisGame.ShapeZColor)
         {
             List<int[,]> rotations = new List<int[,]>
                 {

@@ -181,7 +181,6 @@ namespace Valekhz.Tetris
 
         #endregion
 
-
         #region Hold Shape
 
         // Place the active shape in the hold queue
@@ -241,6 +240,44 @@ namespace Valekhz.Tetris
         }
 
         #endregion
+        
+        /// <summary>
+        /// Hard drop shape.
+        /// </summary>
+        /// <returns>Returns the distance it was dropped</returns>
+        public int Drop()
+        {
+            Shape.LastDirection = Shape.Direction;
+            Shape.LastPosition = Shape.Position;
+
+            int startY = (int)Shape.Position.Y;
+            int endY = 0;
+
+            bool collided = false;
+            while (!collided)
+            {
+                Shape.Move(Direction.Down);
+
+                collided = Screen.Board.CheckCollisions(Shape);
+
+                endY = (int)Shape.Position.Y;
+            }
+
+            return endY - startY;
+        }
+
+        /// <summary>
+        /// Save shape to board.
+        /// </summary>
+        public void Save()
+        {
+            Screen.Board.StoreShape(Shape);
+
+            Shape = null;
+            AllowHold = true;
+
+            SpawnShape();
+        }
 
         #region Score System
 
