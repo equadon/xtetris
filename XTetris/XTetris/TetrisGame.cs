@@ -59,6 +59,7 @@ namespace Valekhz.Tetris
             Services.AddService(typeof(IScreenFactory), _screenFactory);
 
             _screenManager = new TetrisScreenManager(Services);
+            _screenManager.Game = this;
             Components.Add(_screenManager);
 
             // Add initial screens

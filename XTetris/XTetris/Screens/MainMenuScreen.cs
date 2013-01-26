@@ -51,7 +51,7 @@ namespace Valekhz.Tetris.Screens
         /// </summary>
         protected override void OnCancel(PlayerIndex playerIndex)
         {
-            //ScreenManager.Game.Exit();
+            ((TetrisScreenManager)ScreenManager).Game.Exit();
         }
     }
 }

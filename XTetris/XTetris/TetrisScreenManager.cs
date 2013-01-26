@@ -7,6 +7,11 @@ namespace Valekhz.Tetris
 {
     class TetrisScreenManager : ScreenManager
     {
+        /// <summary>
+        /// Only needed if this ScreenManager is loaded with the game.
+        /// </summary>
+        public TetrisGame Game { get; set; }
+
         public TetrisScreenManager(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
