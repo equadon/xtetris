@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenManagement", "Libs\ScreenManagement\ScreenManagement.csproj", "{E4617F00-5CF9-4639-A355-65745ADD1D15}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "XTetrisWiX", "XTetrisWiX\XTetrisWiX.wixproj", "{43B97FAC-D988-4DC4-A535-BF0C8BA771F9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3B2D4279-8369-4A28-BD0D-98E8D3FFA9C6} = {3B2D4279-8369-4A28-BD0D-98E8D3FFA9C6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
