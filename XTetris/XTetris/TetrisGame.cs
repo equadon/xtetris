@@ -51,7 +51,7 @@ namespace Valekhz.Tetris
 
             IsMouseVisible = true;
 
-            Window.Title = "Tetris";
+            Window.Title = "XTetris";
 
             _screenFactory = new ScreenFactory();
             Services.AddService(typeof(IScreenFactory), _screenFactory);
