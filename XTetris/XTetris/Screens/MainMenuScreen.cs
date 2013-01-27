@@ -43,7 +43,7 @@ namespace Valekhz.Tetris.Screens
         /// </summary>
         void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            //ScreenManager.AddScreen(new OptionsMenuScreen(), e.PlayerIndex);
+            ScreenManager.AddScreen(new OptionsMenuScreen((TetrisScreenManager) ScreenManager), e.PlayerIndex);
         }
 
         /// <summary>

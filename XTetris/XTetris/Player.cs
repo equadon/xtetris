@@ -45,7 +45,10 @@ namespace Valekhz.Tetris
 
         public Queue<BaseShape> ShapesQueue { get; private set; }
 
-        public bool GhostShapeEnabled { get; private set; }
+        public bool GhostShapeEnabled
+        {
+            get { return ((TetrisScreenManager) Screen.ScreenManager).Settings.DisplayGhostPiece; }
+        }
 
         // Score + Levels
         public int Score { get; private set; }
@@ -74,7 +77,6 @@ namespace Valekhz.Tetris
 
             AllowHold = true;
             Rotated = false;
-            GhostShapeEnabled = true;
 
             ShapesQueue = new Queue<BaseShape>();
 

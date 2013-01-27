@@ -93,7 +93,6 @@
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Compile Include="Backgrounds\loading.png">
       <Name>loading</Name>
